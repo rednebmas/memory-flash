@@ -2,6 +2,7 @@ import sqlite3
 import time    
 import sys
 import os.path
+from model.migration_manager import MigrationManager
 
 class DB:
 	def __init__(self, path):
@@ -59,6 +60,21 @@ class DB:
 		if len(rows) < 1: return None
 		else: return rows[0]
 
+	def insert_key_value_pairs(self, table, data):
+		"""Inserts array of dictionaries into database
+		@data:
+			format should be as follows: [{"row" : "value"}]
+
+		!IMPORTANT! At the moment this is not safe to use for data recieved from the internet as it is susceptible to SQL injection
+		"""
+		statements = []
+		for d in data:
+			column_string = ','.join(d.keys())
+			values = ['"'+v.replace('"', '""')+'"' if isinstance(v, str) else str(v) for v in d.values()]
+			value_string = ','.join(values)
+			statements.append("""INSERT INTO {} ({}) VALUES ({})""".format(table, column_string, value_string))
+		self.execute_statments(statements)
+
 	@staticmethod
 	def put_substitutions_in_statement(statement, substitutions):
 		subbed = statement
@@ -67,24 +83,16 @@ class DB:
 		return subbed
 
 	@staticmethod
-	def insert_key_value_pairs(table, data):
-		"""Inserts array of dictionaries into database
-		Param data:
-			format: [{"row" : "value"}]
-		"""
-		statements = []
-		for d in data:
-			column_string = ','.join(d.keys())
-			values = ['"'+v.replace('"', '""')+'"' if isinstance(v, str) else str(v) for v in d.values()]
-			value_string = ','.join(values)
-			statements.append("""INSERT INTO {} ({}) VALUES ({})""".format(table, column_string, value_string))
-		DB.execute_statments(statements)
-
-	@staticmethod
 	def datetime_now():
 		return time.strftime('%Y-%m-%d %H:%M:%S')
 
 if 'unittest' in sys.argv[0]:
 	db = DB(':memory:')
+	MigrationManager.insert_all_pregenerated_decks_and_create_db(db)
 else:
-	db = DB('memory-flash.db')
+	db_path = 'memory-flash.db'
+	db_exists = os.path.isfile(db_path)
+	db = DB(db_path)
+	if db_exists is False:
+		print('Generating database.')
+		MigrationManager.insert_all_pregenerated_decks_and_create_db(db)
