@@ -25,7 +25,8 @@ function checkAnswer() {
 }
 
 function loadNextQuestion() {
-    $.post('/decks/'+card.deck_id+'/next_card', JSON.stringify({ 'session_id' : session_id }), function (data) {
+    $.post('/session/'+session_id+'/next_card', JSON.stringify({ 'deck_id' : deck_id }), function (data) {
+        console.log(data);
         $('.question').html(data['question']);
         card = data;
         card.start_time = performance.now();
@@ -33,7 +34,13 @@ function loadNextQuestion() {
         state = "waiting_for_correct";
         $('#submit-answer').attr('class', 'btn btn-primary');
         $('#correct-label').fadeOut();
-    }, 'json');
+    }, 'json')
+    .fail(function(xhr, status, error) {
+        // error handling
+        console.log('Error retrieving next card' + xhr);
+        console.log(xhr);
+        console.log(error);
+    });
 }
 
 function submitAnswerHistory(card) {
@@ -53,28 +60,17 @@ function submitAnswerHistory(card) {
     });
 }
 
-$("#submit-answer").click(function() {
-    checkAnswer();
-});
-
-$('#answer-input').keypress(function(e){
-    if (e.which == 13) { // enter key pressed
-        checkAnswer();
-    }
-});
-
 $(document).ready(function() {
-    $('#answer-input').focus();
     loadNextQuestion();
-});
 
-/*
-$("input[type=text], textarea").mouseover(zoomDisable).mousedown(zoomEnable);
-function zoomDisable(){
-  $('head meta[name=viewport]').remove();
-  $('head').prepend('<meta name="viewport" content="user-scalable=0" />');
-}
-function zoomEnable(){
-  $('head meta[name=viewport]').remove();
-  $('head').prepend('<meta name="viewport" content="user-scalable=1" />');
-} */
+    $('#answer-input').focus();
+	$("#submit-answer").click(function() {
+		checkAnswer();
+	});
+
+	$('#answer-input').keypress(function(e) {
+		if (e.which == 13) { // enter key pressed
+			checkAnswer();
+		}
+	});
+});

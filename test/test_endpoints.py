@@ -27,6 +27,12 @@ class TestEndpoints(unittest.TestCase):
 		request, response = sanic_endpoint_test(app, uri='/decks/1/study')
 		self.assertTrue(response.status == 200, response.body)
 
+	def test_session_next_card(self):
+		global app
+		request, response = sanic_endpoint_test(app, uri='/session/1/next_card', data='{"deck_id":1}', debug=True)
+		self.assertTrue(response.status == 200, response.status)
+
+
 def main():
 	unittest.main()
 

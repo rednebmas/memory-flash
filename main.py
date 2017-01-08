@@ -32,6 +32,11 @@ async def decks_study(request, deck_id):
 	deck, session = StudyViewModel.deck_and_session(deck_id)
 	return html(templates.get_template('study.html').render(deck=deck, session=session))
 
+@app.route("/session/<session_id:int>/next_card")
+async def session_next_card(request, session_id):
+	card = StudyViewModel.next_card(session_id, request.json['deck_id'])
+	return json({'hello':'world'})
+
 @app.route("/")
 async def index(request):
     return json({'hello':'memory-flash-2'})

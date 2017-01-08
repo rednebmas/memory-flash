@@ -35,40 +35,38 @@ class Session:
 		return self.median is None
 
 	def fully_initialize(self):
-		conn = DB.conn()
-
 		self.put_median_in_db()
 
 
 	def load_cards(self):
-		conn = DB.conn()
-		cursor = conn.cursor()
 		statement = r"""
 			SELECT Card.*,
 				   AnswerHistory.time_to_correct, 
 				   AnswerHistory.first_attempt_correct, 
-				   MAX(AnswerHistory.answered_at)
+				   MAX(AnswerHistory.answered_at) as answered_at
 			FROM AnswerHistory
 			JOIN Card ON Card.card_id = AnswerHistory.card_id
 			JOIN SessionCard ON SessionCard.card_id = Card.card_id and SessionCard.session_id = ?
 			WHERE SessionCard.session_id = ?
 			GROUP BY AnswerHistory.card_id
 		"""
-		cursor.execute(statement, (self.session_id,self.session_id))
-		rows = cursor.fetchall()
+
+		db.execute(statement, (self.session_id, self.session_id))
+		rows = db.cursor.fetchall()
+
 		self.cards = []
 		for row in rows:
-			card = Card.from_db(row[0:4])
+			card = Card.from_db(row)
 			answer_history = AnswerHistory(
-				session_id=self.session_id, 
+				session_id = self.session_id, 
 				card_id = card.card_id, 
-				time_to_correct = row[4], 
-				first_attempt_correct = row[5], 
-				answered_at = row[6]
+				time_to_correct = row['time_to_correct'], 
+				first_attempt_correct = row['first_attempt_correct'], 
+				answered_at = row['answered_at']
 			)
 			card.set_answer_history(answer_history)
 			self.cards.append(card)
-		conn.close()
+
 		self.cards_loaded = True
 
 	def put_median_in_db(self):

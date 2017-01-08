@@ -5,7 +5,7 @@ class Card:
 
 	@staticmethod
 	def from_db(row):
-		return Card(row[0], row[1], row[2], row[3])
+		return Card(row['card_id'], row['deck_id'], row['question'], row['question'])
 
 	def __init__(self, card_id, deck_id, question, answer):
 		self.card_id = card_id

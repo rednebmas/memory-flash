@@ -30,11 +30,12 @@
 </div>
 
 
+<script src="/js/answer-validators.js"></script>
 <script type="text/javascript">
+    var deck_id = {{ deck.deck_id }};
     var session_id = {{ session.session_id }};
     var answer_validator = {{ deck.answer_validator }};
 </script>
-<script src="/js/answer-validators.js"></script>
 <script src="/js/study.js"></script>
 
 {% endblock %}
