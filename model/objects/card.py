@@ -1,3 +1,5 @@
+from model.db import db
+
 class Card:
 	question = None
 	question = None
@@ -6,6 +8,14 @@ class Card:
 	@staticmethod
 	def from_db(row):
 		return Card(row['card_id'], row['deck_id'], row['question'], row['answer'])
+
+	@staticmethod
+	def from_db_id(card_id):
+		try:
+			row = db.select1(table="Card", where="card_id = ?", substitutions=(card_id,))
+			return Card.from_db(row)
+		except Exception as e:
+			return None
 
 	def __init__(self, card_id, deck_id, question, answer):
 		self.card_id = card_id

@@ -34,6 +34,16 @@ class TestEndpoints(unittest.TestCase):
 		self.assertTrue(response.status == 200, response.status)
 		self.assertTrue('card_id' in json_loads(response.body))
 
+	def test_card_answer(self):
+		global app
+		request, response = sanic_endpoint_test(app, uri='/card/1/answer', 
+			data="""{"session_id":1,
+					"card_id":1,
+					"time_to_correct":3.1,
+					"first_attempt_correct":true}""")
+		self.assertTrue(response.status == 200, response.body)
+		self.assertTrue(json_loads(response.body)['success'])
+
 def main():
 	unittest.main()
 

@@ -1,4 +1,4 @@
-from model.db import db
+from model.db import db, DB
 
 class AnswerHistory:
 	@staticmethod

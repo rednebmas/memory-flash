@@ -2,6 +2,8 @@ from sanic import Sanic
 from sanic.response import json, html, text
 from jinja2 import Environment, FileSystemLoader
 from model.db import db
+from model.objects.card import Card
+from model.objects.answer_history import AnswerHistory
 from viewmodel.deck_view_model import DeckViewModel
 from viewmodel.card_view_model import CardViewModel
 from viewmodel.study_view_model import StudyViewModel
@@ -36,6 +38,14 @@ async def decks_study(request, deck_id):
 async def session_next_card(request, session_id):
 	card = StudyViewModel.next_card(session_id, request.json['deck_id'])
 	return json(card.as_dict())
+
+@app.route("/card/<card_id:int>/answer")
+async def session_next_card(request, card_id):
+	card = Card.from_db_id(card_id)
+	if card is not None:
+		AnswerHistory.from_json(request.json).insert()
+		return json({ "success": True })
+	return json({ "success": False })
 
 @app.route("/")
 async def index(request):
