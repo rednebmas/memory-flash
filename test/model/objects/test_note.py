@@ -11,6 +11,7 @@ class TestNotes(unittest.TestCase):
 		note = Note(name='C4')
 		self.assertTrue(note.name == 'C')
 		self.assertTrue(note.octave == 4)
+		self.assertTrue(note.pretty_name == 'C')
 		self.assertTrue(note.name_octave == 'C4')
 		self.assertAlmostEqual(note.freq, 261.6255, places=3, msg="Freq = {}".format(note.freq))
 
@@ -19,12 +20,14 @@ class TestNotes(unittest.TestCase):
 		self.assertTrue(note.name == 'B#')
 		self.assertTrue(note.octave == 2)
 		self.assertTrue(note.name_octave == 'B#2')
+		self.assertTrue(note.pretty_name == 'B♯')
 		self.assertAlmostEqual(note.freq, 65.4064, places=3, msg="Freq = {}".format(note.freq))
 
 	def test_init_with_name_fflat6(self):
 		note = Note(name='fb6')
 		self.assertTrue(note.name == 'Fb', msg=note.name)
 		self.assertTrue(note.octave == 6)
+		self.assertTrue(note.pretty_name == 'F♭')
 		self.assertTrue(note.name_octave == 'Fb6')
 		self.assertAlmostEqual(note.freq, 1318.51, places=3, msg="Freq = {}".format(note.freq))
 
@@ -44,6 +47,7 @@ class TestNotes(unittest.TestCase):
 
 	def test_init_with_freq_fsharp5(self):
 		note = Note(freq=739.99)
+		self.assertTrue(note.pretty_name == 'F♯')
 		self.assertTrue(note.name_octave == 'F#5', msg="name_octave = {}".format(note.name_octave))
 
 	def test_init_with_freq_dsharp1(self):

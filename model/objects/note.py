@@ -15,6 +15,7 @@ class Note:
 	def init_with_freq(self, freq):
 		self.freq = freq
 		self.name, self.octave = Note.name_octave_for_freq(freq)
+		self.pretty_name = self.name.replace('#', '♯').replace('b','♭')
 		self.name_octave = self.name + str(self.octave)
 		self.half_steps_from_a4 = Note.half_steps_from_a4(self.name, self.octave)
 
@@ -22,6 +23,7 @@ class Note:
 		name = name[0].upper() + name[1:] if name[0].islower() else name
 		self.name_octave = name
 		self.name, self.octave = Note.parse_name_and_octave(name)
+		self.pretty_name = self.name.replace('#', '♯').replace('b','♭')
 		self.half_steps_from_a4 = Note.half_steps_from_a4(self.name, self.octave)
 		self.freq = Note.frequency_for_note_with_half_steps_from_a4(self.half_steps_from_a4)
 

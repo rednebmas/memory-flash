@@ -36,8 +36,7 @@ function loadNextQuestion() {
         $('#correct-label').fadeOut();
     }, 'json')
     .fail(function(xhr, status, error) {
-        // error handling
-        console.log('Error retrieving next card' + xhr);
+        console.log('Error retrieving next card');
         console.log(xhr);
         console.log(error);
     });

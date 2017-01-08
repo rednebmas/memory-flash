@@ -33,15 +33,14 @@ class IntervalsGenerator:
 	def card_with(question_note, answer, interval):
 		n = 'n' if interval.shortdir()[0] == 'a' else ''
 		interval_name = interval.name().lower()
-		interval_dir = r'<strong>'+interval.shortdir()+r'</strong>'
-		interval_name = interval_name.replace(interval.shortdir(), interval_dir)
+		interval_name = r'<strong>'+interval_name[0]+r'</strong>'+interval_name[1:]
 
 		return {
 			"question" : r"""<style>
 							 </style>
 							 <p>What is a%(n)s %(interval)s of %(question_note)s?</p>
 							 """ % {
-								'question_note': question_note.name,
+								'question_note': question_note.pretty_name,
 								'interval' : interval_name,
 								'n' : n
 							 },
