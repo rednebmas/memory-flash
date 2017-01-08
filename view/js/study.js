@@ -1,5 +1,6 @@
 // possible: correct, waiting_for_correct
 var state = "waiting_for_correct";
+var card = {};
 
 function checkAnswer() {
     var userAnswer = $('#answer-input').val();
