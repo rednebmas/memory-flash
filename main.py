@@ -35,7 +35,7 @@ async def decks_study(request, deck_id):
 @app.route("/session/<session_id:int>/next_card")
 async def session_next_card(request, session_id):
 	card = StudyViewModel.next_card(session_id, request.json['deck_id'])
-	return json({'hello':'world'})
+	return json(card.as_dict())
 
 @app.route("/")
 async def index(request):

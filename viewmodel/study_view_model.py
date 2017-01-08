@@ -16,6 +16,4 @@ class StudyViewModel:
 		session = Session.from_deck_id(deck_id)
 		card, session = Scheduler.next(session)
 		return card
-		# return json(card.as_json())
-		return None
 
