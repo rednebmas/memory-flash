@@ -24,6 +24,10 @@ class TestDB(unittest.TestCase):
 		rows = db.select(table="Deck")
 		self.assertTrue(len(rows) == 2)
 
+	def test_put_substitutions_in_statement_with_int(self):
+		result = DB.put_substitutions_in_statement("1 + ? = 2", (1,))
+		self.assertTrue(result == "1 + 1 = 2", result)
+
 def main():
 	unittest.main()
 

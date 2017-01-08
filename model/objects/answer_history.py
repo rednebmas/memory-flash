@@ -22,30 +22,30 @@ class AnswerHistory:
 		return "Time to correct: {}".format(self.time_to_correct)
 
 	def insert(self):
-		#########   WARNING ##############
-		conn = db.conn()
-		cursor = conn.cursor()
-		cursor.execute("""
+		db.execute("""
 			INSERT INTO AnswerHistory (session_id, card_id, time_to_correct, first_attempt_correct, answered_at)
 			VALUES (?, ?, ?, ?, ?)
-		 """, (self.session_id, 
+		 	""", (self.session_id, 
 		 	   self.card_id, 
 		 	   self.time_to_correct, 
 		 	   self.first_attempt_correct,
-		 	   self.answered_at))
+		 	   self.answered_at)
+		 )
 
 		# put into SessionCard if it doesn't already exist
-		cursor.execute("SELECT COUNT(*) FROM SessionCard WHERE session_id = ? AND card_id = ?")
-		count =  cursor.fetchone()[0] 
+		# to do this we must first check if it is in SessionCard
+		count = db.select1(
+			table="SessionCard",
+			columns="COUNT(*)",
+			where="session_id = ? AND card_id = ?",
+			substitutions=(self.session_id, self.card_id)
+		)[0]
 		if count == 0:
-			cursor.execute("""
+			db.execute("""
 				INSERT INTO SessionCard (session_id, card_id)
-				VALUES (?, ?, ?, ?, ?)
-			 """, (self.session_id, 
-			 	   self.card_id, 
-			 	   self.time_to_correct, 
-			 	   self.first_attempt_correct,
-			 	   self.answered_at))
-
-		db.commit()
+				VALUES (?, ?)
+				""",
+				substitutions=(self.session_id, 
+					self.card_id)
+			)
 

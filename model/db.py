@@ -79,6 +79,7 @@ class DB:
 	def put_substitutions_in_statement(statement, substitutions):
 		subbed = statement
 		for sub in substitutions:
+			if isinstance(sub, str) is False: sub = str(sub) 
 			subbed = subbed.replace('?', sub)
 		return subbed
 
