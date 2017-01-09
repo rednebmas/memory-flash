@@ -1,4 +1,11 @@
 // based code from https://github.com/sole/MIDIUtils/blob/master/src/MIDIUtils.js
+var enharmonicConverter = {
+	"Db" : "C#",
+	"Eb" : "D#",
+	"Gb" : "F#",
+	"Ab" : "G#",
+	"Bb" : "A#",
+}
 
 var MIDIUtils = {	
 	noteNameToNoteNumber: function(name) {

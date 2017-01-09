@@ -20,3 +20,18 @@ var answerValidator_multipleOptions_meta = function(userAnswer, correctAnswer, v
 var answerValidator_multipleOptions_equals = function(userAnswer, correctAnswer) {
 	return answerValidator_multipleOptions_meta(userAnswer, correctAnswer, answerValidator_equals);
 }
+
+var answerValidator_multipleOptions_equals_midiEnharmonicsValid = function(userAnswer, correctAnswer) {
+	if (onMIDINotes.size > 0) {
+		correctAnswer = answerValidator_replaceFlatsWithSharps(correctAnswer);
+	} 
+
+	return answerValidator_multipleOptions_equals(userAnswer, correctAnswer);
+}
+
+function answerValidator_replaceFlatsWithSharps(str) {
+	for (key in enharmonicConverter) {
+		str = str.replace(key, enharmonicConverter[key]);
+	}
+	return str;
+}

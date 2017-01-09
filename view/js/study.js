@@ -19,10 +19,14 @@ function checkAnswer() {
         $('#submit-answer').text('Next');
         $('#submit-answer').attr('class', 'btn btn-success');
     } else if (state == "waiting_for_correct") {
-        card.first_attempt_correct = false;
-        $('#incorrect-label').css('display', 'inline');
-        $('#correct-label').css('display', 'none');
+    	markIncorrect();
     }
+}
+
+function markIncorrect() {
+		card.first_attempt_correct = false;
+		$('#incorrect-label').css('display', 'inline');
+		$('#correct-label').css('display', 'none');
 }
 
 function loadNextQuestion() {
