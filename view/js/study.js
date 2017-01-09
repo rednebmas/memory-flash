@@ -4,32 +4,41 @@ var card = {};
 
 function checkAnswer() {
     var userAnswer = $('#answer-input').val();
+
     if (state == "correct") {
         loadNextQuestion();
-        state = "loading_next_question";
-        $('#submit-answer').text('Submit');
     } else if (answer_validator(userAnswer, card.answer)) {
         card.time_to_correct = (performance.now() - card.start_time) / 1000.0;
         console.log('Time to correct: ' + card.time_to_correct);
         submitAnswerHistory(card);
+
         $('#incorrect-label').css('display', 'none');
         $('#correct-label').css('display', 'inline');
-        $('#answer-input').val('');
-        state = "correct";
-        $('#submit-answer').text('Next');
-        $('#submit-answer').attr('class', 'btn btn-success');
+
+        if (state == "first_attempt_incorrect") {
+        	state = "correct";
+			$('#submit-answer').text('Next');
+			$('#submit-answer').attr('class', 'btn btn-success');
+        } else {
+        	loadNextQuestion();
+        }
     } else if (state == "waiting_for_correct") {
     	markIncorrect();
     }
 }
 
 function markIncorrect() {
-		card.first_attempt_correct = false;
-		$('#incorrect-label').css('display', 'inline');
-		$('#correct-label').css('display', 'none');
+	state = "first_attempt_incorrect";
+	card.first_attempt_correct = false;
+	$('#incorrect-label').css('display', 'inline');
+	$('#correct-label').css('display', 'none');
 }
 
 function loadNextQuestion() {
+	state = "loading_next_question";
+	$('#submit-answer').text('Submit');
+	$('#answer-input').val('');
+
     $.post('/session/'+session_id+'/next_card', JSON.stringify({ 'deck_id' : deck_id }), function (data) {
         console.log(data);
         $('.question').html(data['question']);
@@ -43,7 +52,6 @@ function loadNextQuestion() {
     .fail(function(xhr, status, error) {
         console.log('Error retrieving next card');
         console.log(xhr);
-        console.log(error);
     });
 }
 
@@ -54,7 +62,6 @@ function submitAnswerHistory(card) {
         'time_to_correct': card.time_to_correct,
         'first_attempt_correct': card.first_attempt_correct,
     });
-    console.log(body);
     $.post('/card/'+card.card_id+'/answer', body, function (data){ 
         // check for success?
     }, 'json')
