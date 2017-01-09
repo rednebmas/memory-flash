@@ -27,8 +27,8 @@ class Note:
 		self.half_steps_from_a4 = Note.half_steps_from_a4(self.name, self.octave)
 		self.freq = Note.frequency_for_note_with_half_steps_from_a4(self.half_steps_from_a4)
 
-	def transposed(self, half_steps):
-		new_half_steps_from_a4 = self.half_steps_from_a4 + half_steps
+	def transposed(self, interval):
+		new_half_steps_from_a4 = self.half_steps_from_a4 + interval.half_steps
 		return Note(freq=Note.frequency_for_note_with_half_steps_from_a4(new_half_steps_from_a4))
 
 	def enharmonics(self):
@@ -159,6 +159,3 @@ class Note:
 			"Ab" : ["Ab", "G#"],
 			"Bb" : ["Bb", "A#"],
 		}
-
-
-

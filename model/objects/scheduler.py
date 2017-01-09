@@ -16,7 +16,6 @@ class Scheduler:
 		if session_stage == "new cards":
 			card = Scheduler.card_not_in_session(session)
 		elif session_stage == "reviewing":
-			if session.is_fully_initialized() == False: session.fully_initialize()
 			card = Scheduler.weighted_random_card(session.cards, not_card)
 			print('picked card: ' + str(card.answer_history.time_to_correct))
 		elif session_stage == "finished":
@@ -32,11 +31,13 @@ class Scheduler:
 		deck = Deck.from_deck_id(session.deck_id)
 		deck.load_cards()
 		card = None
+		# randomly choose a card and make sure it isn't in our session
 		while card is None:
 			rand_index = randint(0, len(deck.cards) - 1) 
 			card = deck.cards[rand_index]
-			for c in session.cards:
-				if c.card_id == card.card_id:
+
+			for session_card in session.cards:
+				if session_card.card_id == card.card_id:
 					card = None
 					break
 		return card
@@ -64,13 +65,13 @@ class Scheduler:
 
 	@staticmethod
 	def session_stage(session):
-		all_time_to_correct = [card.answer_history.time_to_correct for card in session.cards]
-		print(all_time_to_correct)
-		sum_time_to_correct = sum(all_time_to_correct)
-		if sum_time_to_correct > 60 and len(session.cards):
+		cards_time_to_corrects = [card.answer_history.time_to_correct for card in session.cards]
+		print('cards_time_to_corrects: ' + str(cards_time_to_corrects))
+		sum_time_to_correct = sum(cards_time_to_corrects)
+		if sum_time_to_correct > 60.0 and len(session.cards) > 7:
 			print("reviewing")
 			return "reviewing"
-		elif len(all_time_to_correct) > 0 and session.median is not None and max(all_time_to_correct) < session.median:
+		elif len(cards_time_to_corrects) > 0 and session.median is not None and max(cards_time_to_corrects) < session.median:
 			print("finished")
 			return "finished"
 		else:

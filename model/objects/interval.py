@@ -51,6 +51,19 @@ class Interval:
 	def longdir(self):
 		return "ascending" if self.half_steps > 0 else "descending"
 
+	def __str__(self):
+		return self.shortdir() + " " + self.shortname()
+
+	def __eq__(self, other):
+		"""Override the default Equals behavior"""
+		if isinstance(other, self.__class__):
+			return other.half_steps == self.half_steps
+		return False
+
+	def __ne__(self, other):
+		"""Define a non-equality test"""
+		return not self.__eq__(other)
+
 	@staticmethod
 	def P1():
 		return Interval(0)

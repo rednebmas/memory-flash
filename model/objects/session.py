@@ -22,20 +22,25 @@ class Session:
 	def from_db(row):
 		return Session(row[0], row[1], row[2], row[3], row[4])
 
-	def __init__(self, session_id, deck_id, begin_date, end_date, median):
+	def __init__(self, session_id, deck_id, begin_date, end_date, median=None):
 		self.session_id = session_id
 		self.deck_id = deck_id
 		self.begin_date = begin_date
 		self.end_date = end_date
-		self.median = median
+		self._median = median
 		self.cards_loaded = False
 
-	def is_fully_initialized(self):
-		""" False means we have not calculated the median and added cards that we have already seen. """
-		return self.median is None
-
-	def fully_initialize(self):
-		self.put_median_in_db()
+	@property
+	def median(self):
+		if self._median is not None:
+			# calculate median
+			if self.cards_loaded == False: self.load_cards()
+			time_to_correct_list = sorted([card.answer_history.time_to_correct for card in self.cards])
+			self._median = time_to_correct_list[int(len(self.cards) / 2)]
+			# put it in the database
+			db.execute(r"""UPDATE Session SET median = ? WHERE session_id = ?""", 
+					   (self.median, self.session_id))
+		return self._median
 
 
 	def load_cards(self):
@@ -68,14 +73,4 @@ class Session:
 			self.cards.append(card)
 
 		self.cards_loaded = True
-
-	def put_median_in_db(self):
-		if self.cards_loaded == False: self.load_cards()
-		time_to_correct_list = sorted([card.answer_history.time_to_correct for card in self.cards])
-		self.median = time_to_correct_list[int(len(self.cards) / 2)]
-		conn = db.conn()
-		cursor = conn.cursor()
-		cursor.execute(r"""UPDATE Session SET median=? WHERE session_id = ?""", (self.median, self.session_id))
-		db.commit()
-
 

@@ -12,7 +12,7 @@ class IntervalsGenerator:
 				interval = Interval(i)
 				if note.isaltered():
 					flat_note, sharp_note = note.enharmonics()
-					answer = note.transposed(interval.half_steps)
+					answer = note.transposed(interval)
 					if answer.isaltered():
 						flat_answer, sharp_answer = answer.enharmonics()
 						cards.append(IntervalsGenerator.card_with(flat_note, flat_answer.name, interval))
@@ -21,7 +21,7 @@ class IntervalsGenerator:
 						cards.append(IntervalsGenerator.card_with(flat_note, answer.name, interval))
 						cards.append(IntervalsGenerator.card_with(sharp_note, answer.name, interval))
 				else:
-					answer = note.transposed(interval.half_steps)
+					answer = note.transposed(interval)
 					if answer.isaltered():
 						flat_answer, sharp_answer = answer.enharmonics()
 						cards.append(IntervalsGenerator.card_with(note, flat_answer.name+'|'+sharp_answer.name, interval))

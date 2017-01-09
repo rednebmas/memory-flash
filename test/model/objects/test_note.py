@@ -1,5 +1,6 @@
 import unittest
 from model.objects.note import Note
+from model.objects.interval import Interval
 
 class TestNotes(unittest.TestCase):
 
@@ -60,7 +61,7 @@ class TestNotes(unittest.TestCase):
 
 	def test_note_transposed_c4(self):
 		note_c4 = Note(name="C4")
-		note = note_c4.transposed(2)
+		note = note_c4.transposed(Interval(2))
 		self.assertTrue(note.name_octave == "D4")
 
 	################# 
