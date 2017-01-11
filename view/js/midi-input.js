@@ -35,6 +35,8 @@ function addNote(noteNumber) {
 	else if (noteNotInAnswer(noteNumber)) {
 		console.log('not in answer, mark incorrect')
 		markIncorrect();
+	} else {
+		console.log('note ' + MIDIUtils.noteNumberToName(noteNumber) + ' in answer, not complete');
 	}
 }
 
@@ -44,9 +46,12 @@ function noteNotInAnswer(noteNumber) {
 	var answers = card.answer.split('|');
 
 	var noteInAnswer = false;
-	for (answer in answers) {
+	for (var i = 0; i < answers.length; i++) {
+		var answer = answers[i];
 		var parts = answer.split(' ');
-		for (part in parts) {
+		for (var j = 0; j < parts.length; j++) {
+			var part = parts[j];
+			part = answerValidator_replaceFlatsWithSharps(part);
 			noteInAnswer = noteInAnswer || (part == noteName);
 		}
 	}

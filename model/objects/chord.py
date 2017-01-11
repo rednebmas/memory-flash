@@ -1,6 +1,7 @@
 import re
 from model.objects.note import Note
 from model.objects.interval import Interval
+from model.objects.scale import Scale
 
 class Chord:
 	"""
@@ -11,7 +12,8 @@ class Chord:
 		root_name, quality = re.search(r'([A-G][b#]?)(.*)', name).groups()
 		self.root = Note(root_name)
 		self.intervals = Chord.intervals_for_quality(quality) 
-		self.notes = [self.root] + [self.root.transposed(interval) for interval in self.intervals]
+		scale = Scale(self.root.name + ' minor') if 'm' in self.name else Scale(self.root.name)
+		self.notes = [self.root] + [self.root.transposed(interval, scale.accidental) for interval in self.intervals]
 
 	def inversion(self, num):
 		""" num is an integer """
@@ -21,6 +23,10 @@ class Chord:
 		inverted.notes = rotate(inverted.notes, num)
 		inverted.name = inverted.name + '/' + inverted.notes[0].name
 		return inverted
+
+	@property
+	def pretty_name(self):
+		return self.name.replace('#', '♯').replace('b','♭')
 
 	@staticmethod
 	def intervals_for_quality(quality):
@@ -41,3 +47,4 @@ class Chord:
 	@staticmethod
 	def minor_intervals():
 		return [Interval.m3(), Interval.P5()]
+

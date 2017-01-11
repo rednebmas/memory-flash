@@ -61,6 +61,9 @@ class TestChord(unittest.TestCase):
 		self.assertTrue(c.notes[1].name == 'Bb')
 		self.assertTrue(c.notes[2].name == 'D')
 
+	def test_pretty_name_major(self):
+		c = Chord('Bb').inversion(2)
+		self.assertTrue(c.pretty_name == 'B♭/F')
 
 
 def main():

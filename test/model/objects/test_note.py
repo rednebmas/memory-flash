@@ -1,6 +1,7 @@
 import unittest
 from model.objects.note import Note
 from model.objects.interval import Interval
+from model.objects.accidental import Accidental
 
 class TestNotes(unittest.TestCase):
 
@@ -38,6 +39,10 @@ class TestNotes(unittest.TestCase):
 		self.assertTrue(note.octave == 11)
 		self.assertTrue(note.name_octave == 'Gb11')
 
+	def test_octave_assigned_automatically(self):
+		note = Note('C')
+		self.assertTrue(note.name_octave == 'C4', note.name_octave)
+
 	#################### 
 	## init_with_freq ## 
 	#################### 
@@ -55,6 +60,10 @@ class TestNotes(unittest.TestCase):
 		note = Note(freq=38.89)
 		self.assertTrue(note.name_octave == 'D#1', msg="name_octave = {}".format(note.name_octave))
 
+	def test_init_with_freq_eflat1(self):
+		note = Note(freq=38.89, accidental=Accidental.flat)
+		self.assertTrue(note.name_octave == 'Eb1', msg="name_octave = {}".format(note.name_octave))
+
 	################ 
 	## transposed ## 
 	################ 
@@ -63,6 +72,16 @@ class TestNotes(unittest.TestCase):
 		note_c4 = Note(name="C4")
 		note = note_c4.transposed(Interval(2))
 		self.assertTrue(note.name_octave == "D4")
+
+	def test_transposed_with_accidental_type(self):
+		note_c4 = Note(name="C#")
+		note = note_c4.transposed(Interval.M2(), accidental=Accidental.flat)
+		self.assertTrue(note.name == "Eb", note.name)
+
+	def test_transposed_from_flat_to_flat(self):
+		from_note = Note(name="Eb")
+		to_note = from_note.transposed(Interval.P5())
+		self.assertTrue(to_note.name == 'Bb')
 
 	################# 
 	## enharmonics ## 
@@ -117,6 +136,15 @@ class TestNotes(unittest.TestCase):
 		octave_b_sharp = Note.half_steps_away_from_a4_to_note_in_4th_octave('B#') 
 		octave_c = Note.half_steps_away_from_a4_to_note_in_4th_octave('C') 
 		self.assertTrue(octave_b_sharp == octave_c)
+
+	################
+	## Accidental ##
+	################
+
+	def test_accidental(self):
+		self.assertTrue(Note('C').accidental == Accidental.natural)
+		self.assertTrue(Note('Bb').accidental == Accidental.flat)
+		self.assertTrue(Note('G#').accidental == Accidental.sharp)
 
 def main():
 	unittest.main()

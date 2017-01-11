@@ -3,6 +3,7 @@ import os.path
 from model.card_generators.times_table_generator import TimesTableGenerator
 from model.card_generators.notes_generator import NotesGenerator
 from model.card_generators.intervals_generator import IntervalsGenerator
+from model.card_generators.chords_generator import ChordsGenerator
 
 class MigrationManager:
 	@staticmethod
@@ -78,7 +79,17 @@ class MigrationManager:
 		deck_id = db.select1(table="Deck", where="name='Intervals'", columns="deck_id")[0]
 		for c in cards: c['deck_id'] = deck_id
 		db.insert_key_value_pairs('Card', cards)
-		# db.select(table='Card', debug=True)
+
+	@staticmethod
+	def insert_major_chords_cards(db):
+		cards = ChordsGenerator.generate_major_chord_cards()
+		db.execute_statments([
+			""" INSERT INTO Deck (name, descr, answer_validator) 
+				VALUES ('Major Chords', 'Major chords in all inversions', 'answerValidator_equals_midiEnharmonicsValid')"""
+		])
+		deck_id = db.select1(table="Deck", where="name='Major Chords'", columns="deck_id")['deck_id']
+		for c in cards: c['deck_id'] = deck_id
+		db.insert_key_value_pairs('Card', cards)
 
 	@staticmethod
 	def insert_all_pregenerated_decks_and_create_db(db):
@@ -86,4 +97,5 @@ class MigrationManager:
 		MigrationManager.insert_times_tables(db)
 		MigrationManager.insert_notes_cards(db)
 		MigrationManager.insert_intervals_cards(db)
+		MigrationManager.insert_major_chords_cards(db)
 

@@ -5,6 +5,12 @@ var enharmonicConverter = {
 	"Gb" : "F#",
 	"Ab" : "G#",
 	"Bb" : "A#",
+
+	"C#" : "Db",
+	"D#" : "Eb",
+	"F#" : "Gb",
+	"G#" : "Ab",
+	"A#" : "Bb",
 }
 
 var MIDIUtils = {	

@@ -28,6 +28,7 @@ function checkAnswer() {
 }
 
 function markIncorrect() {
+    console.log('marked incorrect');
 	state = "first_attempt_incorrect";
 	card.first_attempt_correct = false;
 	$('#incorrect-label').css('display', 'inline');

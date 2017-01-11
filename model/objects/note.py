@@ -1,35 +1,40 @@
 import re
 import math
 from math import floor
+from model.objects.accidental import Accidental
 
 class Note:
 	A4_FREQUENCY = 440.0
 	TWO_TO_THE_ONE_OVER_TWELVE = 1.059463094359295264561825294
 
-	def __init__(self, name=None, freq=None):
+	def __init__(self, name=None, freq=None, accidental=None):
+		self._accidental = None
 		if name:
 			self.init_with_name(name)
 		elif freq:
-			self.init_with_freq(freq)
+			self.init_with_freq(freq, accidental)
 
-	def init_with_freq(self, freq):
+	def init_with_freq(self, freq, accidental=None):
 		self.freq = freq
 		self.name, self.octave = Note.name_octave_for_freq(freq)
+		if accidental == Accidental.flat and self.isaltered(): self.name = Note.sharp_to_flat(self.name)
 		self.pretty_name = self.name.replace('#', '♯').replace('b','♭')
 		self.name_octave = self.name + str(self.octave)
 		self.half_steps_from_a4 = Note.half_steps_from_a4(self.name, self.octave)
 
 	def init_with_name(self, name):
 		name = name[0].upper() + name[1:] if name[0].islower() else name
-		self.name_octave = name
 		self.name, self.octave = Note.parse_name_and_octave(name)
+		self.name_octave = self.name + str(self.octave)
 		self.pretty_name = self.name.replace('#', '♯').replace('b','♭')
 		self.half_steps_from_a4 = Note.half_steps_from_a4(self.name, self.octave)
 		self.freq = Note.frequency_for_note_with_half_steps_from_a4(self.half_steps_from_a4)
 
-	def transposed(self, interval):
+	def transposed(self, interval, accidental=None):
 		new_half_steps_from_a4 = self.half_steps_from_a4 + interval.half_steps
-		return Note(freq=Note.frequency_for_note_with_half_steps_from_a4(new_half_steps_from_a4))
+		if accidental is None: 
+			accidental = self.accidental
+		return Note(freq=Note.frequency_for_note_with_half_steps_from_a4(new_half_steps_from_a4), accidental=accidental)
 
 	def enharmonics(self):
 		converter = Note.enharmonic_converter()
@@ -42,6 +47,30 @@ class Note:
 
 	def isaltered(self):
 		return '#' in self.name or 'b' in self.name
+
+	@property
+	def accidental(self):
+		if self._accidental is None:
+			if '#' in self.name:
+				self._accidental = Accidental.sharp
+			elif 'b' in self.name:
+				self._accidental = Accidental.flat
+			else:
+				self._accidental = Accidental.natural
+		return self._accidental
+
+	def __str__(self):
+		return self.name_octave
+
+	def __eq__(self, other):
+		"""Override the default Equals behavior"""
+		if isinstance(other, self.__class__):
+			return other.name_octave == self.name_octave
+		return False
+
+	def __ne__(self, other):
+		"""Define a non-equality test"""
+		return not self.__eq__(other)
 
 	@staticmethod
 	def parse_name_and_octave(full_name):
@@ -113,6 +142,10 @@ class Note:
 		return ["C", "C#", "D" , "D#" , "E" , "F" , "F#", "G" , "G#" , "A" , "A#" , "B"]
 
 	@staticmethod
+	def names_with_enharmonics():
+		return ["C", "C#", "Db", "D" , "D#" , "Eb", "E" , "F" , "F#", "Gb", "G" , "G#" , "Ab", "A" , "A#" , "Bb", "B"]		
+
+	@staticmethod
 	def flat_to_sharp(note):
 		converter = {
 			"Bb" : "A#",
@@ -126,23 +159,15 @@ class Note:
 		return converter[note] if note in converter else note
 
 	@staticmethod
-	def interval_to_name_shorthand(interval):
-		interval_to_shorthand = {
-			0  : "P1",
-			1  : "m2",
-			2  : "M2",
-			3  : "m3",
-			4  : "M3",
-			5  : "P4",
-			6  : "TT",
-			7  : "P5",
-			8  : "m6",
-			9  : "M6",
-			10 : "m7",
-			11 : "M7",
-			12 : "P8"
+	def sharp_to_flat(note):
+		converter = {
+			"A#" : "Bb",
+			"D#" : "Eb",
+			"G#" : "Ab",
+			"C#" : "Db",
+			"F#" : "Gb",
 		}
-		return interval_to_shorthand[abs(interval)]
+		return converter[note] if note in converter else note
 
 	@staticmethod
 	def enharmonic_converter():
