@@ -34,3 +34,14 @@ class Card:
 	def set_answer_history(self, answer_history):
 		self.answer_history = answer_history
 
+	def __eq__(self, other):
+		"""Override the default Equals behavior"""
+		if isinstance(other, self.__class__):
+			return other.card_id == self.card_id
+		return False
+
+	def __ne__(self, other):
+		"""Define a non-equality test"""
+		return not self.__eq__(other)
+
+

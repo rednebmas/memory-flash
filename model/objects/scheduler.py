@@ -15,7 +15,8 @@ class Scheduler:
 		card = None
 		session_stage = Scheduler.session_stage(session)
 		if session_stage == "new cards":
-			card = Deck.unseen_cards(session)[0]
+			cards = Deck.unseen_cards(session)
+			card = cards[randint(0, min(len(cards), 11))]
 		elif session_stage == "reviewing":
 			card = Scheduler.weighted_random_card(session.cards, not_card)
 			print('picked card: ' + str(card.answer_history.time_to_correct))

@@ -26,7 +26,6 @@ class ChordsGenerator:
 		cards = list(map(ChordsGenerator.card_for_chord, roots + inversions))
 		return cards
 
-
 	@staticmethod
 	def generate_minor_chord_cards():
 		roots = []

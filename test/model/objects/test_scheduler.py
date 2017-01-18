@@ -60,19 +60,17 @@ class TestScheduler(unittest.TestCase):
 		## 
 		###################################################################################################
 
-		# session.load_cards()
-		# while Scheduler.session_stage(session) == 'reviewing':
-		# 	pass
+		previous_card = None
+		loop_count = 0
+		while Scheduler.session_stage(session) == 'reviewing':
+			self.assertTrue(loop_count < 100)
+			loop_count += 1
 
-		###################################################################################################
-		## 
-		###################################################################################################
-
-
-		for card in session.cards:
 			session.load_cards()
-			self.assertEqual(Scheduler.session_stage(session), 'reviewing')
-			AnswerHistory(session.session_id, card.card_id, median / 2.0, True, DB.datetime_now()).insert()
+			card, session_stage = Scheduler.next(session, previous_card)
+			if session_stage is not 'finished': 
+				self.assertNotEqual(card, previous_card)
+				AnswerHistory(session.session_id, card.card_id, median / 2.0, True, DB.datetime_now()).insert()
 
 		session.load_cards()
 		self.assertEqual(Scheduler.session_stage(session), 'finished')
