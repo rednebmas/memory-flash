@@ -28,6 +28,10 @@ class TestDB(unittest.TestCase):
 		result = DB.put_substitutions_in_statement("1 + ? = 2", (1,))
 		self.assertTrue(result == "1 + 1 = 2", result)
 
+	def test_put_substitutions_in_statement(self):
+		result = DB.put_substitutions_in_statement("UPDATE Session SET stage = ? WHERE session_id = ?", ("1", "2"))
+		self.assertEqual("UPDATE Session SET stage = 1 WHERE session_id = 2", result)
+
 def main():
 	unittest.main()
 

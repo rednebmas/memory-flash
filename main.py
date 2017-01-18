@@ -36,11 +36,12 @@ async def decks_study(request, deck_id):
 
 @app.route("/session/<session_id:int>/next_card")
 async def session_next_card(request, session_id):
-	card = StudyViewModel.next_card(session_id, request.json['deck_id'])
+	if 'previous_card_id' not in request.json: request.json['previous_card_id'] = None
+	card = StudyViewModel.next_card(session_id, request.json['deck_id'], not_card=request.json['previous_card_id'])
 	return json(card.as_dict())
 
 @app.route("/card/<card_id:int>/answer")
-async def session_next_card(request, card_id):
+async def answer_card(request, card_id):
 	card = Card.from_db_id(card_id)
 	if card is not None:
 		AnswerHistory.from_json(request.json).insert()

@@ -36,7 +36,7 @@ class DB:
 		if order_by: order_by = "ORDER BY " + order_by
 		if limit: limit = "LIMIT " + limit
 
-		statement = "SELECT {} FROM {} {}".format(columns, table, where)
+		statement = "SELECT {} FROM {} {} {} {}".format(columns, table, where, order_by, limit)
 		if debug: print(DB.put_substitutions_in_statement(statement, substitutions))
 
 		self.cursor.execute(statement, substitutions)
@@ -75,12 +75,19 @@ class DB:
 			statements.append("""INSERT INTO {} ({}) VALUES ({})""".format(table, column_string, value_string))
 		self.execute_statments(statements)
 
+	def unittest_reset(self):
+		self.conn.close()
+		self.conn = sqlite3.connect(':memory:')
+		self.conn.row_factory = sqlite3.Row
+		self.cursor = self.conn.cursor()
+		MigrationManager.insert_all_pregenerated_decks_and_create_db(self)
+
 	@staticmethod
 	def put_substitutions_in_statement(statement, substitutions):
 		subbed = statement
 		for sub in substitutions:
 			if isinstance(sub, str) is False: sub = str(sub) 
-			subbed = subbed.replace('?', sub)
+			subbed = subbed.replace('?', sub, 1)
 		return subbed
 
 	@staticmethod

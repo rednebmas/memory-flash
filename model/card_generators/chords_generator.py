@@ -1,4 +1,5 @@
 import os
+import random
 from jinja2 import Environment, FileSystemLoader
 from model.objects.note import Note
 from model.objects.chord import Chord
@@ -8,14 +9,47 @@ templates = Environment(loader=FileSystemLoader(os.getcwd() + '/view/html'))
 class ChordsGenerator:
 	@staticmethod
 	def generate_major_chord_cards():
-		cards = []
+		roots = []
+		inversions = []
 		notes = [Note(name=name) for name in Note.names_with_enharmonics()]
 		for note in notes:
 			chord_root = Chord(note.name)
 			chord_first_inversion = Chord(note.name).inversion(1)
-			chord_second_version = Chord(note.name).inversion(2)
+			chord_second_inversion = Chord(note.name).inversion(2)
 
-			cards += map(ChordsGenerator.card_for_chord, [chord_root, chord_first_inversion, chord_second_version])
+			roots.append(chord_root)
+			inversions.append(chord_first_inversion)
+			inversions.append(chord_second_inversion)
+
+		random.shuffle(roots)
+		random.shuffle(inversions)
+		cards = list(map(ChordsGenerator.card_for_chord, roots + inversions))
+		return cards
+
+
+	@staticmethod
+	def generate_minor_chord_cards():
+		roots = []
+		inversions = []
+		notes = [Note(name=name) for name in Note.names_with_enharmonics()]
+		for note in notes:
+			chord_root = Chord(note.name + 'm')
+			chord_first_inversion = Chord(note.name + 'm').inversion(1)
+			chord_second_inversion = Chord(note.name + 'm').inversion(2)
+
+			roots.append(chord_root)
+			inversions.append(chord_first_inversion)
+			inversions.append(chord_second_inversion)
+
+		random.shuffle(roots)
+		random.shuffle(inversions)
+		cards = list(map(ChordsGenerator.card_for_chord, roots + inversions))
+		return cards
+
+	@staticmethod
+	def generate_major_and_minor_chord_cards():
+		cards = ChordsGenerator.generate_major_chord_cards() + ChordsGenerator.generate_minor_chord_cards()
+		random.shuffle(cards)
 		return cards
 
 	@staticmethod

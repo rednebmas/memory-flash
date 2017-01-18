@@ -8,46 +8,8 @@ from model.card_generators.chords_generator import ChordsGenerator
 class MigrationManager:
 	@staticmethod
 	def create_db(db):
-		sql = """
-			CREATE TABLE Deck (
-			    deck_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
-			    name VARCHAR(100) NOT NULL, 
-			    descr VARCHAR(500),
-			    answer_validator VARCHAR(256)
-			);
-
-			CREATE TABLE Card (
-			    card_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
-			    deck_id INTEGER NOT NULL, 
-			    question VARCHAR(2000) NOT NULL,  
-			    answer VARCHAR(2000) NOT NULL
-			);
-
-			CREATE TABLE Session (
-			    session_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
-			    deck_id INTEGER NOT NULL, 
-			    begin_date DATETIME NOT NULL, 
-			    end_date DATETIME,
-			    median DOUBLE
-			);
-
-			CREATE TABLE AnswerHistory (
-			    answer_history_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
-			    session_id INTEGER NOT NULL, 
-			    card_id INTEGER NOT NULL, 
-			    time_to_correct DOUBLE NOT NULL, 
-			    first_attempt_correct BOOLEAN NOT NULL, 
-			    answered_at DATETIME NOT NULL
-			);
-
-			CREATE TABLE SessionCard (
-			    session_card_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
-			    session_id INTEGER NOT NULL,
-			    card_id INTEGER NOT NULL
-			);
-		"""
-
-		db.execute_statments(sql.split(';'))
+		with open('model/schema.sql') as f:
+			db.execute_statments(f.read().split(';'))
 
 	@staticmethod
 	def insert_times_tables(db):
@@ -92,10 +54,34 @@ class MigrationManager:
 		db.insert_key_value_pairs('Card', cards)
 
 	@staticmethod
+	def insert_minor_chords_cards(db):
+		cards = ChordsGenerator.generate_minor_chord_cards()
+		db.execute_statments([
+			""" INSERT INTO Deck (name, descr, answer_validator) 
+				VALUES ('Minor Chords', 'Minor chords in all inversions', 'answerValidator_equals_midiEnharmonicsValid')"""
+		])
+		deck_id = db.select1(table="Deck", where="name='Minor Chords'", columns="deck_id")['deck_id']
+		for c in cards: c['deck_id'] = deck_id
+		db.insert_key_value_pairs('Card', cards)
+
+	@staticmethod
+	def insert_major_and_minor_chords_cards(db):
+		cards = ChordsGenerator.generate_major_and_minor_chord_cards()
+		db.execute_statments([
+			""" INSERT INTO Deck (name, descr, answer_validator) 
+				VALUES ('Major and Minor Chords', 'Major and Minor chords in all inversions', 'answerValidator_equals_midiEnharmonicsValid')"""
+		])
+		deck_id = db.select1(table="Deck", where="name='Major and Minor Chords'", columns="deck_id")['deck_id']
+		for c in cards: c['deck_id'] = deck_id
+		db.insert_key_value_pairs('Card', cards)
+
+	@staticmethod
 	def insert_all_pregenerated_decks_and_create_db(db):
 		MigrationManager.create_db(db)
 		MigrationManager.insert_times_tables(db)
 		MigrationManager.insert_notes_cards(db)
 		MigrationManager.insert_intervals_cards(db)
 		MigrationManager.insert_major_chords_cards(db)
+		MigrationManager.insert_minor_chords_cards(db)
+		MigrationManager.insert_major_and_minor_chords_cards(db)
 

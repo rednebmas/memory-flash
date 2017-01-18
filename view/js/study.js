@@ -40,8 +40,8 @@ function loadNextQuestion() {
 	$('#submit-answer').text('Submit');
 	$('#answer-input').val('');
 
-    $.post('/session/'+session_id+'/next_card', JSON.stringify({ 'deck_id' : deck_id }), function (data) {
-        console.log(data);
+    $.post('/session/'+session_id+'/next_card', JSON.stringify({ 'deck_id' : deck_id, 'previous_card_id' : card.card_id }), function (data) {
+        console.log(JSON.stringify(data));
         $('.question').html(data['question']);
         card = data;
         card.start_time = performance.now();
