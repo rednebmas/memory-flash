@@ -14,7 +14,7 @@ app.static('/style', './view/css')
 app.static('/img', './view/img')
 app.static('/js', './view/js')
 app.static('/sounds', './view/sounds')
-templates = Environment(loader=FileSystemLoader(os.getcwd() + '/view'))
+templates = Environment(loader=FileSystemLoader(os.getcwd() + '/view/html'))
 
 ##########
 # Routes #
