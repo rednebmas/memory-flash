@@ -25,22 +25,33 @@
 
 *test*
 
-	./node_modules/mocha/bin/mocha
-	or
+
 	npm test
 
 
 ## links
 
 ### Frameworks
-[Assertion framework](https://nodejs.org/api/assert.htm)
 
-[Simplemock](https://github.com/jupiter/simple-mock)
+[Sanic](https://github.com/channelcat/sanic): python web server
+
+[Mocha.js](https://mochajs.org/): javascript unit testing library
+
+[Vexflow](https://github.com/0xfe/vexflow): music notation javascript library
+
 
 ### Articles that solved important problems
 [DOM data binding](http://stackoverflow.com/a/16485030/337934)
 
 [Making mocha run in subdirectories](http://bpinto.github.io/posts/running-mocha-tests-on-subdirectories/)
 
-### Research
+### "Research"
 [Intervals Lesson | Master This One Skill, And Music Will Become Easy For You](http://www.themusicalear.com/intervals-lesson-master-this-one-skill-and-music-will-become-easy-for-you/)
+
+### Similar apps
+
+[Prelude](https://www.getprelude.net/#/?_k=rjmqqj)
+
+[Sheet Music Tutor](http://www.sheetmusictutor.com/)
+
+[Sightreading.training](http://sightreading.training/)

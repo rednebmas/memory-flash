@@ -13,6 +13,7 @@ app = Sanic(__name__)
 app.static('/style', './view/css')
 app.static('/img', './view/img')
 app.static('/js', './view/js')
+app.static('/sounds', './view/sounds')
 templates = Environment(loader=FileSystemLoader(os.getcwd() + '/view'))
 
 ##########
@@ -37,7 +38,7 @@ async def decks_study(request, deck_id):
 @app.route("/session/<session_id:int>/next_card")
 async def session_next_card(request, session_id):
 	if 'previous_card_id' not in request.json: request.json['previous_card_id'] = None
-	card = StudyViewModel.next_card(session_id, request.json['deck_id'], not_card=request.json['previous_card_id'])
+	card = StudyViewModel.next_card(session_id, request.json['deck_id'], previous_card_id=request.json['previous_card_id'])
 	return json(card.as_dict())
 
 @app.route("/card/<card_id:int>/answer")

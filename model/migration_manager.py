@@ -84,4 +84,3 @@ class MigrationManager:
 		MigrationManager.insert_major_chords_cards(db)
 		MigrationManager.insert_minor_chords_cards(db)
 		MigrationManager.insert_major_and_minor_chords_cards(db)
-

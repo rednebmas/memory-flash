@@ -28,7 +28,7 @@ class Session:
 
 	@staticmethod
 	def from_db(row):
-		return Session(row['session_id'], row['deck_id'], row['begin_date'], row['stage'], row['median'] if 'median' in row else None)
+		return Session(row['session_id'], row['deck_id'], row['begin_date'], row['stage'], row['median'] if 'median' in row.keys() else None)
 
 	def __init__(self, session_id, deck_id, begin_date, stage, median=None):
 		self.session_id = session_id
@@ -39,7 +39,7 @@ class Session:
 		self.cards_loaded = False
 
 	def add_seen_cards(self):
-		if self.cards_loaded == False: self.load_cards()
+		self.load_cards()
 
 		unseen_cards = Deck.unseen_cards(self)
 		seen_cards = AnswerHistory.first_review_from_last_day_reviewed_not_in_session(self)
@@ -69,17 +69,14 @@ class Session:
 				INSERT INTO SessionCard (session_id, card_id)
 				VALUES (?, ?)
 				""",
-				substitutions=(self.session_id, 
-					card_id)
+				substitutions=(self.session_id, card_id)
 			)
 
 	def update_median(self):
 		if self.cards_loaded == False: self.load_cards()
-		print('session.median: ' + str(int(len(self.cards) / 2)) + ', len(self.cards): ' + str(len(self.cards)))
 		time_to_correct_list = sorted([card.answer_history.time_to_correct for card in self.cards])
 		self.median = time_to_correct_list[int(len(self.cards) / 2)]
 		db.execute("UPDATE Session SET median = ? WHERE session_id = ?",  (self.median, self.session_id))
-
 
 	def load_cards(self):
 		statement = r"""

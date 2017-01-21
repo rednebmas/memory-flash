@@ -22,6 +22,9 @@ function checkAnswer() {
         } else {
         	loadNextQuestion();
         }
+
+        var audio = new Audio('/sounds/correct.mp3');
+        audio.play();
     } else if (state == "waiting_for_correct") {
     	markIncorrect();
     }

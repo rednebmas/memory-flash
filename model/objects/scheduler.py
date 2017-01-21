@@ -9,7 +9,7 @@ from model.math_sam import choose_index_for_weights
 
 class Scheduler:
 	@staticmethod
-	def next(session, not_card=None):
+	def next(session, previous_card_id=None):
 		if session.cards_loaded == False: session.load_cards()
 
 		card = None
@@ -18,7 +18,7 @@ class Scheduler:
 			cards = Deck.unseen_cards(session)
 			card = cards[randint(0, min(len(cards), 11))]
 		elif session_stage == "reviewing":
-			card = Scheduler.weighted_random_card(session.cards, not_card)
+			card = Scheduler.weighted_random_card(session.cards, previous_card_id)
 			print('picked card: ' + str(card.answer_history.time_to_correct))
 		elif session_stage == "finished":
 			print('****************** started a new session *******************')
@@ -26,7 +26,7 @@ class Scheduler:
 		return card, session_stage
 
 	@staticmethod
-	def weighted_random_card(cards, not_card):
+	def weighted_random_card(cards, previous_card_id):
 		""" Cards is an array of cards where each card has an answer_history """
 		weights = [card.answer_history.time_to_correct for card in cards]
 		print('weights for random card')
@@ -35,8 +35,8 @@ class Scheduler:
 		index = choose_index_for_weights(weights, learning_factor)
 		card = cards[index]
 
-		if not_card is not None and card.card_id == not_card.card_id:
-			return weighted_random_card(cards, not_card)
+		if previous_card_id is not None and card.card_id == previous_card_id:
+			return Scheduler.weighted_random_card(cards, previous_card_id)
 		else:
 			return  card
 

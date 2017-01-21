@@ -12,8 +12,8 @@ class StudyViewModel:
 		return deck, session
 
 	@staticmethod
-	def next_card(session_id, deck_id, not_card=None):
+	def next_card(session_id, deck_id, previous_card_id=None):
 		session = Session.from_deck_id(deck_id)
-		card, state = Scheduler.next(session, not_card)
+		card, state = Scheduler.next(session, previous_card_id)
 		return card
 

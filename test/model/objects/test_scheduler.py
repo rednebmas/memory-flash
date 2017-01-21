@@ -13,11 +13,8 @@ class TestScheduler(unittest.TestCase):
 	def setUp(self):
 		db.unittest_reset()
 
-	def test_behavior(self):
-		self.behavior_test_part_1_new_cards()
-		self.behavior_test_part_2_and_seen_cards()
-
-	def behavior_test_part_2_and_seen_cards(self):
+	def test_behavior_test_part_2_and_seen_cards(self):
+		self.test_behavior_test_part_1_new_cards()
 		session = Session.new_for_deck_id(3)
 
 		deck = Deck.from_deck_id(session.deck_id)
@@ -75,7 +72,7 @@ class TestScheduler(unittest.TestCase):
 		session.load_cards()
 		self.assertEqual(Scheduler.session_stage(session), 'finished')
 
-	def behavior_test_part_1_new_cards(self):
+	def test_behavior_test_part_1_new_cards(self):
 		deck, session = StudyViewModel.deck_and_session(3)
 		session.load_cards()
 		self.assertEqual(len(session.cards), 0)
@@ -114,7 +111,6 @@ class TestScheduler(unittest.TestCase):
 
 		session.load_cards()
 		self.assertEqual(Scheduler.session_stage(session), 'finished')
-
 
 def main():
 	unittest.main()

@@ -1,0 +1,57 @@
+<script src="https://unpkg.com/vexflow/releases/vexflow-debug.js"></script>
+
+<div id="staff"></div>
+
+<script type="text/javascript">
+VF = Vex.Flow;
+
+// Create an SVG renderer and attach it to the DIV element named "boo".
+var div = document.getElementById("staff")
+var renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
+
+// Configure the rendering context.
+renderer.resize(500, 300);
+var context = renderer.getContext();
+context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed");
+
+// Create a trebleStaff of width 400 at position 10, 40 on the canvas.
+var trebleStaff = new VF.Stave(10, 40, 150);
+
+// Add a clef 
+// trebleStaff.addClef("treble").addKeySignature("C#");
+trebleStaff.addClef("treble"); 
+
+// Connect it to the rendering context and draw!
+trebleStaff.setContext(context).draw();
+
+// bass
+var bassStaff = new VF.Stave(10, 135, 150);
+bassStaff.addClef("bass"); 
+bassStaff.setContext(context).draw();
+
+// connector
+var lineLeft = new Vex.Flow.StaveConnector(trebleStaff, bassStaff).setType(1);
+var lineRight = new Vex.Flow.StaveConnector(trebleStaff, bassStaff).setType(0);
+lineLeft.setContext(context).draw();
+lineRight.setContext(context).draw();
+
+var notes = [
+	// A quarter-note C.
+	new VF.StaveNote({clef: "treble", keys: ["g/4"], duration: "w"})
+	{% if note.isaltered() %}
+		.addAccidental(0, new VF.Accidental("{{ note.accidental.symbol }}"))
+	{% endif %}
+	.setExtraLeftPx(35)
+];
+
+
+// Create a voice in 4/4 and add above notes
+var voice = new VF.Voice({num_beats: 4,  beat_value: 4});
+voice.addTickables(notes);
+
+// Format and justify the notes to 400 pixels.
+var formatter = new VF.Formatter().joinVoices([voice]).format([voice], 400);
+
+// Render voice
+voice.draw(context, trebleStaff);
+</script>
