@@ -14,8 +14,8 @@ class ChordsGenerator:
 		notes = [Note(name=name) for name in Note.names_with_enharmonics()]
 		for note in notes:
 			chord_root = Chord(note.name)
-			chord_first_inversion = Chord(note.name).inversion(1)
-			chord_second_inversion = Chord(note.name).inversion(2)
+			chord_first_inversion = Chord(note.name).invert(1)
+			chord_second_inversion = Chord(note.name).invert(2)
 
 			roots.append(chord_root)
 			inversions.append(chord_first_inversion)
@@ -33,8 +33,8 @@ class ChordsGenerator:
 		notes = [Note(name=name) for name in Note.names_with_enharmonics()]
 		for note in notes:
 			chord_root = Chord(note.name + 'm')
-			chord_first_inversion = Chord(note.name + 'm').inversion(1)
-			chord_second_inversion = Chord(note.name + 'm').inversion(2)
+			chord_first_inversion = Chord(note.name + 'm').invert(1)
+			chord_second_inversion = Chord(note.name + 'm').invert(2)
 
 			roots.append(chord_root)
 			inversions.append(chord_first_inversion)
@@ -51,6 +51,27 @@ class ChordsGenerator:
 		random.shuffle(cards)
 		return cards
 
+
+	@staticmethod
+	def generate_dim_chords_cards():
+		roots = []
+		inversions = []
+		notes = [Note(name=name) for name in Note.names_with_enharmonics()]
+		for note in notes:
+			chord_root = Chord(note.name + 'dim')
+			chord_first_inversion = chord_root.invert(1)
+			chord_second_inversion = chord_root.invert(2)
+
+			roots.append(chord_root)
+			inversions.append(chord_first_inversion)
+			inversions.append(chord_second_inversion)
+
+		random.shuffle(roots)
+		random.shuffle(inversions)
+		cards = list(map(ChordsGenerator.card_for_chord, roots + inversions))
+		return cards
+
+ 
 	@staticmethod
 	def card_for_chord(chord):
 		return {

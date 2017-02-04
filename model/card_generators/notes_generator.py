@@ -21,7 +21,7 @@ class NotesGenerator:
 	def card_for_note(note, staff):
 		return {
 			"question" : templates.get_template('cards/note-staff.html').render(note=note, staff=staff),
-			"answer" : note.name_octave
+			"answer" : note.name
 		}
 
 	@staticmethod

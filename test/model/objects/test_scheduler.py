@@ -42,6 +42,7 @@ class TestScheduler(unittest.TestCase):
 			session.load_cards()
 
 		self.assertEqual(Scheduler.session_stage(session), 'reviewing')
+		self.assertEqual(session.stage, 'speed up')
 		session.load_cards()
 		self.assertEqual(len(session.cards), int(8 * (1/3) + 8))
 
@@ -59,6 +60,7 @@ class TestScheduler(unittest.TestCase):
 
 		previous_card = None
 		loop_count = 0
+		self.assertEqual(session.stage, 'speed up')
 		while Scheduler.session_stage(session) == 'reviewing':
 			self.assertTrue(loop_count < 100)
 			loop_count += 1
@@ -68,6 +70,8 @@ class TestScheduler(unittest.TestCase):
 			if session_stage is not 'finished': 
 				self.assertNotEqual(card, previous_card)
 				AnswerHistory(session.session_id, card.card_id, median / 2.0, True, DB.datetime_now()).insert()
+			else:
+				break
 
 		session.load_cards()
 		self.assertEqual(Scheduler.session_stage(session), 'finished')
@@ -94,6 +98,7 @@ class TestScheduler(unittest.TestCase):
 			session.load_cards()
 
 		self.assertEqual(Scheduler.session_stage(session), 'reviewing')
+		self.assertEqual(session.stage, 'speed up')
 		self.assertTrue(len(session.cards) == 8) 
 		self.assertTrue(session.median is not None)
 

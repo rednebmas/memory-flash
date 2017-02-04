@@ -4,6 +4,7 @@ from model.card_generators.times_table_generator import TimesTableGenerator
 from model.card_generators.notes_generator import NotesGenerator
 from model.card_generators.intervals_generator import IntervalsGenerator
 from model.card_generators.chords_generator import ChordsGenerator
+from model.card_generators.progression_generator import ProgressionGenerator
 
 class MigrationManager:
 	@staticmethod
@@ -65,6 +66,17 @@ class MigrationManager:
 		db.insert_key_value_pairs('Card', cards)
 
 	@staticmethod
+	def insert_diminished_chords_cards(db):
+		cards = ChordsGenerator.generate_dim_chords_cards()
+		db.execute_statments([
+			""" INSERT INTO Deck (name, descr, answer_validator) 
+				VALUES ('Diminished Chords', 'Diminished chords in all inversions', 'answerValidator_equals_midiEnharmonicsValid')"""
+		])
+		deck_id = db.select1(table="Deck", where="name='Diminished Chords'", columns="deck_id")['deck_id']
+		for c in cards: c['deck_id'] = deck_id
+		db.insert_key_value_pairs('Card', cards)
+
+	@staticmethod
 	def insert_major_and_minor_chords_cards(db):
 		cards = ChordsGenerator.generate_major_and_minor_chord_cards()
 		db.execute_statments([
@@ -76,6 +88,18 @@ class MigrationManager:
 		db.insert_key_value_pairs('Card', cards)
 
 	@staticmethod
+	def insert_four_five_one_cadence(db):
+		cards = ProgressionGenerator.four_five_one_cards()
+		db.execute_statments([
+			""" INSERT INTO Deck (name, descr, answer_validator) 
+				VALUES ('IV V I Cadence', 'Includes common sets of inversions', 'answerValidator_equals_midiEnharmonicsValid')"""
+		])
+		deck_id = db.select1(table="Deck", where="name='IV V I Cadence'", columns="deck_id")['deck_id']
+		for c in cards: c['deck_id'] = deck_id
+		db.insert_key_value_pairs('Card', cards)
+
+
+	@staticmethod
 	def insert_all_pregenerated_decks_and_create_db(db):
 		MigrationManager.create_db(db)
 		MigrationManager.insert_times_tables(db)
@@ -84,3 +108,4 @@ class MigrationManager:
 		MigrationManager.insert_major_chords_cards(db)
 		MigrationManager.insert_minor_chords_cards(db)
 		MigrationManager.insert_major_and_minor_chords_cards(db)
+		MigrationManager.insert_four_five_one_cadence(db)

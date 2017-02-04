@@ -25,10 +25,10 @@ var answerValidator_equals_midiEnharmonicsValid = function(userAnswer, correctAn
 	if (onMIDINotes.size > 0) {
 		correctAnswer = answerValidator_replaceFlatsWithSharps(correctAnswer);
 		userAnswer = answerValidator_replaceFlatsWithSharps(userAnswer);
-		return userAnswer == correctAnswer;
+		return answerValidator_multipleOptions_equals(userAnswer, correctAnswer);
 	} 
 
-	return answerValidator_equals(userAnswer, correctAnswer);
+	return answerValidator_multipleOptions_equals(userAnswer, correctAnswer);
 }
 
 function answerValidator_replaceFlatsWithSharps(str) {

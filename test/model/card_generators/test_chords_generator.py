@@ -12,6 +12,13 @@ class TestChordGenerator(unittest.TestCase):
 		# (12 unique notes + 5 enharmonics) * 3 inversions per chord = 51 total cards
 		self.assertTrue(len(cards) == 51)
 
+	def test_dim_chord_generation(self):
+		cards = ChordsGenerator.generate_dim_chords_cards()
+		# (12 unique notes + 5 enharmonics) * 3 inversions per chord = 51 total cards
+		self.assertTrue(len(cards) == 51)
+		for card in cards:
+			self.assertTrue('°' in card['question'])
+
 def main():
 	unittest.main()
 

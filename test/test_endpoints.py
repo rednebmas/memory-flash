@@ -30,13 +30,13 @@ class TestEndpoints(unittest.TestCase):
 
 	def test_session_next_card(self):
 		global app
-		request, response = sanic_endpoint_test(app, uri='/session/1/next_card', data='{"deck_id":1, "previous_card_id":9}')
+		request, response = sanic_endpoint_test(app, uri='/session/1/next_card', method="post", data='{"deck_id":1, "previous_card_id":9}')
 		self.assertTrue(response.status == 200, response.status)
 		self.assertTrue('card_id' in json_loads(response.body))
 
 	def test_card_answer(self):
 		global app
-		request, response = sanic_endpoint_test(app, uri='/card/1/answer', 
+		request, response = sanic_endpoint_test(app, uri='/card/1/answer', method="post",
 			data="""{"session_id":1,
 					"card_id":1,
 					"time_to_correct":3.1,

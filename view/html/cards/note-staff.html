@@ -1,4 +1,4 @@
-<script src="https://unpkg.com/vexflow/releases/vexflow-debug.js"></script>
+<script src="/js/lib/vexflow-debug.js"></script>
 
 <div id="staff"></div>
 
@@ -37,7 +37,7 @@ lineRight.setContext(context).draw();
 
 var notes = [
 	// A quarter-note C.
-	new VF.StaveNote({clef: "treble", keys: ["g/4"], duration: "w"})
+	new VF.StaveNote({clef: "treble", keys: ["{{ note.name }}/{{ note.octave }}"], duration: "w"})
 	{% if note.isaltered() %}
 		.addAccidental(0, new VF.Accidental("{{ note.accidental.symbol }}"))
 	{% endif %}
