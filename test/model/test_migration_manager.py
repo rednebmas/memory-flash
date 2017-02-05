@@ -13,12 +13,16 @@ class TestMigrationManager(unittest.TestCase):
 		for table in table_names:
 			self.assertTrue(table in tables_in_db)
 
-	def test_insert_all_pregenerated_decks_and_create_db(self):
+	def test_run_pending_migrations(self):
 		db = DB(':memory:')
+		MigrationManager.create_db(db)
 		try:
-			MigrationManager.insert_all_pregenerated_decks_and_create_db(db)
+			MigrationManager.run_pending_migrations(db)
 		except Exception as e:
 			self.assertTrue(False, e)
+
+		migrations_performed = db.select1(table="Migration", where="migration_id = 1")['migrations_performed']
+		self.assertTrue(migrations_performed > 0)
 
 def main():
 	unittest.main()

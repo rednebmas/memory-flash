@@ -1,5 +1,5 @@
 var assert = require('assert');
-var Card = require('../../view/js/card.js').Card;
+var Card = require('../../view/js/card.js');
 
 var cardJSON = {
 	"answer" : "D",
@@ -15,7 +15,7 @@ describe('Card', function() {
 		card = new Card(cardJSON);
 	});
 
-	describe('should parse json constructor', function() {
+	describe('the constructor', function() {
 		it('should have a question', function() {
 			assert.equal(card.question, cardJSON['question']);
 		});
@@ -31,5 +31,9 @@ describe('Card', function() {
 		it('should have a card_id', function() {
 			assert.equal(card.card_id, cardJSON['card_id'])
 		});
+
+		it('first_attempt_correct should be true', function() {
+			assert.ok(card.first_attempt_correct);
+		})
 	});
 });

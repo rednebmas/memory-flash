@@ -3,3 +3,4 @@
 *.db-journal
 *.DS_Store
 node_modules
+view/js/lib/vexflow-debug.js

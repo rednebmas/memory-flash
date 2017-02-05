@@ -80,7 +80,8 @@ class DB:
 		self.conn = sqlite3.connect(':memory:')
 		self.conn.row_factory = sqlite3.Row
 		self.cursor = self.conn.cursor()
-		MigrationManager.insert_all_pregenerated_decks_and_create_db(self)
+		MigrationManager.create_db(self)
+		MigrationManager.run_pending_migrations(self)
 
 	@staticmethod
 	def put_substitutions_in_statement(statement, substitutions):
@@ -96,11 +97,14 @@ class DB:
 
 if 'unittest' in sys.argv[0]:
 	db = DB(':memory:')
-	MigrationManager.insert_all_pregenerated_decks_and_create_db(db)
+	MigrationManager.create_db(db)
 else:
 	db_path = 'memory-flash.db'
 	db_exists = os.path.isfile(db_path)
 	db = DB(db_path)
 	if db_exists is False:
-		print('Generating database.')
-		MigrationManager.insert_all_pregenerated_decks_and_create_db(db)
+		print('Creating database')
+		MigrationManager.create_db(db)
+
+MigrationManager.run_pending_migrations(db)
+

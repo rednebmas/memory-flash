@@ -1,5 +1,8 @@
 import sys
 import os.path
+import re
+import importlib.util
+from glob import glob
 from model.card_generators.times_table_generator import TimesTableGenerator
 from model.card_generators.notes_generator import NotesGenerator
 from model.card_generators.intervals_generator import IntervalsGenerator
@@ -13,99 +16,21 @@ class MigrationManager:
 			db.execute_statments(f.read().split(';'))
 
 	@staticmethod
-	def insert_times_tables(db):
-		cards = TimesTableGenerator.generate_cards()
-		db.execute_statments([
-			""" INSERT INTO Deck (name, descr) VALUES ('Times Tables', 'Ex: 1* 1')"""
-		])
-		deck_id = db.select1(table="Deck", where="name='Times Tables'", columns="deck_id")[0]
-		for c in cards: c['deck_id'] = deck_id
-		db.insert_key_value_pairs('Card', cards)
+	def run_pending_migrations(db):
+		migrations_performed = db.select1(table="Migration", where="migration_id = 1")['migrations_performed']
 
-	@staticmethod
-	def insert_notes_cards(db):
-		cards = NotesGenerator.generate_cards()
-		db.execute_statments([
-			""" INSERT INTO Deck (name, descr) VALUES ('Notes', 'Uses graphics')"""
-		])
-		deck_id = db.select1(table="Deck", where="name='Notes'", columns="deck_id")[0]
-		for c in cards: c['deck_id'] = deck_id
-		db.insert_key_value_pairs('Card', cards)
+		num_migrations_updated = False
+		for filename in sorted(glob('model/migrations/*.py')):
+			migration_int = int( re.search(r'model/migrations/(\d).*\.py', filename).group(1) )
+			if migrations_performed < migration_int:
+				# execute file
+				with open(filename) as f:
+					code = compile(f.read(), filename, 'exec')
+					exec(code) 
+				# assure it was executed
+				print('Performed migration: ' + filename.replace('model/migrations/', ''))
+				# let us know that we should update the migration table
+				num_migrations_updated = True
 
-	@staticmethod
-	def insert_intervals_cards(db):
-		cards = IntervalsGenerator.generate_cards()
-		db.execute_statments([
-			""" INSERT INTO Deck (name, descr, answer_validator) 
-				VALUES ('Intervals', 'Interval math!', 'answerValidator_multipleOptions_equals')"""
-		])
-		deck_id = db.select1(table="Deck", where="name='Intervals'", columns="deck_id")[0]
-		for c in cards: c['deck_id'] = deck_id
-		db.insert_key_value_pairs('Card', cards)
-
-	@staticmethod
-	def insert_major_chords_cards(db):
-		cards = ChordsGenerator.generate_major_chord_cards()
-		db.execute_statments([
-			""" INSERT INTO Deck (name, descr, answer_validator) 
-				VALUES ('Major Chords', 'Major chords in all inversions', 'answerValidator_equals_midiEnharmonicsValid')"""
-		])
-		deck_id = db.select1(table="Deck", where="name='Major Chords'", columns="deck_id")['deck_id']
-		for c in cards: c['deck_id'] = deck_id
-		db.insert_key_value_pairs('Card', cards)
-
-	@staticmethod
-	def insert_minor_chords_cards(db):
-		cards = ChordsGenerator.generate_minor_chord_cards()
-		db.execute_statments([
-			""" INSERT INTO Deck (name, descr, answer_validator) 
-				VALUES ('Minor Chords', 'Minor chords in all inversions', 'answerValidator_equals_midiEnharmonicsValid')"""
-		])
-		deck_id = db.select1(table="Deck", where="name='Minor Chords'", columns="deck_id")['deck_id']
-		for c in cards: c['deck_id'] = deck_id
-		db.insert_key_value_pairs('Card', cards)
-
-	@staticmethod
-	def insert_diminished_chords_cards(db):
-		cards = ChordsGenerator.generate_dim_chords_cards()
-		db.execute_statments([
-			""" INSERT INTO Deck (name, descr, answer_validator) 
-				VALUES ('Diminished Chords', 'Diminished chords in all inversions', 'answerValidator_equals_midiEnharmonicsValid')"""
-		])
-		deck_id = db.select1(table="Deck", where="name='Diminished Chords'", columns="deck_id")['deck_id']
-		for c in cards: c['deck_id'] = deck_id
-		db.insert_key_value_pairs('Card', cards)
-
-	@staticmethod
-	def insert_major_and_minor_chords_cards(db):
-		cards = ChordsGenerator.generate_major_and_minor_chord_cards()
-		db.execute_statments([
-			""" INSERT INTO Deck (name, descr, answer_validator) 
-				VALUES ('Major and Minor Chords', 'Major and Minor chords in all inversions', 'answerValidator_equals_midiEnharmonicsValid')"""
-		])
-		deck_id = db.select1(table="Deck", where="name='Major and Minor Chords'", columns="deck_id")['deck_id']
-		for c in cards: c['deck_id'] = deck_id
-		db.insert_key_value_pairs('Card', cards)
-
-	@staticmethod
-	def insert_four_five_one_cadence(db):
-		cards = ProgressionGenerator.four_five_one_cards()
-		db.execute_statments([
-			""" INSERT INTO Deck (name, descr, answer_validator) 
-				VALUES ('IV V I Cadence', 'Includes common sets of inversions', 'answerValidator_equals_midiEnharmonicsValid')"""
-		])
-		deck_id = db.select1(table="Deck", where="name='IV V I Cadence'", columns="deck_id")['deck_id']
-		for c in cards: c['deck_id'] = deck_id
-		db.insert_key_value_pairs('Card', cards)
-
-
-	@staticmethod
-	def insert_all_pregenerated_decks_and_create_db(db):
-		MigrationManager.create_db(db)
-		MigrationManager.insert_times_tables(db)
-		MigrationManager.insert_notes_cards(db)
-		MigrationManager.insert_intervals_cards(db)
-		MigrationManager.insert_major_chords_cards(db)
-		MigrationManager.insert_minor_chords_cards(db)
-		MigrationManager.insert_major_and_minor_chords_cards(db)
-		MigrationManager.insert_four_five_one_cadence(db)
+		if num_migrations_updated:
+			db.execute("UPDATE Migration SET migrations_performed = ? WHERE migration_id = 1", (migration_int,))

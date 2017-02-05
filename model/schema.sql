@@ -36,3 +36,10 @@ CREATE TABLE SessionCard (
 	session_id INTEGER NOT NULL,
 	card_id INTEGER NOT NULL
 );
+
+CREATE TABLE Migration (
+	migration_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	migrations_performed INTEGER
+);
+
+INSERT INTO Migration (migrations_performed) VALUES (0);

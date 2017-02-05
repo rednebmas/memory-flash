@@ -1,10 +1,6 @@
 from model.db import db
 
 class Card:
-	question = None
-	question = None
-	answer = None
-
 	@staticmethod
 	def from_db(row):
 		return Card(row['card_id'], row['deck_id'], row['question'], row['answer'])

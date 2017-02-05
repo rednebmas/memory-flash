@@ -35,10 +35,10 @@ async def decks_study(request, deck_id):
 	deck, session = StudyViewModel.deck_and_session(deck_id)
 	return html(templates.get_template('study.html').render(deck=deck, session=session))
 
-@app.route("/session/<session_id:int>/next_card", methods=['POST'])
+@app.route("/session/<session_id:int>/next_card")
 async def session_next_card(request, session_id):
-	if 'previous_card_id' not in request.json: request.json['previous_card_id'] = None
-	card = StudyViewModel.next_card(session_id, request.json['deck_id'], previous_card_id=request.json['previous_card_id'])
+	if 'previous_card_id' not in request.args: request.args['previous_card_id'] = [None]
+	card = StudyViewModel.next_card(session_id, request.args.get('deck_id'), previous_card_id=request.args.get('previous_card_id'))
 	return json(card.as_dict())
 
 @app.route("/card/<card_id:int>/answer", methods=['POST'])
