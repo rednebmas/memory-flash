@@ -71,6 +71,7 @@ var Game = function(session_id, deck_id) { return {
 	},
 
 	loadNextQuestion: function() {
+		this.submitAnswerHistory();
 		this.state = 'loading next question';
 
 		var url = '/session/' + this.session_id + '/next_card';
@@ -96,6 +97,7 @@ var Game = function(session_id, deck_id) { return {
 
 	checkAnswer: function(answer) {
 		this.card.validateAnswer(answer);
+
 		if (this.state == 'waiting') {
 			if (this.card.validation_state == 'correct') {
 				this.loadNextQuestion();
@@ -112,6 +114,26 @@ var Game = function(session_id, deck_id) { return {
 		}
 
 		console.log('game.state = ' + this.state);
+	},
+
+	submitAnswerHistory: function() {
+		if (this.card == undefined) return;
+
+		var body = {
+			'session_id': this.session_id,
+			'card_id': this.card.card_id,
+			'time_to_correct': this.card.time_to_correct,
+			'first_attempt_correct': this.card.first_attempt_correct,
+		};
+
+		console.log(body);
+
+		$.post('/card/' + this.card.card_id + '/answer', JSON.stringify(body), function(data) { 
+			// check for success?
+		}, 'json')
+		.fail(function(xhr, status, error) {
+			console.log('Error submitting answer history: ' + error);
+		});
 	},
 
 	updateViewForStateWaiting: function () {

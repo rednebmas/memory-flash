@@ -13,6 +13,7 @@ var Card = function(json) { return {
 	card_id: json['card_id'],
 	answer_validator: undefined,
 	accidental_type: undefined,
+	time_to_correct: undefined,
 
 	/**
 	Methods
@@ -30,14 +31,22 @@ var Card = function(json) { return {
 		this.start_time = performance.now();
 	},
 
+	captureTimeToAnswer: function() {
+		var now = performance.now();
+		this.time_to_correct = (now - this.start_time) / 1000.0;
+	},
+
 	validateAnswer: function(answer) {
 		if (this.answer_validator.validate(answer, this.answer)) {
+			if (this.validation_state == 'unanswered') {
+				this.captureTimeToAnswer();
+			}
 			this.validation_state = 'correct';
 		} else {
 			this.validation_state = 'incorrect';
 		}
 		console.log('card.validation_state = ' + this.validation_state);
-	}
+	},
 }.init(); }
 
 if (typeof module !== 'undefined' && module.exports) 

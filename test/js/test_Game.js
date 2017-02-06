@@ -1,4 +1,4 @@
-// nil out jquery 
+// nil out jquery and performance
 var Nil = require('./test_lib/nil.js').Nil;
 global.$ = new Nil(); 
 global.performance = new Nil();  // performance.now()
@@ -22,6 +22,8 @@ describe('Game', function() {
 	beforeEach(function() {
 		game = new Game(1, 2);
 		card = new Card(cardJSON);
+		// causes throw in node
+		card.captureTimeToAnswer = function() {};
 	});
 
 	describe('constructor', function() {

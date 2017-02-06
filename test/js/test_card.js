@@ -14,6 +14,8 @@ describe('Card', function() {
 
 	beforeEach(function() {
 		card = new Card(cardJSON);
+		// causes throw in node
+		card.captureTimeToAnswer = function() {};
 	});
 
 	describe('constructor', function() {

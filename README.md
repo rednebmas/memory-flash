@@ -40,6 +40,8 @@
 
 [Mocha.js](https://mochajs.org/): javascript unit testing library
 
+[Sinon](https://github.com/sinonjs/sinon)
+
 [Vexflow](https://github.com/0xfe/vexflow): music notation javascript library
 
 [Browswerify](https://github.com/substack/node-browserify)
