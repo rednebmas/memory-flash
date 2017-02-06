@@ -36,6 +36,7 @@ var Card = function(json) { return {
 		} else {
 			this.validation_state = 'incorrect';
 		}
+		console.log('card.validation_state = ' + this.validation_state);
 	}
 }.init(); }
 

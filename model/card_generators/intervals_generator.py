@@ -66,5 +66,5 @@ class IntervalsGenerator:
 			"question" : templates.get_template('cards/interval.html')
 						 .render(interval=shortname, direction=direction, note=question_note),
 			"answer" : answer,
-			"answer_validator" : 'answerValidator_equals_midiEnharmonicsValid'
+			"answer_validator" : 'multipleOptions_equals_midiEnharmonicsValid'
 		}

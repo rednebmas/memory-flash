@@ -9,7 +9,7 @@ var Game = function(session_id, deck_id) { return {
 
 	session_id: session_id,
 	deck_id: deck_id,
-	// waiting, loading next question, partially correct, first attempt incorrect, correct
+	// waiting, loading next question, partially correct, first attempt incorrect, correct but first attempt incorrect
 	_state: 'waiting', 
 	_card: undefined,
 
@@ -25,6 +25,15 @@ var Game = function(session_id, deck_id) { return {
 		switch (state) {
 			case 'waiting':
 				this.updateViewForStateWaiting();
+				break;
+			case 'first attempt incorrect':
+				this.updateViewForStateFirstAttemptIncorrect();
+				break;
+			case 'correct but first attempt incorrect':
+				this.updateViewForStateCorrectButFirstAttemptIncorrect();
+				break;
+			case 'loading next question':
+				// this.updateViewForStateLoadingNextQuestion();
 				break;
 		}
 	},
@@ -80,16 +89,10 @@ var Game = function(session_id, deck_id) { return {
 	},
 
 	handleCardData: function(data) {
-		console.log(JSON.stringify(data));
 		this.card = new Card(data);
+		console.log(this.card);
 		this.state = 'waiting';
 	},
-
-	updateViewForStateWaiting: function () {
-		this.card.captureStartTime();
-		$('#submit-answer').attr('class', 'btn btn-primary');
-		$('#correct-label').fadeOut();
-	}, 
 
 	checkAnswer: function(answer) {
 		this.card.validateAnswer(answer);
@@ -99,7 +102,37 @@ var Game = function(session_id, deck_id) { return {
 			} else if (this.card.validation_state == 'incorrect') {
 				this.state = 'first attempt incorrect';
 			}
+		} 
+		else if (this.state == 'first attempt incorrect') {
+			if (this.card.validation_state == 'correct') {
+				this.state = 'correct but first attempt incorrect';
+			} 
+		} else if (this.state = 'correct but first attempt incorrect') {
+			this.loadNextQuestion();
 		}
+
+		console.log('game.state = ' + this.state);
+	},
+
+	updateViewForStateWaiting: function () {
+		this.card.captureStartTime();
+		$('#submit-answer').attr('class', 'btn btn-primary');
+		$('#correct-label').fadeOut();
+		$('#answer-input').val('');
+	}, 
+
+	updateViewForStateFirstAttemptIncorrect: function() {
+		this.card.first_attempt_correct = false;
+		$('#incorrect-label').css('display', 'inline');
+	},
+
+	updateViewForStateCorrectButFirstAttemptIncorrect: function() {
+		$('#incorrect-label').css('display', 'none');
+		$('#correct-label').css('display', 'inline');
+
+		$('#submit-answer').text('Next');
+		$('#submit-answer').text('Next');
+		$('#submit-answer').attr('class', 'btn btn-success');
 	}
 }.init(); };
 

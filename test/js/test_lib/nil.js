@@ -18,7 +18,7 @@ var Nil = function() {
 			if (typeof name == 'symbol' 
 				&& name.toString() == 'Symbol(util.inspect.custom)') 
 			{
-				return function() { return 'nil.js instance was called in console.log() statement'; };
+				return function() { return '    nil.js instance was called in console.log() statement'; };
 			}
 
 			return new Proxy(function(){}, this);

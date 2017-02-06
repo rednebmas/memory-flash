@@ -77,6 +77,6 @@ class ChordsGenerator:
 		return {
 			"question" : templates.get_template('cards/chord.html').render(chord=chord),
 			"answer" : ' '.join([note.name for note in chord.notes]),
-			"answer_validator" : 'answerValidator_equals_midiEnharmonicsValid'
+			"answer_validator" : 'multipleOptions_equals_midiEnharmonicsValid'
 		}
 

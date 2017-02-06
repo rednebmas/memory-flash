@@ -34,6 +34,10 @@ describe('Game', function() {
 	});
 
 	describe('state', function() {
+		beforeEach(function() {
+			game.card = card;
+		});
+
 		it('should initially be \'waiting\'', function() {
 			assert.equal(game.state, 'waiting');
 		});
@@ -43,7 +47,6 @@ describe('Game', function() {
 			game.loadNextQuestion();
 			assert.equal(game.state, 'loading next question');
 		});
-
 	});
 
 	describe('checkAnswer', function () {
@@ -61,6 +64,17 @@ describe('Game', function() {
 			assert.equal(game.state, 'waiting');
 			game.checkAnswer('smile breathe and go slowly');
 			assert.equal(game.state, 'first attempt incorrect');
+		});
+
+		it('should change state to correct but first attempt incorrect after first attempt incorrect, ' + 
+			'and finally to loading next question', function() {
+			assert.equal(game.state, 'waiting');
+			game.checkAnswer('smile breathe and go slowly');
+			assert.equal(game.state, 'first attempt incorrect');
+			game.checkAnswer(card.answer);
+			assert.equal(game.state, 'correct but first attempt incorrect');
+			game.checkAnswer(card.answer);
+			assert.equal(game.state, 'loading next question');
 		});
 	});
 
