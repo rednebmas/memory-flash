@@ -8,16 +8,12 @@ class Deck:
 
 	@staticmethod
 	def from_db(row):
-		return Deck(row[0], row[1], row[2], row[3])
+		return Deck(row['deck_id'], row['name'], row['descr'])
 
-	def __init__(self, deck_id, name, descr, answer_validator):
+	def __init__(self, deck_id, name, descr):
 		self.deck_id = deck_id
 		self.name = name
 		self.descr = descr
-		if answer_validator:
-			self.answer_validator = answer_validator 
-		else:
-			self.answer_validator = "answerValidator_multipleOptions_equals" 
 
 	def load_cards(self):
 		rows = db.select(table="Card", where="deck_id = {}".format(self.deck_id))

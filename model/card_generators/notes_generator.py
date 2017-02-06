@@ -21,61 +21,10 @@ class NotesGenerator:
 	def card_for_note(note, staff):
 		return {
 			"question" : templates.get_template('cards/note-staff.html').render(note=note, staff=staff),
-			"answer" : note.name
+			"answer" : note.name,
+			"answer_validator" : 'answerValidator_equals_midiEnharmonicsValid'
 		}
 
 	@staticmethod
 	def generate_cards():
 		return NotesGenerator.treble_cards()
-		"""Generate the notes cards using images
-		Return:
-			an array dictionaries which represent card objects
-		"""
-		cards = []
-		notes = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-		for note in notes:
-			for i in range(0, 4):
-				cards.append({
-						"question" : """
-						<style>
-						  img.note {
-						  	width: 100%%;
-						  }
-						  div.question {
-						  	text-align: center;
-						  }
-						  div.note-img-container {
-						  	width: 118px;
-						  	height: 148px;
-						  	text-align: center;
-						  	margin: auto;
-						  }
-						</style	>
-						<p>What note is this?</p>
-						<div class="note-img-container"><img class="note" src="/img/treble_%(file_name)s.png"></div>
-						""" % { 'file_name': note + str(i) },
-						"answer" : note
-				})
-				cards.append({
-						"question" : """
-						<style>
-						  img.note {
-						  	width: 100%%;
-						  }
-						  div.question {
-						  	text-align: center;
-						  }
-						  div.note-img-container {
-						  	width: 118px;
-						  	height: 148px;
-						  	text-align: center;
-						  	margin: auto;
-						  }
-						</style	>
-						<p>What note is this?</p>
-						<div class="note-img-container"><img class="note" src="/img/bass_%(file_name)s.png"></div>
-						""" % { 'file_name': note + str(i) },
-						"answer" : note
-				})
-
-		return cards

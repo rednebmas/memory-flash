@@ -10,7 +10,7 @@ var Game = function(session_id, deck_id) { return {
 	session_id: session_id,
 	deck_id: deck_id,
 	_state: 'waiting', // waiting, loading next question, partially_correct, first_attempt_incorrect, correct
-	card: undefined,
+	_card: undefined,
 
 	/** 
 	Getters and Setters 
@@ -19,13 +19,21 @@ var Game = function(session_id, deck_id) { return {
 	get state() {
 		return this._state;
 	},
-	set state(value) {
-		this._state = value;
-		switch (value) {
+	set state(state) {
+		this._state = state;
+		switch (state) {
 			case 'waiting':
-				this.updateDisplayForWaiting();
+				this.updateViewForStateWaiting();
 				break;
 		}
+	},
+		
+	get card() {
+		return this._card;
+	},
+	set card(card) {
+		this._card = card;
+		$('.question').html(card.question);
 	},
 
     /**
@@ -56,13 +64,16 @@ var Game = function(session_id, deck_id) { return {
 		var url = '/session/' + this.session_id + '/next_card';
 		var data = { 
 			'deck_id' : this.deck_id, 
-			'previous_card_id' : this.card.card_id 
+			'previous_card_id' : this.card ? this.card.card_id : 0
 		};
 
-		$.get(url, data, this.handleCardData)
-		 .fail(function(xhr, status, error) {
+		var self = this;
+		$.get(url, data, function(data) {
+			self.handleCardData(data);
+		})
+		.fail(function(xhr, status, error) {
 			console.log('Error retrieving next card: ' + xhr);
-		 });
+		});
 	},
 
 	handleCardData: function(data) {
@@ -71,13 +82,16 @@ var Game = function(session_id, deck_id) { return {
 		this.state = 'waiting';
 	},
 
-	updateDisplayForWaiting: function () {
+	updateViewForStateWaiting: function () {
 		this.card.captureStartTime();
-		$('.question').html(this.card.question);
 		$('#submit-answer').attr('class', 'btn btn-primary');
 		$('#correct-label').fadeOut();
 	}
-}.init(); }
+}.init(); };
 
 if (typeof module !== 'undefined' && module.exports) 
 	module.exports = Game;
+
+// hook into the webapp
+if (typeof window !== 'undefined')
+	window.Game = Game;

@@ -63,6 +63,8 @@ class IntervalsGenerator:
 		direction = "↑" if interval.half_steps > 0 else "↓"
 
 		return {
-			"question" : templates.get_template('cards/interval.html').render(interval=shortname, direction=direction, note=question_note),
-			"answer" : answer
+			"question" : templates.get_template('cards/interval.html')
+						 .render(interval=shortname, direction=direction, note=question_note),
+			"answer" : answer,
+			"answer_validator" : 'answerValidator_equals_midiEnharmonicsValid'
 		}

@@ -10,6 +10,7 @@ class TimesTableGenerator:
 			for j in range(1, n + 1):
 				cards.append({
 						"question" : "What is {} * {}".format(i, j),
-						"answer" : str(i*j)
+						"answer" : str(i*j),
+						"answer_validator" : 'answerValidator_equals_midiEnharmonicsValid'
 				})
 		return cards

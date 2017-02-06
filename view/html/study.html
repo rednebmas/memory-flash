@@ -30,14 +30,12 @@
 </div>
 
 <script src="/js/lib/webmidi.min.js"></script>
-<script src="/js/answer-validators.js"></script>
-<script type="text/javascript">
-    var deck_id = {{ deck.deck_id }};
-    var session_id = {{ session.session_id }};
-    var answer_validator = {{ deck.answer_validator }};
-</script>
-<script src="/js/study.js"></script>
 <script src="/js/lib/MIDIUtils.js"></script>
 <script src="/js/midi-input.js"></script>
+<script src="/js/bundle.js"></script>
+<script type="text/javascript">
+    var game = new Game({{ session.session_id}}, {{ deck.deck_id }});
+    game.loadNextQuestion();
+</script>
 
 {% endblock %}

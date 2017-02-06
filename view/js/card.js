@@ -1,19 +1,25 @@
+var AnswerValidator = require('./answer_validator.js');
+
 var Card = function(json) { return {
 	/**
 	Properties
 	**/
 
+	first_attempt_correct: true,
+	validation_state: 'unanswered',
 	question: json['question'],
-	answers: json['answer'].split('|'),
+	answer: json['answer'],
 	deck_id: json['deck_id'],
 	card_id: json['card_id'],
-	first_attempt_correct: true,
+	answer_validator: undefined,
+	accidental_type: undefined,
 
 	/**
 	Methods
 	**/
 
 	init: function() {
+		this.answer_validator = AnswerValidator(json['answer_validator']);
 		if ('accidental_type' in json) {
 			this.accidental_type = json['accidental_type'];
 		}
@@ -21,7 +27,13 @@ var Card = function(json) { return {
 	},
 
 	captureStartTime: function() {
-		this.startTime = performance.now();
+		this.start_time = performance.now();
+	},
+
+	validateAnswer: function(answer) {
+		if (this.answer_validator.validate(answer, this.answer)) {
+			this.validation_state = 'correct';
+		}
 	}
 }.init(); }
 

@@ -1,8 +1,11 @@
 {
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+	"build-js": "browserify view/js/game.js -o view/js/bundle.js -d",
+	"watch-js": "watchify view/js/game.js -o view/js/bundle.js -d -v"
   },
   "devDependencies": {
-    "simple-mock": "^0.7.3"
+    "simple-mock": "^0.7.3",
+    "watchify": "^3.9.0"
   }
 }

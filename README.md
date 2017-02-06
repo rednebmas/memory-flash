@@ -21,12 +21,15 @@
 
 *dependencies*
 
-	npm install mocha --save-dev
+	npm install 
 
 *test*
 
-
 	npm test
+
+*dev in browser*
+
+	npm run watch-js
 
 
 ## links
@@ -39,6 +42,7 @@
 
 [Vexflow](https://github.com/0xfe/vexflow): music notation javascript library
 
+[Browswerify](https://github.com/substack/node-browserify)
 
 ### Articles that solved important problems
 [DOM data binding](http://stackoverflow.com/a/16485030/337934)
