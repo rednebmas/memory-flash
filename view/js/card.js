@@ -33,6 +33,8 @@ var Card = function(json) { return {
 	validateAnswer: function(answer) {
 		if (this.answer_validator.validate(answer, this.answer)) {
 			this.validation_state = 'correct';
+		} else {
+			this.validation_state = 'incorrect';
 		}
 	}
 }.init(); }

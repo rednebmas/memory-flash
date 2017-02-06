@@ -57,5 +57,11 @@ describe('Card', function() {
 			card.validateAnswer(cardJSON['answer'])
 			assert.equal(card.validation_state, 'correct');
 		});
+
+		it('should change validation state to incorrect', function () {
+			assert.equal(card.validation_state, 'unanswered')
+			card.validateAnswer('Richard Feynman')
+			assert.equal(card.validation_state, 'incorrect');
+		});
 	});
 });

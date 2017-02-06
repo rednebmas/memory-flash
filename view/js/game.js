@@ -9,7 +9,8 @@ var Game = function(session_id, deck_id) { return {
 
 	session_id: session_id,
 	deck_id: deck_id,
-	_state: 'waiting', // waiting, loading next question, partially_correct, first_attempt_incorrect, correct
+	// waiting, loading next question, partially correct, first attempt incorrect, correct
+	_state: 'waiting', 
 	_card: undefined,
 
 	/** 
@@ -27,7 +28,7 @@ var Game = function(session_id, deck_id) { return {
 				break;
 		}
 	},
-		
+
 	get card() {
 		return this._card;
 	},
@@ -46,14 +47,16 @@ var Game = function(session_id, deck_id) { return {
     },
 
 	bindSubmitAnswer: function() {
+		var self = this;
+
 		$('#answer-input').focus();
 		$("#submit-answer").click(function() {
-			checkAnswer();
+			self.checkAnswer($('#answer-input').val());
 		});
 
 		$('#answer-input').keypress(function(e) {
 			if (e.which == 13) { // enter key pressed
-				checkAnswer();
+				self.checkAnswer($('#answer-input').val());
 			}
 		});
 	},
@@ -86,6 +89,17 @@ var Game = function(session_id, deck_id) { return {
 		this.card.captureStartTime();
 		$('#submit-answer').attr('class', 'btn btn-primary');
 		$('#correct-label').fadeOut();
+	}, 
+
+	checkAnswer: function(answer) {
+		this.card.validateAnswer(answer);
+		if (this.state == 'waiting') {
+			if (this.card.validation_state == 'correct') {
+				this.loadNextQuestion();
+			} else if (this.card.validation_state == 'incorrect') {
+				this.state = 'first attempt incorrect';
+			}
+		}
 	}
 }.init(); };
 

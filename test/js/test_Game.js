@@ -11,7 +11,8 @@ var cardJSON = {
 	"answer" : "D",
 	"deck_id" : 3,
 	"card_id" : 555,
-	"question" : "What is a descending major sixth of B?"
+	"question" : "What is a descending major sixth of B?",
+	"answer_validator" : "multipleOptions_equals_midiEnharmonicsValid"
 };
 
 describe('Game', function() {
@@ -41,6 +42,25 @@ describe('Game', function() {
 			game.card = card;
 			game.loadNextQuestion();
 			assert.equal(game.state, 'loading next question');
+		});
+
+	});
+
+	describe('checkAnswer', function () {
+		beforeEach(function() {
+			game.card = card;
+		});
+
+		it('should change state to loading next question if answer was correct', function() {
+			assert.equal(game.state, 'waiting');
+			game.checkAnswer(card.answer);
+			assert.equal(game.state, 'loading next question');
+		});
+
+		it('should change state to first attempt incorrect if answer was incorrect', function() {
+			assert.equal(game.state, 'waiting');
+			game.checkAnswer('smile breathe and go slowly');
+			assert.equal(game.state, 'first attempt incorrect');
 		});
 	});
 
