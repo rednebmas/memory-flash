@@ -1,49 +1,62 @@
 var onMIDINotes = new Set();
 
 // http://tangiblejs.com/posts/web-midi-music-and-show-control-in-the-browser
-WebMidi.enable(function(err) { 
+WebMidi.enable(function(err) {
 	if (err) console.log("WebMidi could not be enabled");
 
 	var input = WebMidi.inputs[0];
-
 	if (input) {
 		// Listening for a 'note on' message (on all channels) 
-		input.addListener("noteon", "all",
-			function(e) { 
-				addNote(e.note.number)
-			}
-		);
+		input.addListener("noteon", "all", function (e) {
+			addNote(e.note.number)
+		});
 
 		// Listening to other messages works the same way 
-		input.addListener("noteoff", "all",
-			function(e) { 
-				removeNote(e.note.number);
-			}
-		);
+		input.addListener("noteoff", "all", function (e) {
+			removeNote(e.note.number);
+		});
 	}
 });
+
+function replaceFlatsWithSharps(str) {
+	for (key in enharmonicConverter) {
+		str = str.replace(key, enharmonicConverter[key]);
+	}
+	return str;
+}
 
 function addNote(noteNumber) {
 	onMIDINotes.add(noteNumber);
 	addCurrentNotesToInput();
 
-	// correct
-	if (answer_validator($('#answer-input').val(), card.answer)) {
-		console.log('addNote: correct answer');
-		checkAnswer();
+	var userAnswer = $('#answer-input').val();
+	var answer;
+	// get answer
+	if (game.card.answers != undefined) {
+		answer = game.card.answers[game.card.current_answer_part_index];
+	} else {
+		answer = game.card.answer;
 	}
-	else if (noteNotInAnswer(noteNumber)) {
+
+	// correct
+	if (game.card.answer_validator.validate(userAnswer, answer)) 
+	{
+		console.log('addNote: correct answer');
+		game.checkAnswer(userAnswer);
+	}
+	else if (noteNotInAnswer(noteNumber, answer)) 
+	{
 		console.log('not in answer, mark incorrect')
-		markIncorrect();
+		game.checkAnswer(userAnswer);
 	} else {
 		console.log('note ' + MIDIUtils.noteNumberToName(noteNumber) + ' in answer, not complete');
 	}
 }
 
-function noteNotInAnswer(noteNumber) {
+function noteNotInAnswer(noteNumber, answer) {
 	var noteName = MIDIUtils.noteNumberToName(noteNumber);
-	noteName = answerValidator_replaceFlatsWithSharps(noteName);
-	var answers = card.answer.split('|');
+	noteName = replaceFlatsWithSharps(noteName);
+	var answers = answer.split('|');
 
 	var noteInAnswer = false;
 	for (var i = 0; i < answers.length; i++) {
@@ -51,7 +64,7 @@ function noteNotInAnswer(noteNumber) {
 		var parts = answer.split(' ');
 		for (var j = 0; j < parts.length; j++) {
 			var part = parts[j];
-			part = answerValidator_replaceFlatsWithSharps(part);
+			part = replaceFlatsWithSharps(part);
 			noteInAnswer = noteInAnswer || (part == noteName);
 		}
 	}

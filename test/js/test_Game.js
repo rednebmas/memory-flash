@@ -77,7 +77,7 @@ describe('Game', function() {
 		});
 
 		it('should change state to "incorrect" then to "correct first attempt incorrect", ' + 
-			'and finally to loading next question after calling checkAnswer again', function() {
+			'and finally to "loading next question" after calling checkAnswer again', function() {
 			assert.equal(game.state, 'waiting');
 			game.checkAnswer('smile breathe and go slowly');
 			assert.equal(game.state, 'incorrect');

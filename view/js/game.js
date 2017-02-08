@@ -129,7 +129,6 @@ var Game = function(session_id, deck_id) { return {
 		} 
 		else if (this.state == 'incorrect') 
 		{
-			this.updateViewForStatePartial();
 			if (this.card.validation_state == 'correct') 
 			{
 				this.state = 'correct but first attempt incorrect';
@@ -181,6 +180,10 @@ var Game = function(session_id, deck_id) { return {
 	},
 
 	updateViewForStatePartial: function () {
+		if (this.card.answers == undefined) {
+			return;
+		}
+		
 		if (onMIDINotes.size == 0 && this.card.validation_states[this.card.current_answer_part_index] == 'unanswered') {
 			$('#answer-input').val('');
 		}
