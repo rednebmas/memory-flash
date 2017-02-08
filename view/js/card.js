@@ -6,7 +6,7 @@ var Card = function(json) { return {
 	**/
 
 	first_attempt_correct: true,
-	validation_state: 'unanswered',
+	validation_state: 'unanswered', // unanswered, incorrect, correct, partial - correct, partial - incorrect
 	question: json['question'],
 	answer: json['answer'],
 	deck_id: json['deck_id'],
@@ -14,6 +14,9 @@ var Card = function(json) { return {
 	answer_validator: undefined,
 	accidental_type: undefined,
 	time_to_correct: undefined,
+	/** multipart **/
+	current_answer_part_index: undefined,
+	validation_states: undefined,
 
 	/**
 	Methods
@@ -24,6 +27,10 @@ var Card = function(json) { return {
 		if ('accidental_type' in json) {
 			this.accidental_type = json['accidental_type'];
 		}
+		if (json['answer'].includes('→')) { // if multipart answer
+			this.answers = json['answer'].split('→');
+			this.resetValidationStates();
+		}
 		return this;
 	},
 
@@ -31,22 +38,78 @@ var Card = function(json) { return {
 		this.start_time = performance.now();
 	},
 
-	captureTimeToAnswer: function() {
+	captureTimeToCorrect: function() {
 		var now = performance.now();
 		this.time_to_correct = (now - this.start_time) / 1000.0;
 	},
 
-	validateAnswer: function(answer) {
-		if (this.answer_validator.validate(answer, this.answer)) {
-			if (this.validation_state == 'unanswered') {
-				this.captureTimeToAnswer();
-			}
+	validateAnswer: function(userAnswer) {
+		// if multipart use multipart answer validation
+		if (this.answers != undefined) {
+			this.validateMultiPartAnswer(userAnswer);
+			return;
+		}
+
+		if (this.answer_validator.validate(userAnswer, this.answer)) {
+			this.captureTimeToCorrect();
 			this.validation_state = 'correct';
 		} else {
 			this.validation_state = 'incorrect';
+			this.first_attempt_correct = false;
 		}
 		console.log('card.validation_state = ' + this.validation_state);
 	},
+
+	validateMultiPartAnswer: function(userAnswer) {
+		var answerPart = this.answers[this.current_answer_part_index];
+		if (this.answer_validator.validate(userAnswer, answerPart)) 
+		{
+			if (this.validation_state == 'unanswered') 
+			{
+				this.validation_state = 'partial - correct';
+			} 
+
+			if (this.validation_states[this.current_answer_part_index] == 'unanswered') 
+			{
+				this.validation_states[this.current_answer_part_index] = 'correct';
+			} 
+			else if (this.validation_states[this.current_answer_part_index] == 'incorrect') 
+			{
+				this.validation_states[this.current_answer_part_index] = 'correct but first attempt incorrect';
+			}
+
+			this.current_answer_part_index += 1;
+			if (this.current_answer_part_index == this.answers.length) // was last answer
+			{ 
+				this.validation_state = this.allAnswersCorrect() ? "correct" : "incorrect";
+				this.captureTimeToCorrect();
+			} 
+		} else {
+			this.validation_state = 'partial - incorrect';
+			this.validation_states[this.current_answer_part_index] = 'incorrect';
+		}
+		console.log('card.validation_state = ' + this.validation_state);
+	},
+
+	allAnswersCorrect: function() {
+		return this.validation_states.reduce(function (accumulator, currentValue) {
+			return accumulator & (currentValue == "correct");
+		}, true);
+	},
+
+	resetState: function() {
+		this.validation_state = 'unanswered';
+		this.resetValidationStates();
+	},
+
+	resetValidationStates: function() {
+		if (this.answers == undefined) {
+			return;
+		}
+		this.validation_states = Array(this.answers.length);
+		this.validation_states.fill("unanswered");
+		this.current_answer_part_index = 0;
+	}
 }.init(); }
 
 if (typeof module !== 'undefined' && module.exports) 

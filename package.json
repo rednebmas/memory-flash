@@ -5,6 +5,7 @@
     "watch-js": "watchify view/js/game.js -o view/js/bundle.js -d -v"
   },
   "devDependencies": {
+    "performance-now": "^2.0.0",
     "simple-mock": "^0.7.3",
     "sinon": "^1.17.7",
     "watchify": "^3.9.0"

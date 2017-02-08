@@ -1,7 +1,9 @@
-// nil out jquery and performance
+// nil out jquery 
 var Nil = require('./test_lib/nil.js').Nil;
 global.$ = new Nil(); 
-global.performance = new Nil();  // performance.now()
+// make performance.now() node compatible
+global.performance = {};
+global.performance.now = require('performance-now');
 
 var assert = require('assert');
 var Game = require('../../view/js/game.js');
@@ -15,6 +17,14 @@ var cardJSON = {
 	"answer_validator" : "multipleOptions_equals_midiEnharmonicsValid"
 };
 
+var multiPartAnswerCardJSON = {
+	"answer" : "C E G→C F A→B D G",
+	"deck_id" : 6,
+	"card_id" : 2,
+	"question" : "Four Five One Progression in C",
+	"answer_validator" : "multipleOptions_equals_midiEnharmonicsValid"
+}
+
 describe('Game', function() {
 	var game;
 	var card;
@@ -22,8 +32,6 @@ describe('Game', function() {
 	beforeEach(function() {
 		game = new Game(1, 2);
 		card = new Card(cardJSON);
-		// causes throw in node
-		card.captureTimeToAnswer = function() {};
 	});
 
 	describe('constructor', function() {
@@ -62,17 +70,17 @@ describe('Game', function() {
 			assert.equal(game.state, 'loading next question');
 		});
 
-		it('should change state to first attempt incorrect if answer was incorrect', function() {
+		it('should change state to "incorrect" if answer was incorrect', function() {
 			assert.equal(game.state, 'waiting');
 			game.checkAnswer('smile breathe and go slowly');
-			assert.equal(game.state, 'first attempt incorrect');
+			assert.equal(game.state, 'incorrect');
 		});
 
-		it('should change state to correct but first attempt incorrect after first attempt incorrect, ' + 
-			'and finally to loading next question', function() {
+		it('should change state to "incorrect" then to "correct first attempt incorrect", ' + 
+			'and finally to loading next question after calling checkAnswer again', function() {
 			assert.equal(game.state, 'waiting');
 			game.checkAnswer('smile breathe and go slowly');
-			assert.equal(game.state, 'first attempt incorrect');
+			assert.equal(game.state, 'incorrect');
 			game.checkAnswer(card.answer);
 			assert.equal(game.state, 'correct but first attempt incorrect');
 			game.checkAnswer(card.answer);
@@ -86,5 +94,38 @@ describe('Game', function() {
 			game.handleCardData(cardJSON);
 			assert.ok(game.card != undefined);
 		});
-	})
+	});
+
+	describe('mutlipart answers', function() {
+		beforeEach(function() {
+			card = new Card(multiPartAnswerCardJSON);
+			game.card = card;
+		});
+
+		it('should change state to "partial - correct" after correctly answering a question', function() {
+			game.checkAnswer('C E G');
+			assert.equal(game.state, 'partial - correct');
+		});
+
+		it('should change state to "partial - incorrect" after answering a question', function() {
+			game.checkAnswer('C A G');
+			assert.equal(game.state, 'partial - incorrect');
+		});
+
+		it('should change state to "loading next question" after correctly answering all question parts', function() {
+			game.checkAnswer('C E G');
+			game.checkAnswer('C F A');
+			game.checkAnswer('B D G');
+			assert.equal(game.state, 'loading next question');
+		});
+
+		it('should change state to "incorrect" after incorrectly answering' + 
+		   'one of the questions and completing the card', function() {
+			game.checkAnswer('C E G');
+			game.checkAnswer('C L A');
+			game.checkAnswer('C F A');
+			game.checkAnswer('B D G');
+			assert.equal(game.state, 'incorrect');
+		});
+	});
 });

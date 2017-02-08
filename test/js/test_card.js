@@ -1,5 +1,8 @@
 var assert = require('assert');
 var Card = require('../../view/js/card.js');
+// make performance.now() node compatible
+global.performance = {};
+global.performance.now = require('performance-now');
 
 var cardJSON = {
 	"answer" : "D",
@@ -9,13 +12,19 @@ var cardJSON = {
 	"answer_validator" : "multipleOptions_equals_midiEnharmonicsValid"
 };
 
+var multiPartAnswerCardJSON = {
+	"answer" : "C E G→C F A→B D G",
+	"deck_id" : 6,
+	"card_id" : 2,
+	"question" : "Four Five One Progression in C",
+	"answer_validator" : "multipleOptions_equals_midiEnharmonicsValid"
+}
+
 describe('Card', function() {
 	var card;
 
 	beforeEach(function() {
 		card = new Card(cardJSON);
-		// causes throw in node
-		card.captureTimeToAnswer = function() {};
 	});
 
 	describe('constructor', function() {
@@ -49,6 +58,16 @@ describe('Card', function() {
 		});
 	});
 
+	describe('methods', function() {
+		it('should reset the state on resetState()', function() {
+			card = new Card(multiPartAnswerCardJSON);
+			card.resetState();
+			assert.equal(card.validation_state, 'unanswered');
+			assert.equal(card.current_answer_part_index, 0);
+			assert.equal(card.validation_states[0], 'unanswered');
+		});
+	});
+
 	describe('answer validation', function () {
 		beforeEach(function() {
 			global.onMIDINotes = Array();
@@ -64,6 +83,78 @@ describe('Card', function() {
 			assert.equal(card.validation_state, 'unanswered')
 			card.validateAnswer('Richard Feynman')
 			assert.equal(card.validation_state, 'incorrect');
+		});
+
+		it('should change first attempt correct to false', function () {
+			card.validateAnswer('Richard Feynman')
+			assert.equal(card.first_attempt_correct, false);
+		});
+
+		it('should capture time to correct when answer is incorrect at first', function() {
+			card.captureStartTime();
+			card.validateAnswer('Richard Feynman')
+			assert.ok(card.time_to_correct == undefined);
+			card.validateAnswer(card.answer);
+			assert.ok(card.time_to_correct != undefined && isNaN(card.time_to_correct) == false);
+		});
+	});
+
+	describe('multipart answers', function() {
+		beforeEach(function() {
+			card = new Card(multiPartAnswerCardJSON);
+		});
+
+		it('should have an answers array if answer is multipart', function() {
+			assert.ok(Array.isArray(card.answers));
+		});
+
+		it('should change current answer part index on correct answer', function() {
+			card.validateAnswer('C E G');
+			assert.equal(card.current_answer_part_index, 1);
+		});
+
+		it('should capture time to correct', function() {
+			card.captureStartTime();
+			card.validateAnswer('C E G');
+			card.validateAnswer('C F A');
+			card.validateAnswer('B D G');
+			assert.ok(card.time_to_correct != undefined && isNaN(card.time_to_correct) == false);
+		});
+
+		describe('validation states', function() {
+			it('should change to "correct" on correct answer', function() {
+				card.validateAnswer('C E G');
+				assert.equal(card.validation_states[0], 'correct');
+			});
+
+			it('should change to "incorrect" then to "correct but first attempt incorrect"', function() {
+				card.validateAnswer('C E A');
+				assert.equal(card.validation_states[0], 'incorrect');
+				assert.equal(card.current_answer_part_index, 0);
+				card.validateAnswer('C E G');
+				assert.equal(card.validation_states[0], 'correct but first attempt incorrect');
+			});
+		});
+
+		describe('validation state', function() {
+			it ('should change to "partial - incorrect" then to "incorrect" when done answering', function() {
+				assert.equal(card.validation_state, 'unanswered');
+				card.validateAnswer('C E G');
+				assert.equal(card.validation_state, 'partial - correct');
+				card.validateAnswer('C Z A');
+				assert.equal(card.validation_state, 'partial - incorrect');
+				card.validateAnswer('C F A');
+				card.validateAnswer('B D G');
+				assert.equal(card.validation_state, 'incorrect');
+			});
+
+			it('should change to "partial - correct" then to "correct" when done answering', function() {
+				card.validateAnswer('C E G');
+				assert.equal(card.validation_state, 'partial - correct');
+				card.validateAnswer('C F A');
+				card.validateAnswer('B D G');
+				assert.equal(card.validation_state, 'correct');
+			});
 		});
 	});
 });

@@ -36,7 +36,7 @@ class ProgressionGenerator:
 				chords=chords, 
 				root=chords[-1].root
 				),
-			"answer" : ' '.join([note.name for note in chords[-1].notes]),
+			"answer" : '→'.join( [' '.join([note.name for note in chord.notes]) for chord in chords] ),
 			"answer_validator" : 'multipleOptions_equals_midiEnharmonicsValid'
 		}
 
