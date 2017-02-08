@@ -41,6 +41,7 @@ var Card = function(json) { return {
 	captureTimeToCorrect: function() {
 		var now = performance.now();
 		this.time_to_correct = (now - this.start_time) / 1000.0;
+		console.log(this.time_to_correct + 's captured for time to correct.');
 	},
 
 	validateAnswer: function(userAnswer) {

@@ -31,7 +31,7 @@ class ProgressionGenerator:
 	@staticmethod
 	def card_from_four_five_one(chords):
 		return {
-			"question" : templates.get_template('cards/chord-progression.html').render(
+			"question" : templates.get_template('cards/chord-progression/chord-progression.html').render(
 				symbols=["IV", "V", "I"], 
 				chords=chords, 
 				root=chords[-1].root

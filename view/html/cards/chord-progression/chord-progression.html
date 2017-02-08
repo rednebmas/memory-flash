@@ -45,14 +45,13 @@
 <div class="question-container">
 		<span class="progression">
 		{% for symbol in symbols %}
-			<span class="chord multi-part multi-part-unanswered">{{ symbol }}
-				{% if chords[loop.index0].inversion == 1 or chords[loop.index0].inversion == 2 %}
-					<sup>6</sup><!-- whitespace effects the layout...
-			-->{% endif %}<!-- so goddamn hacky. but it works!
-			-->{% if chords[loop.index0].inversion == 2 %}<!--
-					--><sub>4</sub><!--
-				-->{% endif %}<!--
-			--></span><!--
-		-->{% endfor %}</span>
+			{% if chords[loop.index0].inversion == 0 %}
+				{% include 'cards/chord-progression/chord-progression-root.html' %}<!--
+		 -->{% elif chords[loop.index0].inversion == 1 %}
+				{% include 'cards/chord-progression/chord-progression-6.html' %}<!--
+		 -->{% elif chords[loop.index0].inversion == 2 %}
+				{% include 'cards/chord-progression/chord-progression-6-4.html' %}<!--
+		 -->{% endif %}<!--
+	 -->{% endfor %}</span>
 		<span class="progression-key">in {{ root.pretty_name }}</span>
 </div>
