@@ -10,7 +10,8 @@ CREATE TABLE Card (
 	question VARCHAR(2000) NOT NULL,  
 	answer VARCHAR(2000) NOT NULL,
 	answer_validator VARCHAR(256),
-	accidental CHAR(1)
+	accidental CHAR(1),
+	scale VARCHAR(32)
 );
 
 CREATE TABLE Session (

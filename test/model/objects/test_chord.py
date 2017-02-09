@@ -95,6 +95,11 @@ class TestChord(unittest.TestCase):
 		self.assertEqual(c.pretty_name, 'C°/G♭')
 		self.assertEqual(c.name, 'Cdim/Gb')
 
+	def test_gsharp_major(self):
+		c = Chord('G#')
+		self.assertEqual(c.notes[0].name, 'G#')
+		self.assertEqual(c.notes[1].name, 'B#')
+		self.assertEqual(c.notes[2].name, 'D#')
 
 
 def main():

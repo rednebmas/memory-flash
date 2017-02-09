@@ -9,5 +9,8 @@
     "simple-mock": "^0.7.3",
     "sinon": "^1.17.7",
     "watchify": "^3.9.0"
+  },
+  "dependencies": {
+    "teoria": "^2.2.0"
   }
 }

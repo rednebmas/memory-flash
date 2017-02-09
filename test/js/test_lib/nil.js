@@ -32,5 +32,5 @@ var Nil = function() {
 };
 
 // for node.js
-if (typeof exports !== 'undefined') 
-	exports.Nil = Nil;
+if (typeof module.exports !== 'undefined') 
+	module.exports.Nil = Nil;

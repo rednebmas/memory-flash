@@ -14,6 +14,7 @@ var Card = function(json) { return {
 	answer_validator: undefined,
 	accidental: undefined,
 	time_to_correct: undefined,
+	raw: json,
 	/** multipart **/
 	current_answer_part_index: undefined,
 	validation_states: undefined,

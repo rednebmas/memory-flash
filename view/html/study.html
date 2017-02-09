@@ -30,12 +30,11 @@
 </div>
 
 <script src="/js/lib/webmidi.min.js"></script>
-<script src="/js/lib/MIDIUtils.js"></script>
-<script src="/js/midi-input.js"></script>
 <script src="/js/bundle.js"></script>
 <script type="text/javascript">
     var game = new Game({{ session.session_id}}, {{ deck.deck_id }});
     game.loadNextQuestion();
+    var midiInput = new MIDIInput();
 </script>
 
 {% endblock %}

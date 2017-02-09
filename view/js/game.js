@@ -1,4 +1,5 @@
 var Card = require('./card.js');
+var MIDIInput = require('./midi_input.js');
 
 // this pattern allows getters and setters (http://stackoverflow.com/a/17606845/337934) and a constructor
 // also see the last example from http://stackoverflow.com/a/21648197/337934
@@ -184,7 +185,7 @@ var Game = function(session_id, deck_id) { return {
 			return;
 		}
 		
-		if (onMIDINotes.size == 0 && this.card.validation_states[this.card.current_answer_part_index] == 'unanswered') {
+		if (midiInput.onNotes.size == 0 && this.card.validation_states[this.card.current_answer_part_index] == 'unanswered') {
 			$('#answer-input').val('');
 		}
 
@@ -211,5 +212,7 @@ if (typeof module !== 'undefined' && module.exports)
 	module.exports = Game;
 
 // hook into the webapp
-if (typeof window !== 'undefined')
+if (typeof window !== 'undefined') {
 	window.Game = Game;
+	window.MIDIInput = MIDIInput;
+}

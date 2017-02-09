@@ -1,4 +1,4 @@
-// based code from https://github.com/sole/MIDIUtils/blob/master/src/MIDIUtils.js
+// based on code from https://github.com/sole/MIDIUtils/blob/master/src/MIDIUtils.js
 var enharmonicConverter = {
 	"Db" : "C#",
 	"Eb" : "D#",

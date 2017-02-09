@@ -40,7 +40,8 @@ class ProgressionGenerator:
 				),
 			"answer" : '→'.join( [' '.join([note.name for note in chord.notes]) for chord in chords] ),
 			"answer_validator" : 'multipleOptions_equals_midiEnharmonicsValid',
-			"accidental" : chords[-1].scale.accidental.symbol
+			"accidental" : chords[-1].scale.accidental.symbol,
+			"scale" : chords[-1].root.name
 		}
 
 	@staticmethod

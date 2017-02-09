@@ -39,11 +39,11 @@ var AnswerValidator = function(validator_string) { return {
 	},
 
 	multipleOptions_equals_midiEnharmonicsValid: function(userAnswer, correctAnswer) {
-		if (onMIDINotes.size > 0) {
-			correctAnswer = this.replaceFlatsWithSharps(correctAnswer);
-			userAnswer = this.replaceFlatsWithSharps(userAnswer);
-			return this.multipleOptions_equals(userAnswer, correctAnswer);
-		} 
+		// if (onMIDINotes.size > 0) {
+		// 	correctAnswer = this.replaceFlatsWithSharps(correctAnswer);
+		// 	userAnswer = this.replaceFlatsWithSharps(userAnswer);
+		// 	return this.multipleOptions_equals(userAnswer, correctAnswer);
+		// } 
 
 		return this.multipleOptions_equals(userAnswer, correctAnswer);
 	},
