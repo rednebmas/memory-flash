@@ -39,6 +39,12 @@ class TestNotes(unittest.TestCase):
 		self.assertTrue(note.octave == 11)
 		self.assertTrue(note.name_octave == 'Gb11')
 
+	def test_init_with_name_esharp4(self):
+		note = Note(name='E#')
+		self.assertTrue(note.name == 'E#')
+		self.assertTrue(note.octave == 4)
+		self.assertAlmostEqual(note.freq, 349.228, places=1, msg="Freq = {}".format(note.freq))
+
 	def test_octave_assigned_automatically(self):
 		note = Note('C')
 		self.assertTrue(note.name_octave == 'C4', note.name_octave)
@@ -82,6 +88,11 @@ class TestNotes(unittest.TestCase):
 		from_note = Note(name="Eb")
 		to_note = from_note.transposed(Interval.P5())
 		self.assertTrue(to_note.name == 'Bb')
+
+	def test_transposed_from_flat_to_flat(self):
+		from_note = Note(name="Gb")
+		to_note = from_note.transposed(Interval.P4())
+		self.assertEqual(to_note.name, 'B')
 
 	################# 
 	## enharmonics ## 

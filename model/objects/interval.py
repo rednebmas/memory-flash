@@ -1,3 +1,5 @@
+from model.objects.note import Note
+
 class Interval:
 	def __init__(self, half_steps):
 		self.half_steps = half_steps
@@ -46,9 +48,11 @@ class Interval:
 
 
 	def shortdir(self):
+		if self.half_steps == 0: return ""
 		return "asc" if self.half_steps > 0 else "desc"
 
 	def longdir(self):
+		if self.half_steps == 0: return ""
 		return "ascending" if self.half_steps > 0 else "descending"
 
 	def __str__(self):
@@ -63,6 +67,13 @@ class Interval:
 	def __ne__(self, other):
 		"""Define a non-equality test"""
 		return not self.__eq__(other)
+
+	def __sub__(self, other):
+		return Interval(self.half_steps - other.half_steps)
+
+	@staticmethod
+	def between(note1, note2):
+		return Interval(note2.half_steps_from_a4 - note1.half_steps_from_a4)
 
 	@staticmethod
 	def P1():

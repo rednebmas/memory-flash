@@ -24,6 +24,15 @@ class Accidental:
 		else:
 			return ''
 
+	@property
+	def pretty_symbol(self):
+		if self.name == 'flat':
+			return '♭'
+		elif self.name == 'sharp':
+			return '#'
+		else:
+			return ''
+
 class Accidental:
 	flat = Accidental('flat')
 	sharp = Accidental('sharp')

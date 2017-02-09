@@ -126,6 +126,7 @@ class Note:
 	@staticmethod
 	def half_steps_away_from_a4_to_note_in_4th_octave(note): 
 		if note == "B#": note = "C"
+		elif note == "E#": note = "F"
 		constants = [-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2]
 		return constants[Note.names().index(Note.flat_to_sharp(note))]
 

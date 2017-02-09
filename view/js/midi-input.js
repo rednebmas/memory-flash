@@ -78,12 +78,18 @@ function removeNote(noteNumber) {
 }
 
 function addCurrentNotesToInput() {
+	var accidental = game.card.accidental;
+	console.log(accidental);
 	var onMIDINoteNumbers = Array.from(onMIDINotes);
 	onMIDINoteNumbers.sort(function(a,b){ return a - b; }); // javascript converts all array elements to strings by default! yay!
 	var onMIDINoteNames = [];
 
 	for (var i = 0; i < onMIDINoteNumbers.length; i++) {
-		onMIDINoteNames.push(MIDIUtils.noteNumberToName(onMIDINoteNumbers[i]));
+		var noteName = MIDIUtils.noteNumberToName(onMIDINoteNumbers[i])
+		if (accidental == 'b' && noteName.length == 2) {
+			noteName = enharmonicConverter[noteName];
+		}
+		onMIDINoteNames.push(noteName);
 	}
 
 	$('#answer-input').val(onMIDINoteNames.join(' '));

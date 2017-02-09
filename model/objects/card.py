@@ -3,7 +3,7 @@ from model.db import db
 class Card:
 	@staticmethod
 	def from_db(row):
-		return Card(row['card_id'], row['deck_id'], row['question'], row['answer'], row['answer_validator'])
+		return Card(row['card_id'], row['deck_id'], row['question'], row['answer'], row['answer_validator'], row['accidental'])
 
 	@staticmethod
 	def from_db_id(card_id):
@@ -13,12 +13,13 @@ class Card:
 		except Exception as e:
 			return None
 
-	def __init__(self, card_id, deck_id, question, answer, answer_validator):
+	def __init__(self, card_id, deck_id, question, answer, answer_validator, accidental):
 		self.card_id = card_id
 		self.deck_id = deck_id
 		self.question = question
 		self.answer = answer
-		self.answer_validator = answer_validator 
+		self.answer_validator = answer_validator
+		self.accidental = accidental
 
 	def as_dict(self):
 		return {
@@ -26,7 +27,8 @@ class Card:
 			"deck_id" : self.deck_id,
 			"question" : self.question,
 			"answer" : self.answer,
-			"answer_validator" : self.answer_validator
+			"answer_validator" : self.answer_validator,
+			"accidental" : self.accidental
 		}
 
 	def set_answer_history(self, answer_history):

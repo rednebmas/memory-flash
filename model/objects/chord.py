@@ -12,8 +12,8 @@ class Chord:
 		root_name, self.quality = re.search(r'([A-G][b#]?)(.*)', name).groups()
 		self.root = Note(root_name)
 		self.intervals = Chord.intervals_for_quality(self.quality) 
-		scale = Scale(self.root.name + ' minor') if 'm' in self.name else Scale(self.root.name)
-		self.notes = [self.root] + [self.root.transposed(interval, scale.accidental) for interval in self.intervals]
+		self.scale = Scale(self.root.name + ' minor') if 'm' in self.name else Scale(self.root.name)
+		self.notes = [self.root] + [self.root.transposed(interval, self.scale.accidental) for interval in self.intervals]
 		self.inversion = 0
 
 	def invert(self, num):

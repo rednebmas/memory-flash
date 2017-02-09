@@ -12,6 +12,42 @@ class Scale:
 		else:
 			self.accidental = Scale.major_scale_accidental_converter(self.root.name)
 
+	def degree(self, num):
+		names = ["C", "D" , "E" , "F" , "G" , "A" , "B"]
+		expected_note = self.root.transposed(self.intervals[num-1])
+
+		root_index = names.index(self.root.name[0])
+		degree_index = (root_index + (num - 1)) % len(names)
+		degree_note = Note(names[degree_index])
+		expected_note_index = names.index(expected_note.name[0])
+
+		if expected_note.name[0] == degree_note.name[0]:
+			note = expected_note
+
+		# For example...
+		# root  = Gb, degree = 4
+		# degree_note = C
+		# expected_note = B
+		# note should be Cb
+		elif names[(degree_index - 1) % len(names)] == expected_note.name[0]: 
+			note = Note(names[degree_index] + "b")
+		else:
+			note = Note(names[degree_index] + "#")
+		return note
+			
+	@property
+	def intervals(self):
+		if self.type == 'major':
+			return [
+				Interval.P1(),
+				Interval.M2(),
+				Interval.M3(),
+				Interval.P4(),
+				Interval.P5(),
+				Interval.M6(),
+				Interval.M7(),
+			]
+
 	@staticmethod
 	def type_for_name(name):
 		split = name.split(' ')
@@ -45,6 +81,7 @@ class Scale:
 	@staticmethod
 	def major_scale_accidental_converter(note):
 		return {
+			"Cb" : Accidental.flat,
 			"C" : Accidental.sharp,
 			"C#" : Accidental.sharp,
 			"Db" : Accidental.flat,

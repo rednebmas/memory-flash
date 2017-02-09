@@ -9,7 +9,8 @@ CREATE TABLE Card (
 	deck_id INTEGER NOT NULL, 
 	question VARCHAR(2000) NOT NULL,  
 	answer VARCHAR(2000) NOT NULL,
-	answer_validator VARCHAR(256)
+	answer_validator VARCHAR(256),
+	accidental CHAR(1)
 );
 
 CREATE TABLE Session (

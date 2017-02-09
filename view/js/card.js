@@ -12,7 +12,7 @@ var Card = function(json) { return {
 	deck_id: json['deck_id'],
 	card_id: json['card_id'],
 	answer_validator: undefined,
-	accidental_type: undefined,
+	accidental: undefined,
 	time_to_correct: undefined,
 	/** multipart **/
 	current_answer_part_index: undefined,
@@ -24,8 +24,8 @@ var Card = function(json) { return {
 
 	init: function() {
 		this.answer_validator = AnswerValidator(json['answer_validator']);
-		if ('accidental_type' in json) {
-			this.accidental_type = json['accidental_type'];
+		if ('accidental' in json) {
+			this.accidental = json['accidental'];
 		}
 		if (json['answer'].includes('→')) { // if multipart answer
 			this.answers = json['answer'].split('→');
