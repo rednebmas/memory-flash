@@ -2,6 +2,7 @@ import re
 import math
 from math import floor
 from model.objects.accidental import Accidental
+import mingus.core.intervals as mingus_intervals
 
 class Note:
 	A4_FREQUENCY = 440.0
@@ -31,11 +32,13 @@ class Note:
 		self.freq = Note.frequency_for_note_with_half_steps_from_a4(self.half_steps_from_a4)
 
 	def transposed(self, interval, accidental=None):
-		# scale = Scale(self.name)
-		new_half_steps_from_a4 = self.half_steps_from_a4 + interval.half_steps
-		if accidental is None: 
-			accidental = self.accidental
-		return Note(freq=Note.frequency_for_note_with_half_steps_from_a4(new_half_steps_from_a4), accidental=accidental)
+		return Note(
+			name=mingus_intervals.from_shorthand(
+					self.name, 
+					interval.mingusname(), 
+					interval.half_steps > 0
+				)
+		)
 
 	def enharmonics(self):
 		converter = Note.enharmonic_converter()
@@ -54,6 +57,8 @@ class Note:
 		if self._accidental is None:
 			if '#' in self.name:
 				self._accidental = Accidental.sharp
+			elif 'bb' in self.name:
+				self._accidental = Accidental.doubleflat
 			elif 'b' in self.name:
 				self._accidental = Accidental.flat
 			else:
@@ -76,7 +81,7 @@ class Note:
 	@staticmethod
 	def parse_name_and_octave(full_name):
 		""" If name does not contain octave, returns 4 """
-		match = re.search(r'([ABCDEFG][#b]?)(\d+)?', full_name)
+		match = re.search(r'([ABCDEFG][#b]{0,2})(\d+)?', full_name)
 		if match:
 			name = match.group(1)  
 
@@ -128,6 +133,21 @@ class Note:
 	def half_steps_away_from_a4_to_note_in_4th_octave(note): 
 		if note == "B#": note = "C"
 		elif note == "E#": note = "F"
+		elif note == "Bbb": note = "A"
+		elif note == "Cbb": note = "Bb"
+		elif note == "Dbb": note = "C"
+		elif note == "Ebb": note = "D"
+		elif note == "Fbb": note = "D"
+		elif note == "Gbb": note = "F"
+		elif note == "Abb": note = "G"
+
+		elif note == "B##": note = "C#"
+		elif note == "C##": note = "D"
+		elif note == "D##": note = "E"
+		elif note == "E##": note = "F#"
+		elif note == "F##": note = "G"
+		elif note == "G##": note = "A"
+		elif note == "A##": note = "B"
 		constants = [-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2]
 		return constants[Note.names().index(Note.flat_to_sharp(note))]
 

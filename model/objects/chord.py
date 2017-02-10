@@ -2,6 +2,7 @@ import re
 from model.objects.note import Note
 from model.objects.interval import Interval
 from model.objects.scale import Scale
+import mingus.core.chords as mingus_chords
 
 class Chord:
 	"""
@@ -13,7 +14,7 @@ class Chord:
 		self.root = Note(root_name)
 		self.intervals = Chord.intervals_for_quality(self.quality) 
 		self.scale = Scale(self.root.name + ' minor') if 'm' in self.name else Scale(self.root.name)
-		self.notes = [self.root] + [self.root.transposed(interval, self.scale.accidental) for interval in self.intervals]
+		self.notes = [Note(note_name) for note_name in mingus_chords.from_shorthand(name)]
 		self.inversion = 0
 
 	def invert(self, num):

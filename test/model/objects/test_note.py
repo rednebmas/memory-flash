@@ -79,11 +79,6 @@ class TestNotes(unittest.TestCase):
 		note = note_c4.transposed(Interval.M2())
 		self.assertTrue(note.name_octave == "D4")
 
-	def test_transposed_with_accidental_type(self):
-		note_c4 = Note(name="C#")
-		note = note_c4.transposed(Interval.M2(), accidental=Accidental.flat)
-		self.assertTrue(note.name == "Eb", note.name)
-
 	def test_transposed_from_flat_to_flat(self):
 		from_note = Note(name="Eb")
 		to_note = from_note.transposed(Interval.P5())
@@ -92,7 +87,7 @@ class TestNotes(unittest.TestCase):
 	def test_transposed_from_flat_to_flat(self):
 		from_note = Note(name="Gb")
 		to_note = from_note.transposed(Interval.P4())
-		self.assertEqual(to_note.name, 'B')
+		self.assertEqual(to_note.name, 'Cb')
 
 	################# 
 	## enharmonics ## 

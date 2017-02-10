@@ -17,6 +17,8 @@ class Accidental:
 
 	@property
 	def symbol(self):
+		if self.name == 'doubleflat':
+			return 'bb'
 		if self.name == 'flat':
 			return 'b'
 		elif self.name == 'sharp':
@@ -26,6 +28,8 @@ class Accidental:
 
 	@property
 	def pretty_symbol(self):
+		if self.name == 'doubleflat':
+			return '♭♭'
 		if self.name == 'flat':
 			return '♭'
 		elif self.name == 'sharp':
@@ -34,6 +38,7 @@ class Accidental:
 			return ''
 
 class Accidental:
+	doubleflat = Accidental('doubleflat')
 	flat = Accidental('flat')
 	sharp = Accidental('sharp')
 	natural = Accidental('natural')

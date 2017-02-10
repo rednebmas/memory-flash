@@ -1,7 +1,8 @@
 import os
-from model.objects.note import Note
+# from model.objects.note import Note
 from model.objects.interval import Interval
 from jinja2 import Environment, FileSystemLoader
+from mingus.containers import Note
 
 templates = Environment(loader=FileSystemLoader(os.getcwd() + '/view/html'))
 
@@ -9,12 +10,11 @@ class NotesGenerator:
 	@staticmethod
 	def treble_cards():
 		cards = []
-		notes = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-		current_note = Note(name='G3')
-		end_note = Note(name='G#6')
-		while current_note.freq < end_note.freq:
+		current_note = Note('G-3')
+		end_note = Note('G#-6')
+		while int(current_note) < int(end_note):
 			cards.append(NotesGenerator.card_for_note(current_note, "treble"))
-			current_note = current_note.transposed(Interval.m2())
+			current_note = current_note.from_int(int(current_note) + 1)
 		return cards
 
 	@staticmethod

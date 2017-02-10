@@ -3,6 +3,7 @@ import random
 from model.objects.note import Note
 from model.objects.interval import Interval
 from jinja2 import Environment, FileSystemLoader
+import mingus.core.intervals as mingus_intervals
 
 templates = Environment(loader=FileSystemLoader(os.getcwd() + '/view/html'))
 
@@ -10,6 +11,31 @@ class IntervalsGenerator:
 	@staticmethod
 	def generate_cards():
 		notes = [Note(name=name) for name in Note.names()]
+		notes = [ 
+			"C",
+			"D",
+			"E",
+			"F",
+			"G",
+			"A",
+			"B",
+
+			"C#",
+			"D#",
+			"E#",
+			"F#",
+			"G#",
+			"A#",
+			"B#",
+
+			"Cb",
+			"Db",
+			"Eb",
+			"Fb",
+			"Gb",
+			"Ab",
+			"Bb",
+		]
 		fifths = []
 		major_thirds = []
 		minor_thirds = []
@@ -25,30 +51,10 @@ class IntervalsGenerator:
 				elif abs(interval.half_steps) == 5: arr_to_add_to = fourths
 				else: arr_to_add_to = others
 
-				if note.isaltered():
-					flat_note, sharp_note = note.enharmonics()
-					answer = note.transposed(interval)
-					if answer.isaltered():
-						flat_answer, sharp_answer = answer.enharmonics()
-						arr_to_add_to.append(IntervalsGenerator.card_with(flat_note, flat_answer.name, interval))
-						arr_to_add_to.append(IntervalsGenerator.card_with(sharp_note, sharp_answer.name, interval))
-					else:
-						arr_to_add_to.append(IntervalsGenerator.card_with(flat_note, answer.name, interval))
-						arr_to_add_to.append(IntervalsGenerator.card_with(sharp_note, answer.name, interval))
-				else:
-					answer = note.transposed(interval)
-					if answer.isaltered():
-						flat_answer, sharp_answer = answer.enharmonics()
-						arr_to_add_to.append(IntervalsGenerator.card_with(note, flat_answer.name+'|'+sharp_answer.name, interval))
-					else:
-						arr_to_add_to.append(IntervalsGenerator.card_with(note, answer.name, interval))
+				answer = mingus_intervals.from_shorthand(note, interval.mingusname(), interval.half_steps > 0)
+				arr_to_add_to.append(IntervalsGenerator.card_with(Note(note), answer, interval))
 
-		random.shuffle(fifths)
-		random.shuffle(major_thirds)
-		random.shuffle(minor_thirds)
-		random.shuffle(fourths)
 		random.shuffle(others)
-
 		cards = fifths + major_thirds + minor_thirds + fourths + others
 		return cards
 

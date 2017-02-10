@@ -1,16 +1,8 @@
-from model.objects.note import Note
-
 class Interval:
 	def __init__(self, quality, number):
 		self.number = number
 		self.quality, self.quality_long = Interval.short_long_quality_for_quality(quality)
-		half_steps_modifier_for_quality = {
-			"perfect" : 0,
-			"major" : 0,
-			"minor" : -1,
-			"augmented" : 1
-		}
-		self.half_steps = Interval.major_scale_degree_to_half_steps()[number] + half_steps_modifier_for_quality[self.quality_long]
+		self.half_steps = Interval.major_scale_degree_to_half_steps()[number] + Interval.half_step_modifiers_for_quality()[self.quality_long]
 
 	def descending(self):
 		interval = Interval(self.quality, self.number)
@@ -19,6 +11,17 @@ class Interval:
 		
 	def name(self):
 		return self.longdir() + " " + self.longname()
+	@staticmethod
+	def half_step_modifiers_for_quality():
+		return {
+			"perfect" : 0,
+			"major" : 0,
+			"minor" : -1,
+			"augmented" : 1
+		}
+
+	def half_step_modifier_for_quality(self):
+		return Interval.half_step_modifiers_for_quality()[self.quality]
 
 	def shortname(self):
 		shortnames = {
@@ -55,6 +58,19 @@ class Interval:
 			12 : "Octave"
 		}
 		return longnames[abs(self.half_steps)]
+
+
+	def mingusname(self):
+		mingus_quality = ""
+		if self.quality_long == "minor":
+			mingus_quality = "b"
+		elif self.quality_long == "major":
+			mingus_quality = ""
+		elif self.quality_long == "augmented":
+			mingus_quality = "#"
+		elif self.quality_long == "diminished":
+			mingus_quality = "bb"
+		return mingus_quality + str(self.number)
 
 
 	def shortdir(self):
