@@ -1,6 +1,8 @@
 var Card = require('./card.js');
 var MIDIInput = require('./midi_input.js');
+var TextInput = require('./text_input.js');
 midiInput = new MIDIInput();
+textInput = new TextInput();
 
 // this pattern allows getters and setters (http://stackoverflow.com/a/17606845/337934) and a constructor
 // also see the last example from http://stackoverflow.com/a/21648197/337934
@@ -67,12 +69,6 @@ var Game = function(session_id, deck_id) { return {
 		$('#answer-input').focus();
 		$("#submit-answer").click(function() {
 			self.checkAnswer($('#answer-input').val());
-		});
-
-		$('#answer-input').keypress(function(e) {
-			if (e.which == 13) { // enter key pressed
-				self.checkAnswer($('#answer-input').val());
-			}
 		});
 	},
 
