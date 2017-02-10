@@ -31,6 +31,7 @@ class Note:
 		self.freq = Note.frequency_for_note_with_half_steps_from_a4(self.half_steps_from_a4)
 
 	def transposed(self, interval, accidental=None):
+		# scale = Scale(self.name)
 		new_half_steps_from_a4 = self.half_steps_from_a4 + interval.half_steps
 		if accidental is None: 
 			accidental = self.accidental

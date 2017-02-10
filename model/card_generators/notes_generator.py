@@ -14,7 +14,7 @@ class NotesGenerator:
 		end_note = Note(name='G#6')
 		while current_note.freq < end_note.freq:
 			cards.append(NotesGenerator.card_for_note(current_note, "treble"))
-			current_note = current_note.transposed(Interval(1))
+			current_note = current_note.transposed(Interval.m2())
 		return cards
 
 	@staticmethod

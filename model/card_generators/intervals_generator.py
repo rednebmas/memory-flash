@@ -15,17 +15,16 @@ class IntervalsGenerator:
 		minor_thirds = []
 		fourths = []
 		others = []
+		intervals = Interval.all()
 		for note in notes:
-			for i in range(-11, 12): # for each interval
-				if i == 0: continue
-
-				if abs(i) == 7: arr_to_add_to = fifths
-				elif abs(i) == 4: arr_to_add_to = major_thirds
-				elif abs(i) == 3: arr_to_add_to = minor_thirds
-				elif abs(i) == 5: arr_to_add_to = fourths
+			for interval in intervals: # for each interval
+				if   abs(interval.half_steps) == 0: continue
+				elif abs(interval.half_steps) == 7: arr_to_add_to = fifths
+				elif abs(interval.half_steps) == 4: arr_to_add_to = major_thirds
+				elif abs(interval.half_steps) == 3: arr_to_add_to = minor_thirds
+				elif abs(interval.half_steps) == 5: arr_to_add_to = fourths
 				else: arr_to_add_to = others
 
-				interval = Interval(i)
 				if note.isaltered():
 					flat_note, sharp_note = note.enharmonics()
 					answer = note.transposed(interval)

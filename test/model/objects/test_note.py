@@ -76,7 +76,7 @@ class TestNotes(unittest.TestCase):
 
 	def test_note_transposed_c4(self):
 		note_c4 = Note(name="C4")
-		note = note_c4.transposed(Interval(2))
+		note = note_c4.transposed(Interval.M2())
 		self.assertTrue(note.name_octave == "D4")
 
 	def test_transposed_with_accidental_type(self):
