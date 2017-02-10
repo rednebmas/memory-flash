@@ -19,7 +19,7 @@ class Scheduler:
 			card = cards[randint(0, min(len(cards) - 1, 11))]
 		elif session_stage == "reviewing":
 			card = Scheduler.weighted_random_card(session.cards, previous_card_id)
-			print('picked card: ' + str(card.answer_history.time_to_correct))
+			print('picked card ttc: ' + str(card.answer_history.time_to_correct) + ", id: " + str(card.card_id))
 		elif session_stage == "finished":
 			print('****************** started a new session *******************')
 

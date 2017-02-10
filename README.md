@@ -8,6 +8,7 @@
 
 	pip3 install sanic
 	pip3 install jinja2
+	sudo -H pip3 install git+git://github.com/edudobay/python-mingus.git@python3
 	
 *run*
 

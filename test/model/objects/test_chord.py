@@ -18,6 +18,8 @@ class TestChord(unittest.TestCase):
 		self.assertTrue(c.notes[1].name == 'E')
 		self.assertTrue(c.notes[2].name == 'G')
 
+		self.assertEqual(c.quality_full(), "major")
+
 	def test_c_minor(self):
 		c = Chord('Cm')
 
@@ -32,6 +34,8 @@ class TestChord(unittest.TestCase):
 		self.assertTrue(c.notes[1].name == 'Eb')
 		self.assertTrue(c.notes[2].name == 'G')
 
+		self.assertEqual(c.quality_full(), "minor")
+
 	def test_major_flat_chord(self):
 		c = Chord('Bb')
 
@@ -40,6 +44,8 @@ class TestChord(unittest.TestCase):
 		self.assertTrue(c.notes[0].name == 'Bb')
 		self.assertTrue(c.notes[1].name == 'D')
 		self.assertTrue(c.notes[2].name == 'F')
+		
+		self.assertEqual(c.quality_full(), "major")
 
 	def test_first_inverted(self):
 		c = Chord('C').invert(1)

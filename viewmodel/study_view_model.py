@@ -13,6 +13,7 @@ class StudyViewModel:
 
 	@staticmethod
 	def next_card(session_id, deck_id, previous_card_id=None):
+		if previous_card_id is not None: previous_card_id = int(previous_card_id)
 		session = Session.from_deck_id(deck_id)
 		card, state = Scheduler.next(session, previous_card_id)
 		return card

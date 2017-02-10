@@ -27,6 +27,14 @@ class Chord:
 		inverted.inversion = num
 		return inverted
 
+	def quality_full(self):
+		if len(self.quality) == 0:
+			return "major"
+		elif self.quality[0] == "m":
+			return "minor"
+		else:
+			return "unkown quality"
+
 	@property
 	def pretty_name(self):
 		return self.name.replace('##', '𝄪').replace('#', '♯').replace('b','♭').replace('dim', '°').replace('aug', '+')

@@ -51,7 +51,6 @@ class ChordsGenerator:
 		random.shuffle(cards)
 		return cards
 
-
 	@staticmethod
 	def generate_dim_chords_cards():
 		roots = []
@@ -101,6 +100,7 @@ class ChordsGenerator:
 		return {
 			"question" : templates.get_template('cards/chord.html').render(chord=chord),
 			"answer" : ' '.join([note.name for note in chord.notes]),
-			"answer_validator" : 'multipleOptions_equals_midiEnharmonicsValid'
+			"answer_validator" : 'multipleOptions_equals_midiEnharmonicsValid',
+			"scale" : chord.root.name + " " + chord.quality_full()
 		}
 

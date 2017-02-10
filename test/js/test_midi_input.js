@@ -10,15 +10,16 @@ var Card = require('../../view/js/card.js');
 var gflatCard = {
     "question": "IV V I in Gb",
     "answer": "Gb Cb Eb→F Ab Db→Gb Bb Db",
-    "scale": "Gb",
+    "scale": "Gb major",
     "accidental": "b",
 	"deck_id": 6,
-	"card_id": 2
+	"card_id": 2,
+	"answer_validator": "multipleOptions_equals_midiEnharmonicsValid",
 }
 
 var intervalCard = {
 	"question": "What is a perfect fifth of Db?",
-	"answer": "Ab",
+	"answer": "Ab major",
 	"deck_id": 2,
 	"card_id": 1,
 	"answer_validator": "multipleOptions_equals_midiEnharmonicsValid",
@@ -48,6 +49,46 @@ describe('MIDIInput', function() {
             midiInput.removeNote(36);
             assert.equal(midiInput.onNotes.size, 0);
         });
+
+        it('should check answer if wrong note and change game state to "partial - incorrect"', function() {
+            midiInput.addNote(41);
+            assert.equal(game.state, 'partial - incorrect');
+        });
+
+        it('should check answer on correct answer and change game state to "partial - correct"', function() {
+            midiInput.addNote(42);
+            midiInput.addNote(47);
+            midiInput.addNote(51);
+            assert.equal(game.state, 'partial - correct');
+        });
+    });
+
+    describe('method', function() {
+        it('currentAnswerIsCorrectAnswer should return true', function() {
+            // can't use addNote because if we did, after the last check and move the game state
+            midiInput.onNotes.add(42);
+            midiInput.onNotes.add(47);
+            midiInput.onNotes.add(51);
+            midiInput.output = midiInput.calcOutput();
+            assert.ok(midiInput.currentAnswerIsCorrectAnswer());
+        });
+
+        it('currentAnswerIsCorrectAnswer should return false', function() {
+            midiInput.addNote(41);
+            midiInput.addNote(47);
+            midiInput.addNote(51);
+            assert.ok(midiInput.currentAnswerIsCorrectAnswer() == false);
+        });
+
+        it('currentAnswerIsPartOfCorrectAnswer should return true', function() {
+            midiInput.addNote(42);
+            assert.ok(midiInput.currentAnswerIsPartOfCorrectAnswer());
+        });
+
+        it('currentAnswerIsPartOfCorrectAnswer should return false', function() {
+            midiInput.addNote(41);
+            assert.ok(midiInput.currentAnswerIsPartOfCorrectAnswer() == false);
+        });
     });
 
     describe('output', function() {
@@ -63,13 +104,13 @@ describe('MIDIInput', function() {
             midiInput.addNote(36);
             midiInput.addNote(40);
             midiInput.addNote(43);
-            assert.equal(midiInput.output(), 'C E G');
+            assert.equal(midiInput.output, 'C E G');
         });
 
         it('should recognize the accidental of the card even if there is no scale', function() {
             game.card = new Card(intervalCard);
             midiInput.addNote(44);
-            assert.equal(midiInput.output(), "Ab");
+            assert.equal(midiInput.output, "Ab");
         });
 
         it('should recognize to the scale of the card', function() {
@@ -77,18 +118,11 @@ describe('MIDIInput', function() {
             midiInput.addNote(42);
             midiInput.addNote(47);
             midiInput.addNote(51);
-            assert.equal(midiInput.output(), 'Gb Cb Eb');
+            assert.equal(midiInput.output, 'Gb Cb Eb');
         });
     });
     
     describe('properties', function() {
-        beforeEach(function () {
-            midiInput = new MIDIInput();
-            game = new Game();
-            card = new Card(gflatCard);
-            game.card = card;
-        });
-
         it('should have a scale (if using a card with a scale)', function() {
             assert.ok(midiInput.scale != undefined);
         });
@@ -97,9 +131,5 @@ describe('MIDIInput', function() {
             var scale = midiInput.scale;
             assert.ok(midiInput.chromaMap != undefined);;
         });
-
-        // it('should reset on calling check answer', function() {
-        //     // need to test!
-        // });
     });
 });

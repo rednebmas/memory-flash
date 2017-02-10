@@ -5,6 +5,7 @@ from model.objects.chord import Chord
 from model.objects.interval import Interval
 from jinja2 import Environment, FileSystemLoader
 import mingus.core.progressions as progressions
+import copy
 
 templates = Environment(loader=FileSystemLoader(os.getcwd() + '/view/html'))
 
@@ -40,7 +41,7 @@ class ProgressionGenerator:
 			if root_note.name in ['D#', 'A#', 'G#']: # theoretical keys
 				continue
 
-			mingus_chords = progressions.to_chords(progression, root_note.name)
+			mingus_chords = copy.deepcopy(progressions.to_chords(progression, root_note.name))
 			for chord in mingus_chords:
 				del chord[2]
 

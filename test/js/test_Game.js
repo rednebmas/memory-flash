@@ -1,6 +1,7 @@
 // nil out jquery 
 var Nil = require('./test_lib/nil.js').Nil;
 global.$ = new Nil(); 
+global.WebMidi = new Nil(); 
 // make performance.now() node compatible
 global.performance = {};
 global.performance.now = require('performance-now');

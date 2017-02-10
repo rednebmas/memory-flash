@@ -11,6 +11,7 @@ var MIDIInput = function () { return {
 	onNotes: new Set(),
 	chromaMap: undefined,
 	_scale: undefined,
+	output: undefined,
 
 	/** 
 	Getters and Setters 
@@ -42,17 +43,21 @@ var MIDIInput = function () { return {
 
 	parseTeoriaScaleFromScaleName: function(scaleName) {
 		var split = scaleName.split(" ");
-		var scale;
+		var note = teoria.note(split[0]);
+		var theScale;
 		if (split.length == 1) { // major
-			var note = teoria.note(split[0]);
-			scale = note.scale('major');
+			theScale = note.scale('major');
+		} else if (split[1] == 'major') {
+			theScale = note.scale('major');
+		} else if (split[1] == 'minor') {
+			theScale = note.scale('minor');
 		}
-		return scale;
+		return theScale;
 	},
 
 	createChromaMap: function() {
 		this.chromaMap = {};
-		this.scale.notes().forEach(function (note) {
+		this._scale.notes().forEach(function (note) {
 			this.chromaMap[note.chroma()] = note;
 		}, this);
 	},
@@ -80,15 +85,55 @@ var MIDIInput = function () { return {
 
 	addNote: function(midiNoteNumber) {
 		this.onNotes.add(midiNoteNumber);
+		this.output = this.calcOutput();
 		this.addOutputToGameInput();
+		this.checkAnswerIfNeeded();
 	},
 
+	checkAnswerIfNeeded: function() {
+		if (this.currentAnswerIsCorrectAnswer()) {
+			game.checkAnswer(this.output);
+			if (game.state == 'loading next question') {
+				this.scale = undefined;
+			}
+		} else if (this.currentAnswerIsPartOfCorrectAnswer() == false) {
+			game.checkAnswer(this.output);
+		}
+	},
+
+	currentAnswerIsPartOfCorrectAnswer: function(arguments) {
+		var userAnswerParts = this.output.split(' ');
+		var correctAnswerParts = this.currentCorrectAnswer().split(' ');
+		var isSubset = true;
+		userAnswerParts.forEach(function(userAnswerPart) {
+			isSubset = isSubset & (correctAnswerParts.indexOf(userAnswerPart) >= 0);
+		}, this);
+
+		return isSubset == 1; // javascript bitwise operators return 0 or 1 instead of true/false
+	},
+
+	currentAnswerIsCorrectAnswer: function() {
+		var userAnswer = this.output;
+		return game.card.answer_validator.validate(userAnswer, this.currentCorrectAnswer());
+	},
+
+	currentCorrectAnswer: function() {
+		var answer;
+		if (game.card.answers != undefined) {
+			answer = game.card.answers[game.card.current_answer_part_index];
+		} else {
+			answer = game.card.answer;
+		}
+		return answer;
+	},
+	
 	removeNote: function(midiNoteNumber) {
 		this.onNotes.delete(midiNoteNumber);
+		this.output = this.calcOutput();
 		this.addOutputToGameInput();
 	},
 
-	output: function() {
+	calcOutput: function() {
 		var notes = Array.from(this.onNotes);
 		notes.sort(function (a, b) { return a - b; }); // javascript converts all array elements to strings by default! yay! \s
 		notes = notes.map(function(note) {
@@ -98,7 +143,7 @@ var MIDIInput = function () { return {
 		notes = this.makeNotesRespectCardScale(notes);
 
 		var noteNames = notes.map(function(note) {
-			return note.name().toUpperCase() + note.accidental();
+			return note.name().toUpperCase() + note.accidental().replace('x', '##');
 		});
 
 		return noteNames.join(' ');
@@ -138,7 +183,7 @@ var MIDIInput = function () { return {
 	},
 
 	addOutputToGameInput: function() {
-		$('#answer-input').val(this.output());
+		$('#answer-input').val(this.output);
 	}
 
 }.init(); };
