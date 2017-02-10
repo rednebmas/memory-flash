@@ -29,7 +29,7 @@ class Chord:
 
 	@property
 	def pretty_name(self):
-		return self.name.replace('#', '♯').replace('b','♭').replace('dim', '°')
+		return self.name.replace('##', '𝄪').replace('#', '♯').replace('b','♭').replace('dim', '°').replace('aug', '+')
 
 	@staticmethod
 	def intervals_for_quality(quality):

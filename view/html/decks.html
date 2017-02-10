@@ -2,21 +2,28 @@
 {% block title %}Decks{% endblock %}
 {% block decks_active %}active{% endblock %}
 {% block content %}
-    <h1>Decks</h1>
-    <ul>
-    	{{ deck_list }}
-    	{% for deck in decks %}
-    		<li>{{ deck.name }}</li><br>
-    		<a href="decks/{{deck.deck_id}}/study">
-    			<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-    				Study
-    			</button>
-    		</a>
-    		<a href="decks/{{deck.deck_id}}/cards">
-	    		<button class="mdl-button mdl-js-button mdl-button--raised">
-	    			All Cards
-	    		</button>
-    		</a>
-    	{% endfor %}
-    </ul>
+<style>
+	.deck {
+		padding: 4px 00px;
+	}
+</style>
+
+<h1>Decks</h1>
+<ul>
+	{{ deck_list }}
+	{% for deck in decks %}
+		<li class="deck">{{ deck.name }}<br>
+		<a href="decks/{{deck.deck_id}}/study">
+			<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+				Study
+			</button>
+		</a>
+		<a href="decks/{{deck.deck_id}}/cards">
+			<button class="mdl-button mdl-js-button mdl-button--raised">
+				All Cards
+			</button>
+		</a></li>
+	{% endfor %}
+</ul>
+
 {% endblock %}

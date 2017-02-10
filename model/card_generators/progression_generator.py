@@ -4,6 +4,7 @@ from model.objects.note import Note
 from model.objects.chord import Chord
 from model.objects.interval import Interval
 from jinja2 import Environment, FileSystemLoader
+import mingus.core.progressions as progressions
 
 templates = Environment(loader=FileSystemLoader(os.getcwd() + '/view/html'))
 
@@ -29,6 +30,48 @@ class ProgressionGenerator:
 		random.shuffle(first_inversion)
 		random.shuffle(second_inversion)
 		return root_inversion + first_inversion + second_inversion
+
+	@staticmethod
+	def two_7_five_7_one_M7__root_three_seven__cards():
+		chords = []
+		notes = [Note(name) for name in Note.names_with_enharmonics()]
+		progression = ["ii7", "V7", "IM7"]
+		for root_note in notes:
+			if root_note.name in ['D#', 'A#', 'G#']: # theoretical keys
+				continue
+
+			mingus_chords = progressions.to_chords(progression, root_note.name)
+			for chord in mingus_chords:
+				del chord[2]
+
+			one_chord = Chord(mingus_chords[2][0])
+			two_chord = Chord(mingus_chords[0][0])
+			five_chord = Chord(mingus_chords[1][0])
+
+			two_chord.notes = [Note(name) for name in mingus_chords[0]]
+			five_chord.notes = [Note(name) for name in mingus_chords[1]]
+			five_chord.notes[1], five_chord.notes[2] = five_chord.notes[2], five_chord.notes[1] # switch 3 and 7
+			one_chord.notes = [Note(name) for name in mingus_chords[2]]
+
+			chord_prog = [two_chord, five_chord, one_chord]
+
+			chords.append(ProgressionGenerator.card_from_two_five_one(chord_prog))
+
+		return chords
+
+	@staticmethod
+	def card_from_two_five_one(chords):
+		return {
+			"question" : templates.get_template('cards/chord-progression/chord-progression.html').render(
+				symbols=["ii7", "V7", "Imaj7"], 
+				chords=chords, 
+				root=chords[-1].root
+				),
+			"answer" : '→'.join( [' '.join([note.name for note in chord.notes]) for chord in chords] ),
+			"answer_validator" : 'multipleOptions_equals_midiEnharmonicsValid',
+			"accidental" : chords[-1].scale.accidental.symbol,
+			"scale" : chords[-1].root.name
+		}
 
 	@staticmethod
 	def card_from_four_five_one(chords):

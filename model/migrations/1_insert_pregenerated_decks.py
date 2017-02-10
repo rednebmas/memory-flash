@@ -1,3 +1,4 @@
+import random
 from model.card_generators.times_table_generator import TimesTableGenerator
 from model.card_generators.notes_generator import NotesGenerator
 from model.card_generators.intervals_generator import IntervalsGenerator
@@ -51,9 +52,27 @@ insert_deck(
 
 insert_deck(
 	db, 
+	'Augmented Chords', 
+	'Augmented chords in all inversions', 
+	ChordsGenerator.generate_aug_chords_cards()
+)
+
+insert_deck(
+	db, 
 	'Major and Minor Chords', 
 	'Major and Minor chords in all inversions', 
 	ChordsGenerator.generate_major_and_minor_chord_cards()
+)
+
+triads = ChordsGenerator.generate_major_and_minor_chord_cards() + \
+         ChordsGenerator.generate_aug_chords_cards() + \
+         ChordsGenerator.generate_dim_chords_cards()
+random.shuffle(triads)
+insert_deck(
+	db, 
+	'All triads', 
+	'All triads in all inversions', 
+	triads
 )
 
 insert_deck(
@@ -61,4 +80,11 @@ insert_deck(
 	'IV V I Cadence', 
 	'Includes common sets of inversions', 
 	ProgressionGenerator.four_five_one_cards()
+)
+
+insert_deck(
+	db, 
+	'ii7 V7 Imaj7 Cadence', 
+	'Root, Thirds, and Sevenths', 
+	ProgressionGenerator.two_7_five_7_one_M7__root_three_seven__cards()
 )
