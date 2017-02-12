@@ -59,6 +59,7 @@ class Scale:
 	@staticmethod
 	def minor_scale_accidental_converter(note):
 		return {
+			"Cb" : Accidental.flat,
 			"C" : Accidental.flat,
 			"C#" : Accidental.sharp,
 			"Db" : Accidental.flat,
@@ -66,6 +67,7 @@ class Scale:
 			"D#"  : Accidental.sharp,
 			"Eb" : Accidental.flat,
 			"E"  : Accidental.sharp,
+			"E#"  : Accidental.sharp,
 			"F"  : Accidental.flat,
 			"F#" : Accidental.sharp,
 			"Gb" : Accidental.flat,
@@ -76,6 +78,7 @@ class Scale:
 			"A#"  : Accidental.sharp,
 			"Bb" : Accidental.flat,
 			"B" : Accidental.sharp,
+			"B#" : Accidental.sharp,
 		}[note.name if isinstance(note, Note) else note]	
 
 	@staticmethod
@@ -89,6 +92,7 @@ class Scale:
 			"D#"  : Accidental.sharp,
 			"Eb" : Accidental.flat,
 			"E"  : Accidental.sharp,
+			"E#"  : Accidental.sharp,
 			"F"  : Accidental.flat,
 			"F#" : Accidental.sharp,
 			"Gb" : Accidental.flat,
@@ -99,4 +103,5 @@ class Scale:
 			"A#"  : Accidental.sharp,
 			"Bb" : Accidental.flat,
 			"B" : Accidental.sharp,
+			"B#" : Accidental.sharp,
 		}[note.name if isinstance(note, Note) else note]	

@@ -85,7 +85,7 @@ var Card = function(json) { return {
 			{ 
 				this.validation_state = this.allAnswersCorrect() ? "correct" : "incorrect";
 				this.captureTimeToCorrect();
-			} 
+			}
 		} else {
 			this.validation_state = 'partial - incorrect';
 			this.validation_states[this.current_answer_part_index] = 'incorrect';

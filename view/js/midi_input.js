@@ -120,7 +120,11 @@ var MIDIInput = function () { return {
 	currentCorrectAnswer: function() {
 		var answer;
 		if (game.card.answers != undefined) {
-			answer = game.card.answers[game.card.current_answer_part_index];
+			if (game.card.current_answer_part_index == game.card.answers.length) {
+				answer = game.card.answers[game.card.current_answer_part_index - 1];
+			} else {
+				answer = game.card.answers[game.card.current_answer_part_index];
+			}
 		} else {
 			answer = game.card.answer;
 		}

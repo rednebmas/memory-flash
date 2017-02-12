@@ -128,5 +128,36 @@ describe('Game', function() {
 			game.checkAnswer('B D G');
 			assert.equal(game.state, 'incorrect');
 		});
+
+		it('should allow you move on after repeating the answer after getting it incorrect', function() {
+			game.checkAnswer('C E G');
+			game.checkAnswer('C L A');
+			game.checkAnswer('C F A');
+			game.checkAnswer('B D G');
+			assert.equal(game.state, 'incorrect');
+			game.checkAnswer('C E G');
+			game.checkAnswer('C F A');
+			game.checkAnswer('B D G');
+			assert.equal(game.state, 'correct but first attempt incorrect');
+		});
+
+		it('should allow you move on after repeating the answer after getting it incorrect multiple times', function() {
+			game.checkAnswer('C E G');
+			game.checkAnswer('C L A');
+			game.checkAnswer('C F A');
+			game.checkAnswer('B D G');
+			assert.equal(game.state, 'incorrect');
+			game.checkAnswer('C E G');
+			game.checkAnswer('C L A');
+			game.checkAnswer('C F A');
+			game.checkAnswer('B D G');
+			assert.equal(game.state, 'incorrect');
+			game.checkAnswer('C E G');
+			game.checkAnswer('C F A');
+			game.checkAnswer('B D G');
+			assert.equal(game.state, 'correct but first attempt incorrect');
+			game.checkAnswer('B D G');
+			assert.equal(game.state, 'loading next question');
+		});
 	});
 });

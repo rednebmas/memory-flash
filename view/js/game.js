@@ -127,9 +127,14 @@ var Game = function(session_id, deck_id) { return {
 		} 
 		else if (this.state == 'incorrect') 
 		{
+			this.updateViewForStatePartial();
 			if (this.card.validation_state == 'correct') 
 			{
 				this.state = 'correct but first attempt incorrect';
+			}
+			else if (this.card.validation_state == 'incorrect') 
+			{
+				this.state = 'incorrect';
 			}
 		} 
 		console.log('game.state = ' + this.state);
@@ -165,6 +170,7 @@ var Game = function(session_id, deck_id) { return {
 	updateViewForStateFirstAttemptIncorrect: function() {
 		$('#incorrect-label').css('display', 'inline');
 		$('.question').html(this.card.question); // for multi-part cards that change the CSS
+		$('#answer-input').val('');
 		this.card.resetState();
 	},
 

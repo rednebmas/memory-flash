@@ -22,13 +22,13 @@ class IntervalsGenerator:
 
 			"C#",
 			"D#",
-			"E#",
+			# "E#",
 			"F#",
 			"G#",
 			"A#",
-			"B#",
+			# "B#",
 
-			"Cb",
+			# "Cb",
 			"Db",
 			"Eb",
 			"Gb",
