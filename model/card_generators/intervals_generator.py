@@ -31,7 +31,6 @@ class IntervalsGenerator:
 			"Cb",
 			"Db",
 			"Eb",
-			"Fb",
 			"Gb",
 			"Ab",
 			"Bb",
@@ -41,10 +40,12 @@ class IntervalsGenerator:
 		minor_thirds = []
 		fourths = []
 		others = []
+		uncommon = []
 		intervals = Interval.all()
 		for note in notes:
 			for interval in intervals: # for each interval
 				if   abs(interval.half_steps) == 0: continue
+				elif note == "E#" or note == "Cb" or note == "B#": arr_to_add_to = uncommon
 				elif abs(interval.half_steps) == 7: arr_to_add_to = fifths
 				elif abs(interval.half_steps) == 4: arr_to_add_to = major_thirds
 				elif abs(interval.half_steps) == 3: arr_to_add_to = minor_thirds
@@ -55,7 +56,8 @@ class IntervalsGenerator:
 				arr_to_add_to.append(IntervalsGenerator.card_with(Note(note), answer, interval))
 
 		random.shuffle(others)
-		cards = fifths + major_thirds + minor_thirds + fourths + others
+		random.shuffle(uncommon)
+		cards = fifths + major_thirds + minor_thirds + fourths + others + uncommon
 		return cards
 
 	@staticmethod

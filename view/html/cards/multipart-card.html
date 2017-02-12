@@ -1,0 +1,51 @@
+<style type="text/css">
+	.question-container {
+		font-size: 48px;
+		text-align: center;
+		padding-bottom: 10px;
+	}
+	.multi-part-unanswered {
+		color: gray;
+	}
+	.multi-part-correct {
+		color: #2fad2f;
+	}
+	.multi-part-incorrect {
+		color: #db4949;
+	}
+	.chord {
+		margin: 0px 5px;
+	}
+	.progression {
+		font-family: "Times New Roman", Georgia, Serif;
+		background-color: #fafafa;
+		border: 1px solid gray;
+		text-align: center;
+		padding: 2px 12px;
+		border-radius: 3px;
+	}
+	sup, sub {
+		font-size: 23px;
+	}
+	sub {
+		position: relative;
+		left: -.5em;
+		top: -.3em;
+		margin-right: -.5em;
+		vertical-align: sub;
+	}
+	sup {
+		position: relative;
+		top: -.1em;
+		margin-left: -0.3em;
+		vertical-align: super;
+	}
+</style>
+
+<div class="question-container">
+	<span class="progression">
+		{% for symbol in symbols %}
+		<span class="chord multi-part multi-part-unanswered">{{ symbol }}</span>
+	 	{% endfor %}</span>
+	<span class="progression-key">in {{ in_text }}</span>
+</div>

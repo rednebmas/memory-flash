@@ -44,6 +44,7 @@ class Session:
 		unseen_cards = Deck.unseen_cards(self)
 		seen_cards = AnswerHistory.first_review_from_last_day_reviewed_not_in_session(self)
 		seen_cards_weights = [r['time_to_correct'] for r in seen_cards]
+		num_seen_cards = len(seen_cards)
 
 		# unseen cards still left in deck and this isn't the first session of the deck, because there will be no seen cards at that point
 		if len(unseen_cards) and len(seen_cards): 
@@ -51,14 +52,22 @@ class Session:
 			card_ids_to_add = []
 			print('len of seen_cards: ' + str(len(seen_cards)) + ', add_to_deck_#: ' + str(num_seen_cards_to_add_to_deck))
 			for i in range(num_seen_cards_to_add_to_deck):
-				pick_index = choose_index_for_weights(seen_cards_weights)
+				pick_index = choose_index_for_weights(seen_cards_weights, 2.5)
 				print('pick index1: ' + str(pick_index))
 				card_ids_to_add.append(seen_cards[pick_index]['card_id'])
 				del seen_cards[pick_index]
 				del seen_cards_weights[pick_index]
 			self.add_cards_to_session_deck(card_ids_to_add)
 		elif len(unseen_cards) == 0: # no unseen cards left in deck
-			pass
+			cards_to_add_ids = []
+			cards_to_add_time_to_corrects = []
+			while sum(cards_to_add_time_to_corrects) < 60.0 or len(cards_to_add_ids) == num_seen_cards:
+				pick_index = choose_index_for_weights(seen_cards_weights, 2.5)
+				cards_to_add_ids.append(seen_cards[pick_index]['card_id'])
+				cards_to_add_time_to_corrects.append(seen_cards[pick_index]['time_to_correct'])
+				del seen_cards[pick_index]
+				del seen_cards_weights[pick_index]
+			self.add_cards_to_session_deck(cards_to_add_ids)
 
 		self.load_cards()
 

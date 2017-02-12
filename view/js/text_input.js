@@ -46,7 +46,9 @@ var TextInput = function() { return {
                     break;
             }
 
-            this.value = this.value.replace(/(([A-G])B)/g, "$2b"); // .replace("##", "x");
+            this.value = this.value.replace("S", "#");
+            this.value = this.value.replace(/([A-G])BB/g, "$1bb");
+            this.value = this.value.replace(/([A-G])B/g, "$1b");
 
             this.previousInput = e.which;
             return returnVal;

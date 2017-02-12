@@ -4,6 +4,7 @@ from model.card_generators.notes_generator import NotesGenerator
 from model.card_generators.intervals_generator import IntervalsGenerator
 from model.card_generators.chords_generator import ChordsGenerator
 from model.card_generators.progression_generator import ProgressionGenerator
+from model.card_generators.scale_generator import ScaleGenerator
 from model.db import db
 
 def insert_deck(db, deck_name, deck_desc, cards):
@@ -88,3 +89,43 @@ insert_deck(
 	'Root, Thirds, and Sevenths', 
 	ProgressionGenerator.two_7_five_7_one_M7__root_three_seven__cards()
 )
+
+insert_deck(
+	db, 
+	'Natural Minor Scales', 
+	'All of \'em', 
+	ScaleGenerator.natural_minor()
+)
+
+insert_deck(
+	db, 
+	'Harmonic Minor Scales', 
+	'All of \'em', 
+	ScaleGenerator.harmonic_minor()
+)
+
+insert_deck(
+	db, 
+	'Meldoic Minor Scales', 
+	'All of \'em', 
+	ScaleGenerator.melodic_minor()
+)
+
+all_minor = ScaleGenerator.melodic_minor() + \
+            ScaleGenerator.harmonic_minor() + \
+            ScaleGenerator.natural_minor()
+random.shuffle(all_minor)
+insert_deck(
+	db, 
+	'All Minor Scales', 
+	'All of \'em. Natural, Harmonic, and Melodic!', 
+	all_minor
+)
+
+insert_deck(
+	db, 
+	'Da Blues', 
+	'All of \'em.', 
+	ScaleGenerator.blues()
+)
+
