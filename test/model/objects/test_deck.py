@@ -17,11 +17,11 @@ class TestDeck(unittest.TestCase):
 
 		AnswerHistory(session.session_id, card.card_id, 10.0, True, DB.datetime_now()).insert()
 		cards = Deck.unseen_cards(session)
-		self.assertNotEqual(card.question, cards[0].question)
+		self.assertNotEqual(card.template_data, cards[0].template_data)
 		card = cards[0]
 
 		cards = Deck.unseen_cards(session)
-		self.assertEqual(card.question, cards[0].question)
+		self.assertEqual(card.template_data, cards[0].template_data)
 
 def main():
 	unittest.main()
