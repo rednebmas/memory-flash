@@ -4,6 +4,7 @@ from jinja2 import Environment, FileSystemLoader
 from model.db import db
 from model.objects.card import Card
 from model.objects.answer_history import AnswerHistory
+from model.objects.session import Session
 from viewmodel.deck_view_model import DeckViewModel
 from viewmodel.card_view_model import CardViewModel
 from viewmodel.study_view_model import StudyViewModel
@@ -39,7 +40,15 @@ async def decks_study(request, deck_id):
 async def session_next_card(request, session_id):
 	if 'previous_card_id' not in request.args: request.args['previous_card_id'] = [None]
 	card = StudyViewModel.next_card(session_id, request.args.get('deck_id'), previous_card_id=request.args.get('previous_card_id'))
+	if card is None:
+		return json({ 'msg': 'session complete' })
+	card.question = templates.get_template(card.template_path).render(card.template_data)
 	return json(card.as_dict())
+
+@app.route("/session/<session_id:int>/complete")
+async def session_complete(request, session_id):
+	session = Session.from_db_id(session_id)
+	return html(templates.get_template('session_complete.html').render(deck_id=session.deck_id))
 
 @app.route("/card/<card_id:int>/answer", methods=['POST'])
 async def answer_card(request, card_id):

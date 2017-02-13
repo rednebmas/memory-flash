@@ -19,19 +19,18 @@ class Deck:
 		rows = db.select(table="Card", where="deck_id = {}".format(self.deck_id))
 		self.cards = list(map(lambda c: Card.from_db(c), rows))
 
+	@staticmethod
 	def unseen_cards(session):
 		sql = """
 		SELECT C.*, AH.answer_history_id
 		FROM Card C
 		LEFT JOIN AnswerHistory AH ON C.card_id = AH.card_id
-		LEFT JOIN Session S ON C.deck_id = S.deck_id
 		WHERE C.deck_id = ?
-			  AND S.session_id = ?
 			  AND AH.answer_history_id IS NULL
 		GROUP BY C.card_id
 		ORDER BY C.card_id
 		"""
-		db.execute(sql, (session.deck_id, session.session_id))
+		db.execute(sql, (session.deck_id,))
 		rows = db.cursor.fetchall()
 		return list(map(lambda r: Card.from_db(r), rows))
 

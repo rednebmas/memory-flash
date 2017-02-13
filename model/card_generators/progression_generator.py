@@ -1,11 +1,12 @@
 import os
 import random
+import copy
+import json
 from model.objects.note import Note
 from model.objects.chord import Chord
 from model.objects.interval import Interval
 from jinja2 import Environment, FileSystemLoader
 import mingus.core.progressions as progressions
-import copy
 
 templates = Environment(loader=FileSystemLoader(os.getcwd() + '/view/html'))
 
@@ -56,34 +57,77 @@ class ProgressionGenerator:
 
 			chord_prog = [two_chord, five_chord, one_chord]
 
-			chords.append(ProgressionGenerator.card_from_two_five_one(chord_prog))
+			chords.append(ProgressionGenerator.card_from_two_five_one(chord_prog, [
+				"-inv-ov-7.html",
+				"-inv-un-7.html",
+				"-inv-ov-maj7.html"
+			]))
+
+			# other inversion
+			one_chord.notes[1], one_chord.notes[2] = one_chord.notes[2], one_chord.notes[1] 
+			five_chord.notes[1], five_chord.notes[2] = five_chord.notes[2], five_chord.notes[1]
+			two_chord.notes[1], two_chord.notes[2] = two_chord.notes[2], two_chord.notes[1] 
+
+			chords.append(ProgressionGenerator.card_from_two_five_one(chord_prog, [
+				"-inv-un-7.html",
+				"-inv-ov-7.html",
+				"-inv-un-maj7.html"
+			]))
 
 		return chords
 
 	@staticmethod
-	def card_from_two_five_one(chords):
+	def card_from_two_five_one(chords, template_suffixes):
+		template_root = 'cards/chord-progression/chord-progression'
 		return {
-			"question" : templates.get_template('cards/chord-progression/chord-progression.html').render(
-				symbols=["ii7", "V7", "Imaj7"], 
-				chords=chords, 
-				root=chords[-1].root
-				),
+			"template_path" : template_root + '.html',
+			"template_data" : json.dumps({
+				'chords' : [
+					{ 
+						"symbol" : "ii", 
+						"template_path" : template_root + template_suffixes[0] # "-inv-ov-7.html"
+					}, 
+					{ 
+						"symbol" : "V",
+						"template_path" : template_root + template_suffixes[1] #"-inv-un-7.html"
+					}, 
+					{
+						"symbol" : "I", 
+						"template_path" : template_root + template_suffixes[2] # "-inv-ov-maj7.html"
+					}
+				], 
+				'root' : chords[-1].root.name
+			}),
 			"answer" : '→'.join( [' '.join([note.name for note in chord.notes]) for chord in chords] ),
-			"answer_validator" : 'multipleOptions_equals_midiEnharmonicsValid',
+			"answer_validator" : 'equals',
 			"accidental" : chords[-1].scale.accidental.symbol,
 			"scale" : chords[-1].root.name
 		}
 
 	@staticmethod
 	def card_from_four_five_one(chords):
+		template_root = 'cards/chord-progression/chord-progression'
 		return {
-			"question" : templates.get_template('cards/chord-progression/chord-progression.html').render(
-				symbols=["IV", "V", "I"], 
-				chords=chords, 
-				root=chords[-1].root
-				),
+			"template_path" : template_root + '.html',
+			"template_data" : json.dumps({
+				'chords' : [
+					{
+						"symbol" : "IV", 
+						"template_path" : template_root + "-inv-" + str(chords[0].inversion) + ".html"
+					}, 
+					{
+						"symbol" : "V",
+						"template_path" : template_root + "-inv-" + str(chords[1].inversion) + ".html"
+					}, 
+					{
+						"symbol" : "I",
+						"template_path" : template_root + "-inv-" + str(chords[2].inversion) + ".html" 
+					}
+				], 
+				'root' : chords[-1].root.name
+			}),
 			"answer" : '→'.join( [' '.join([note.name for note in chord.notes]) for chord in chords] ),
-			"answer_validator" : 'multipleOptions_equals_midiEnharmonicsValid',
+			"answer_validator" : 'equals',
 			"accidental" : chords[-1].scale.accidental.symbol,
 			"scale" : chords[-1].root.name
 		}

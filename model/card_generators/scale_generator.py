@@ -1,4 +1,5 @@
 import os
+import json
 from jinja2 import Environment, FileSystemLoader
 import mingus.core.scales as scales
 from model.themusic.blues import Blues
@@ -54,10 +55,11 @@ class ScaleGenerator:
             
             root = root.replace('#', '♯').replace('b','♭')
             cards.append({
-                "question": templates.get_template('cards/multipart-card.html').render(
-                    symbols=scale_degrees,
-                    in_text=root + " " + scale_name
-                ),
+                "template_path": 'cards/multipart-card.html',
+                "template_data": json.dumps({
+                    'symbols': scale_degrees,
+                    'in_text': root + " " + scale_name
+                }),
                 "answer": "→".join(scale_tones),
                 "scale" : root + " " + scale_name,
                 "answer_validator": "equals"

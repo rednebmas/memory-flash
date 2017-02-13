@@ -132,4 +132,16 @@ describe('MIDIInput', function() {
             assert.ok(midiInput.chromaMap != undefined);;
         });
     });
+
+	describe('bugs', function () {
+		it('should have output e# instead of f for f# scale', function () {
+			card = new Card({ "template_path": "cards/chord-progression/chord-progression.html", "card_id": 819, "template_data": { "root": "F#", "chords": [{ "template_path": "cards/chord-progression/chord-progression-inv-0.html", "symbol": "IV" }, { "template_path": "cards/chord-progression/chord-progression-inv-2.html", "symbol": "V" }, { "template_path": "cards/chord-progression/chord-progression-inv-1.html", "symbol": "I" }] }, "answer_validator": "equals", "deck_id": 8, "answer": "B D# F#→G# C# E#→A# C# F#", "scale": "F#", "accidental": "#", "question": "IV V I in F#" });
+            game.card = card;
+			assert.ok(midiInput.scale != undefined);
+			assert.equal(midiInput.scale.tonic.name() + midiInput.scale.tonic.accidental(), 'f#');
+
+            midiInput.addNote(53); // f, should output e# though
+            assert.equal(midiInput.calcOutput(), 'E#');
+		});
+	});
 });

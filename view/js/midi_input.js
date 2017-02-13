@@ -35,7 +35,7 @@ var MIDIInput = function () { return {
 	},
 
 	parseScaleInformationIfNeeded: function() {
-		if (this._scale == undefined && game.card.raw['scale'] != undefined) {
+		if (this._scale == undefined && game.state != 'loading next question' && game.card.raw['scale'] != undefined) {
 			this._scale = this.parseTeoriaScaleFromScaleName(game.card.raw['scale']);
 			this.createChromaMap();
 		}

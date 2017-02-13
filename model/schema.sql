@@ -9,7 +9,8 @@ CREATE INDEX Deck_deck_id_index ON Deck (deck_id);
 CREATE TABLE Card (
 	card_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
 	deck_id INTEGER NOT NULL, 
-	question VARCHAR(2000) NOT NULL,  
+	template_path VARCHAR(2000) NOT NULL, 
+	template_data VARCHAR(2000) NOT NULL, 
 	answer VARCHAR(2000) NOT NULL,
 	answer_validator VARCHAR(256),
 	accidental CHAR(1),

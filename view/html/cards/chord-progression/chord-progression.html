@@ -44,14 +44,8 @@
 
 <div class="question-container">
 		<span class="progression">
-		{% for symbol in symbols %}
-			{% if chords[loop.index0].inversion == 0 %}
-				{% include 'cards/chord-progression/chord-progression-root.html' %}<!--
-		 -->{% elif chords[loop.index0].inversion == 1 %}
-				{% include 'cards/chord-progression/chord-progression-6.html' %}<!--
-		 -->{% elif chords[loop.index0].inversion == 2 %}
-				{% include 'cards/chord-progression/chord-progression-6-4.html' %}<!--
-		 -->{% endif %}<!--
-	 -->{% endfor %}</span>
-		<span class="progression-key">in {{ root.pretty_name }}</span>
+		{% for chord in chords %}
+			{% include chord['template_path'] %}<!--
+	 	-->{% endfor %}</span>
+		<span class="progression-key">in {{ root }}</span>
 </div>

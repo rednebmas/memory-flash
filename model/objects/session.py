@@ -21,6 +21,14 @@ class Session:
 			return Session.from_db(rows[0])
 
 	@staticmethod
+	def from_db_id(session_id):
+		try:
+			row = db.select1(table="Session", where="session_id = ?", substitutions=(session_id,))
+			return Session.from_db(row)
+		except Exception as e:
+			return None
+
+	@staticmethod
 	def new_for_deck_id(deck_id):
 		db.execute('INSERT INTO Session (deck_id, begin_date) VALUES (?, ?)', (deck_id, DB.datetime_now()))
 		row = db.select1(table="Session", where="deck_id = ?", order_by="session_id DESC", substitutions=(deck_id,))
@@ -47,7 +55,7 @@ class Session:
 		num_seen_cards = len(seen_cards)
 
 		# unseen cards still left in deck and this isn't the first session of the deck, because there will be no seen cards at that point
-		if len(unseen_cards) and len(seen_cards): 
+		if len(unseen_cards) != 0 and len(seen_cards): 
 			num_seen_cards_to_add_to_deck = int(len(self.cards) * (1/3))
 			card_ids_to_add = []
 			print('len of seen_cards: ' + str(len(seen_cards)) + ', add_to_deck_#: ' + str(num_seen_cards_to_add_to_deck))
@@ -67,6 +75,7 @@ class Session:
 				cards_to_add_time_to_corrects.append(seen_cards[pick_index]['time_to_correct'])
 				del seen_cards[pick_index]
 				del seen_cards_weights[pick_index]
+			print('stopped adding seen cards with sum: ' + str(sum(cards_to_add_time_to_corrects)))
 			self.add_cards_to_session_deck(cards_to_add_ids)
 
 		self.load_cards()

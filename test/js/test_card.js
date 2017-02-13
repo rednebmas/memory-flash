@@ -69,10 +69,6 @@ describe('Card', function() {
 	});
 
 	describe('answer validation', function () {
-		beforeEach(function() {
-			global.onMIDINotes = Array();
-		});
-
 		it('should change validation state to correct', function () {
 			assert.equal(card.validation_state, 'unanswered')
 			card.validateAnswer(cardJSON['answer'])

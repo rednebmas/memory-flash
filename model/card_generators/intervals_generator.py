@@ -1,5 +1,6 @@
 import os
 import random
+import json
 from model.objects.note import Note
 from model.objects.interval import Interval
 from jinja2 import Environment, FileSystemLoader
@@ -70,8 +71,12 @@ class IntervalsGenerator:
 		direction = "↑" if interval.half_steps > 0 else "↓"
 
 		return {
-			"question" : templates.get_template('cards/interval.html')
-						 .render(interval=shortname, direction=direction, note=question_note),
+			"template_path" : 'cards/interval.html',
+			"template_data" : json.dumps({
+				'interval' : shortname, 
+				'direction' : direction, 
+				'note' : question_note.pretty_name
+			}),
 			"answer" : answer,
 			"answer_validator" : 'multipleOptions_equals_midiEnharmonicsValid',
 			"scale" : question_note.name + " " + ("major" if interval.quality_long == "perfect" else interval.quality_long)

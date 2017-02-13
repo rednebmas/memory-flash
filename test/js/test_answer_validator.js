@@ -20,10 +20,6 @@ describe('AnswerValidator', function() {
 	});
 
 	describe('multipleOptions_equals_midiEnharmonicsValid', function() {
-		beforeEach(function() {
-			global.onMIDINotes = Array();
-		});
-		
 		it('should have a validator', function() {
 			var validator = AnswerValidator('multipleOptions_equals_midiEnharmonicsValid');
 			assert.ok(validator.validator != undefined);

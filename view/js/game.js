@@ -92,6 +92,10 @@ var Game = function(session_id, deck_id) { return {
 	},
 
 	handleCardData: function(data) {
+		if ('msg' in data && data['msg'] == 'session complete') {
+			window.location = '/session/' + this.session_id + '/complete'
+		}
+
 		this.card = new Card(data);
 		console.log(this.card);
 		this.state = 'waiting';

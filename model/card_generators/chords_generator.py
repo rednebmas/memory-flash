@@ -1,5 +1,6 @@
 import os
 import random
+import json
 from jinja2 import Environment, FileSystemLoader
 from model.objects.note import Note
 from model.objects.chord import Chord
@@ -86,9 +87,9 @@ class ChordsGenerator:
 	@staticmethod
 	def card_for_chord(chord):
 		return {
-			"question" : templates.get_template('cards/chord.html').render(chord=chord),
+			"template_path" : 'cards/chord.html',
+			"template_data" : json.dumps({ 'chord_pretty_name' : chord.pretty_name }),
 			"answer" : ' '.join([note.name for note in chord.notes]),
-			"answer_validator" : 'multipleOptions_equals_midiEnharmonicsValid',
+			"answer_validator" : 'equals',
 			"scale" : chord.root.name + " " + chord.quality_full()
 		}
-
