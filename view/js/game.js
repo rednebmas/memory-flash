@@ -168,13 +168,13 @@ var Game = function(session_id, deck_id) { return {
 		this.card.captureStartTime();
 		$('#submit-answer').attr('class', 'btn btn-primary');
 		$('#correct-label').fadeOut();
-		$('#answer-input').val('');
+		this.clearInput();
 	}, 
 
 	updateViewForStateFirstAttemptIncorrect: function() {
 		$('#incorrect-label').css('display', 'inline');
 		$('.question').html(this.card.question); // for multi-part cards that change the CSS
-		$('#answer-input').val('');
+		this.clearInput();
 		this.card.resetState();
 	},
 
@@ -187,13 +187,19 @@ var Game = function(session_id, deck_id) { return {
 		$('#submit-answer').attr('class', 'btn btn-success');
 	},
 
+	clearInput: function(arguments) {
+		if (midiInput.onNotes.size == 0) {
+			$('#answer-input').val(''); 
+		}
+	},
+
 	updateViewForStatePartial: function () {
 		if (this.card.answers == undefined) {
 			return;
 		}
 		
-		if (midiInput.onNotes.size == 0 && this.card.validation_states[this.card.current_answer_part_index] == 'unanswered') {
-			$('#answer-input').val('');
+		if (this.state == "partial - correct") {
+			this.clearInput();
 		}
 
 		for (var i = 0; i < this.card.answers.length; i++) {

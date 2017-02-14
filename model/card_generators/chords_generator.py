@@ -86,10 +86,15 @@ class ChordsGenerator:
  
 	@staticmethod
 	def card_for_chord(chord):
+		if chord.quality_full() == "diminished" or chord.quality_full() == "augmented":
+			scale = chord.root.name
+		else:
+			scale = chord.root.name + " " + chord.quality_full()
 		return {
 			"template_path" : 'cards/chord.html',
 			"template_data" : json.dumps({ 'chord_pretty_name' : chord.pretty_name }),
 			"answer" : ' '.join([note.name for note in chord.notes]),
 			"answer_validator" : 'equals',
-			"scale" : chord.root.name + " " + chord.quality_full()
+			"scale" : scale,
+			"accidental" : chord.scale.accidental.symbol
 		}

@@ -32,36 +32,36 @@ insert_deck(
 
 insert_deck(
 	db, 
-	'Major Chords', 
-	'Major chords in all inversions', 
+	'Major Triads', 
+	'Major triads in all inversions', 
 	ChordsGenerator.generate_major_chord_cards()
 )
 
 insert_deck(
 	db, 
-	'Minor Chords', 
-	'Minor chords in all inversions', 
+	'Minor Triads', 
+	'Minor triads in all inversions', 
 	ChordsGenerator.generate_minor_chord_cards()
 )
 
 insert_deck(
 	db, 
-	'Diminished Chords', 
-	'Diminished chords in all inversions', 
+	'Diminished Triads', 
+	'Diminished triads in all inversions', 
 	ChordsGenerator.generate_dim_chords_cards()
 )
 
 insert_deck(
 	db, 
-	'Augmented Chords', 
-	'Augmented chords in all inversions', 
+	'Augmented Triads', 
+	'Augmented triads in all inversions', 
 	ChordsGenerator.generate_aug_chords_cards()
 )
 
 insert_deck(
 	db, 
 	'Major and Minor Chords', 
-	'Major and Minor chords in all inversions', 
+	'Major and Minor triads in all inversions', 
 	ChordsGenerator.generate_major_and_minor_chord_cards()
 )
 
@@ -78,14 +78,14 @@ insert_deck(
 
 insert_deck(
 	db, 
-	'IV V I Cadence', 
+	'IV V I', 
 	'Includes common sets of inversions', 
 	ProgressionGenerator.four_five_one_cards()
 )
 
 insert_deck(
 	db, 
-	'ii7 V7 Imaj7 Cadence', 
+	'ii V I', 
 	'Root, Thirds, and Sevenths', 
 	ProgressionGenerator.two_7_five_7_one_M7__root_three_seven__cards()
 )
@@ -124,7 +124,7 @@ insert_deck(
 
 insert_deck(
 	db, 
-	'Da Blues', 
+	'The Blues', 
 	'All of \'em.', 
 	ScaleGenerator.blues()
 )

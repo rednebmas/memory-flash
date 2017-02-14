@@ -32,8 +32,12 @@ class Chord:
 			return "major"
 		elif self.quality[0] == "m":
 			return "minor"
+		elif self.quality == "dim":
+			return "diminished"
+		elif self.quality == "aug":
+			return "augmented"
 		else:
-			return "unkown quality"
+			return "unknown quality"
 
 	@property
 	def pretty_name(self):
