@@ -1,7 +1,8 @@
 import bcrypt
 import sys
+import model.validators as validators
 from model.db import db
-from model.objects.exceptions import ValidationError
+from model.exceptions import ValidationError
 
 # less bcrypt rounds for unit testing becuase it's slow
 if 'unittest' in sys.argv[0]:
@@ -10,8 +11,15 @@ else:
 	bcrypt_rounds = 12
 
 class User:
-	def __init__(self, arg):
-		self.arg = arg
+	def __init__(self, user_id, user_name, email, password):
+		self.user_id = user_id
+		self.user_name = user_name
+		self.email = email
+		self.password = password
+
+	@staticmethod
+	def from_db(row):
+		return User(row['user_id'], row['user_name'], row['email'], row['password'])
 
 	@staticmethod
 	def create(user_name, email, password):
@@ -26,5 +34,26 @@ class User:
 
 		db.execute("INSERT INTO User (user_name, email, password) VALUES (?, ?, ?)", 
 			substitutions=(user_name, email, hash_password,))
+
+	@staticmethod
+	def authenticate(login, password):
+		""" Authenticate with username or password """
+		def check_credentials(login_col):
+			user = db.select1("User", where=login_col + " = ?", substitutions=(login,))
+			correct_pw = user['password']
+			if bcrypt.checkpw(password.encode('UTF_8'), correct_pw):
+				return User.from_db(user)
+			else:
+				raise ValidationError('Incorrect password. Please try again.')
+
+		if validators.exists({"user_name" : login }) != True:
+			if validators.exists({"email" : login }) != True:
+				raise ValidationError('Username or email does exist.')
+			else:
+				return check_credentials("email")
+		else:
+			return check_credentials("user_name")
+
+
 
 		

@@ -74,13 +74,25 @@ class TestEndpoints(unittest.TestCase):
 			data="user_name=sam&email=test%40me.com&password=test", 
 			headers={ 'Content-Type': "application/x-www-form-urlencoded" }
 		)
+
+		# username
 		request, response = sanic_endpoint_test(app, 
 			uri='/user/login', 
 			method='post',
 			data="login=sam&password=test", 
 			headers={ 'Content-Type': "application/x-www-form-urlencoded" }
 		)
-		self.assertTrue(response.status == 200, response.body)
+		self.assertTrue(response.status == 200, response.status)
+
+		# email
+		request, response = sanic_endpoint_test(app, 
+			uri='/user/login', 
+			method='post',
+			data="login=test%40me.com&password=test", 
+			headers={ 'Content-Type': "application/x-www-form-urlencoded" }
+		)
+		self.assertTrue(response.status == 200, response.status)
+
 
 	def test_user_not_authenticated(self):
 		db.unittest_reset()
@@ -96,7 +108,7 @@ class TestEndpoints(unittest.TestCase):
 			data="login=sam&password=wrong_password", 
 			headers={ 'Content-Type': "application/x-www-form-urlencoded" }
 		)
-		self.assertTrue(response.status == 401, response.body)
+		self.assertTrue(response.status == 401, response.status)
 
 def main():
 	unittest.main()
