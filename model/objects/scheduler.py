@@ -23,7 +23,6 @@ class Scheduler:
 		elif session_stage == "finished":
 			print('****************** started a new session *******************')
 
-		# card = Card.from_db_id(673)
 		return card, session_stage
 
 	@staticmethod

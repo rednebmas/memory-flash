@@ -15,6 +15,7 @@ app.static('/style', './view/css')
 app.static('/img', './view/img')
 app.static('/js', './view/js')
 app.static('/sounds', './view/sounds')
+app.static('/favicon.ico', './view/img/favicon.png')
 templates = Environment(loader=FileSystemLoader(os.getcwd() + '/view/html'))
 
 ##########
@@ -61,6 +62,9 @@ async def answer_card(request, card_id):
 @app.route("/")
 async def index(request):
     return json({'hello':'memory-flash-2'})
+
+import routes.user_routes
+routes.user_routes.add_routes(app)
 
 if __name__ == '__main__':
 	app.run(host="0.0.0.0", port=8000, debug=True)

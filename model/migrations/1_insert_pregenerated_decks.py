@@ -5,7 +5,6 @@ from model.card_generators.intervals_generator import IntervalsGenerator
 from model.card_generators.chords_generator import ChordsGenerator
 from model.card_generators.progression_generator import ProgressionGenerator
 from model.card_generators.scale_generator import ScaleGenerator
-from model.db import db
 
 def insert_deck(db, deck_name, deck_desc, cards):
 	db.execute(
