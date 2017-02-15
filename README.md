@@ -10,6 +10,7 @@
 	pip3 install jinja2
 	pip3 install sanic_session
 	pip3 install bcrypt
+	pip3 install AoikLiveReload
 	sudo -H pip3 install git+git://github.com/edudobay/python-mingus.git@python3
 	
 *run*

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-	<link rel="icon" type="image/png" href="img/favicon.png" />
+	<link rel="icon" type="image/png" href="/img/favicon.png" />
 	<title>{% block title %}{% endblock %} - Memory Flash</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -21,14 +21,19 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#" style="color: white;">MFlash</a>
+				<a class="navbar-brand" href="/decks" style="color: white;">MFlash</a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
 					<li class="{% block decks_active %}{% endblock %}" ><a href="/decks">Decks</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="../navbar-fixed-top/">Profile</a></li>
+					{% if 'user_name' not in session %}
+					<li><a href="/user/create_account">Create Account</a></li>
+					<li><a href="/user/login">Login</a></li>
+					{% else %}
+					<li><a href="/user/me">{{ session.get('user_name') }} </a></li>
+					{% endif %}
 				</ul>
 			</div><!--/.nav-collapse -->
 		</div>

@@ -25,6 +25,6 @@ class User:
 		hash_password = bcrypt.hashpw(password.encode('UTF_8'), bcrypt.gensalt(bcrypt_rounds))
 
 		db.execute("INSERT INTO User (user_name, email, password) VALUES (?, ?, ?)", 
-			substitutions=(user_name, email, hash_password,), debug=True)
+			substitutions=(user_name, email, hash_password,))
 
 		
