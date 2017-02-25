@@ -111,6 +111,14 @@ var Card = function(json) { return {
 		this.validation_states = Array(this.answers.length);
 		this.validation_states.fill("unanswered");
 		this.current_answer_part_index = 0;
+	},
+
+	getAnswer: function () {
+		if (this.answers == undefined) {
+			return this.answer;
+		} else {
+			return this.answer[current_answer_part_index];
+		}
 	}
 }.init(); }
 

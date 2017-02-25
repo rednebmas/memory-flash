@@ -22,6 +22,22 @@ class User:
 		return User(row['user_id'], row['user_name'], row['email'], row['password'])
 
 	@staticmethod
+	def from_db_id(user_id):
+		try:
+			row = db.select1(table="User", where="user_id = ?", substitutions=(user_id,))
+			return User.from_db(row)
+		except Exception as e:
+			return None
+
+	@staticmethod
+	def from_email(email):
+		try:
+			row = db.select1(table="User", where="email = ?", substitutions=(email,))
+			return User.from_db(row)
+		except Exception as e:
+			return None
+
+	@staticmethod
 	def create(user_name, email, password):
 		result = db.select("User", where="user_name = ?", substitutions=(user_name,))
 		if len(result) > 0:
@@ -34,6 +50,7 @@ class User:
 
 		db.execute("INSERT INTO User (user_name, email, password) VALUES (?, ?, ?)", 
 			substitutions=(user_name, email, hash_password,))
+		return User.from_email(email)
 
 	@staticmethod
 	def authenticate(login, password):
@@ -46,8 +63,8 @@ class User:
 			else:
 				raise ValidationError('Incorrect password. Please try again.')
 
-		if validators.exists({"user_name" : login }) != True:
-			if validators.exists({"email" : login }) != True:
+		if validators.exists({ "user_name" : login }) != True:
+			if validators.exists({ "email" : login }) != True:
 				raise ValidationError('Username or email does exist.')
 			else:
 				return check_credentials("email")

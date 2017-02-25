@@ -20,13 +20,16 @@ textarea {
   font-size: 18px;
   /*padding: 20px 10px;*/
 }
+
 #submit-answer, #answer-input {
     height: 45px;
   /*padding: 20px 10px;*/
 }
+
 p {
     font-size: 22px;
 }
+
 .card {
     /*width: 320px;*/
     width: 92%;
@@ -44,24 +47,36 @@ p {
     width: 80%;
     display: inline;
 }
+
 .card button {
     display: inline;
 }
+
 .card #incorrect-label {
     font-size: 18px;
-    font-weight: 700;
     color: #DD0000;
     display: none;
 }
+
 .card #correct-label {
     font-size: 18px;
     font-weight: 500;
     color: #81DD00;
     display: none;
 }
+
 body {
     background-color: rgb(233,233,233);
 }
+
 #submit-answer {
     width: 75px;
+}
+
+#timer {
+	position: fixed;
+	right: 5px;
+	bottom: 5px;
+	color: gray;
+	font-size: 200%;
 }

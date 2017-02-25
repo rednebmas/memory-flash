@@ -25,6 +25,7 @@ app.static('/img', './view/img')
 app.static('/js', './view/js')
 app.static('/sounds', './view/sounds')
 app.static('/favicon.ico', './view/img/favicon.png')
+app.static('/metronome', './view/html/metronome')
 
 ######################
 # Session Middleware #
@@ -34,12 +35,14 @@ app.static('/favicon.ico', './view/img/favicon.png')
 async def add_session_to_request(request):
 	# before each request initialize a session
 	# using the client's request
+	print('loading session')
 	await session_interface.open(request)
 
 @app.middleware('response')
 async def save_session(request, response):
 	# after each request save the session,
 	# pass the response to set client cookies
+	print('saving session: ' + str(request['session']))
 	await session_interface.save(request, response)
 
 ##########
@@ -49,6 +52,8 @@ async def save_session(request, response):
 @app.route("/decks")
 async def decks(request):
 	decks = list(DeckViewModel.all_decks())
+	print(request['session'])
+	# print(request['session']['user_id'])
 	return jinja_response('decks.html', decks=decks)
 
 @app.route("/decks/<deck_id:int>/cards")
@@ -63,13 +68,20 @@ async def decks_study(request, deck_id):
 
 @app.route("/session/<session_id:int>/next_card")
 async def session_next_card(request, session_id):
-	if 'previous_card_id' not in request.args: request.args['previous_card_id'] = [None]
-	card = StudyViewModel.next_card(session_id, request.args.get('deck_id'), previous_card_id=request.args.get('previous_card_id'))
+	card, session = StudyViewModel.next_card(
+		session_id, 
+		request.args.get('deck_id'),
+		previous_card_id=request.args.get('previous_card_id', None)
+	)
 	if card is None:
 		return json({ 'msg': 'session complete' })
 
 	card.question = jinja_render(card.template_path, **card.template_data)
-	return json(card.as_dict())
+	res = card.as_dict()
+	if session.median is not None:
+		res['session_median'] = session.median
+
+	return json(res)
 
 @app.route("/session/<session_id:int>/complete")
 async def session_complete(request, session_id):

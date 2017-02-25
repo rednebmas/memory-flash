@@ -12,6 +12,10 @@ h1 {
 	color: red;
 	text-align: center;
 }
+.notice-text {
+	color: green;
+	text-align: center;
+}
 </style>
 
 <div class="container">
@@ -20,6 +24,10 @@ h1 {
 	<form style="max-width: 350px; margin: auto" action="/user" method="post">
 		<div class="form-group error-text">
 			<span>{{ error_msg }}</span>
+		</div>
+
+		<div class="form-group notice-text">
+			<span><p><strong>PLEASE USE A PASSWORD YOU HAVE NEVER USED BEFORE.</strong></p>SSL has not been setup yet (notice there is no green lock icon in the address bar) and your password will be sent over the network in clear text. It <em>is</em> being hashed and stored in the database securely. This means that any password you enter here will be vulnerable only between the time you press the "Submit" button and when the next page loads.</span> 
 		</div>
 
 		<div class="form-group">

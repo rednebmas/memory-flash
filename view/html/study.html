@@ -28,11 +28,44 @@
     </div>
 </div>
 
+<script>
+    // display elapsed time in the lower right
+    // should definitely store this data in a cookie...
+    // as well as whether the metronome is on
+    function startTime(secondsSince) {
+        var seconds = secondsSince %  60;
+        var minutes = Math.floor(secondsSince /  60);
+        var hours = Math.floor(secondsSince / 60 / 60);
+
+        var time = pad(minutes) + ":" + pad(seconds);
+        if (hours > 1) {
+            time = hours + ":" + time
+        }
+
+        document.getElementById('timer').innerHTML = time;
+
+        var t = setTimeout(function() { startTime(secondsSince + 1); }, 1000);
+    }
+    function pad(i) {
+        if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+        return i;
+    }
+
+    $(document).ready(function () {
+        startTime(0);
+    })  
+</script>
+
+<div id="timer"></div>
+
 <script src="/js/lib/webmidi.min.js"></script>
 <script src="/js/bundle.js"></script>
 <script type="text/javascript">
     var game = new Game({{ session_id }}, {{ deck.deck_id }});
     game.loadNextQuestion();
 </script>
+
+
+{% include 'metronome/metronome.html' %}
 
 {% endblock %}

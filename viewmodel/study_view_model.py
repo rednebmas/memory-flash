@@ -16,5 +16,5 @@ class StudyViewModel:
 		if previous_card_id is not None: previous_card_id = int(previous_card_id)
 		session = Session.from_deck_id(deck_id)
 		card, state = Scheduler.next(session, previous_card_id)
-		return card
+		return card, session
 

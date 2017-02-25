@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+
+<div class="container">
+	<h1>{{ session['user_name'] }}'s profile</h1>
+	<a href="/user/logout"><button type="submit" class="btn btn btn-primary">Logout</button></a>
+</div>
+
+{% endblock %}

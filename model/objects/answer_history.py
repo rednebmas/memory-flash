@@ -27,7 +27,7 @@ class AnswerHistory:
 			VALUES (?, ?, ?, ?, ?, ?)
 		 	""", (self.session_id, 
 		 	   self.card_id, 
-		 	   self.time_to_correct, 
+		 	   self.time_to_correct if self.time_to_correct < 45.0 else 45.0, 
 		 	   self.first_attempt_correct,
 		 	   self.answered_at,
 		 	   self.answered_at[0:10],

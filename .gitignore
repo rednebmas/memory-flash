@@ -5,3 +5,7 @@
 node_modules
 view/js/lib/vexflow-debug.js
 view/js/bundle.js
+tags
+*.sublime-project
+*.sublime-workspace
+*.swp

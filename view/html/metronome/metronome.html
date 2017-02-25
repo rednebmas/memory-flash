@@ -1,0 +1,24 @@
+<link rel="stylesheet" href="/metronome/main.css">
+<script src="http://cwilso.github.io/AudioContext-MonkeyPatch/AudioContextMonkeyPatch.js"></script>
+<script src="/metronome/metronome.js"></script>
+<div id="metronome-controls">
+	<button id="startMetronomeBtn" type="button" class="btn btn-success">Start</button>
+	<span class="spacer-8px"></span>
+	<span id="tempoVal">ERROR</span><span> BPM with&nbsp;</span>
+	<select onchange="noteResolution = this.selectedIndex;">
+		<option>16th note</option>
+		<option>8th note</option>
+		<option selected>Quarter note</option>
+	</select>
+	<span>&nbsp;subdivisions
+	</span>
+</div>
+<div id="metronome-dots-container"></div>
+
+<script type="text/javascript">
+	var metronomeState = "off";
+	$('#startMetronomeBtn').click(function () {
+		var state = play();
+		$('#startMetronomeBtn').text(state);
+	})
+</script>

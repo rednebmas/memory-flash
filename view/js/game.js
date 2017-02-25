@@ -96,6 +96,14 @@ var Game = function(session_id, deck_id) { return {
 			window.location = '/session/' + this.session_id + '/complete'
 		}
 
+		if ('session_median' in data) {
+			tempo = 60.0 / (data['session_median'] / 4.0) + 5;
+			$('#tempoVal').text('' + tempo.toFixed(0));
+			$('#metronome-controls').css('display', 'block');
+		} else {
+			$('#metronome-controls').css('display', 'none');
+		}
+
 		this.card = new Card(data);
 		console.log(this.card);
 		this.state = 'waiting';
@@ -172,6 +180,7 @@ var Game = function(session_id, deck_id) { return {
 	}, 
 
 	updateViewForStateFirstAttemptIncorrect: function() {
+		$('#incorrect-label').html("Incorrect, the correct answer was: <strong>" + this.card.getAnswer() + "</strong>");
 		$('#incorrect-label').css('display', 'inline');
 		$('.question').html(this.card.question); // for multi-part cards that change the CSS
 		this.clearInput();

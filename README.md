@@ -62,6 +62,8 @@
 
 [Making mocha run in subdirectories](http://bpinto.github.io/posts/running-mocha-tests-on-subdirectories/)
 
+[Secure remember me](http://stackoverflow.com/questions/244882/what-is-the-best-way-to-implement-remember-me-for-a-website)
+
 ### "Research"
 [Intervals Lesson | Master This One Skill, And Music Will Become Easy For You](http://www.themusicalear.com/intervals-lesson-master-this-one-skill-and-music-will-become-easy-for-you/)
 

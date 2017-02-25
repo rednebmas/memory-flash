@@ -1,0 +1,25 @@
+#metronome-controls {
+	font-size: 14px;
+	margin-bottom: 5px;
+	margin-top: 20px;
+	text-align: center;
+	display: none;
+}
+
+#metronome-controls * {
+	vertical-align: middle;
+	/*margin: 5px;*/
+}
+
+.spacer-8px {
+	padding: 4px;
+}
+
+.metronome-dots {
+	width: 200px;
+	height: 50px;
+}
+
+#metronome-dots-container {
+	text-align: center;
+}
