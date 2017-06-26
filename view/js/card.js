@@ -117,7 +117,7 @@ var Card = function(json) { return {
 		if (this.answers == undefined) {
 			return this.answer;
 		} else {
-			return this.answer[current_answer_part_index];
+			return this.answer[this.current_answer_part_index];
 		}
 	}
 }.init(); }

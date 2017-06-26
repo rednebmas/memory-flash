@@ -29,7 +29,7 @@ class Scheduler:
 	def weighted_random_card(cards, previous_card_id):
 		""" Cards is an array of cards where each card has an answer_history """
 		weights = [card.answer_history.time_to_correct for card in cards]
-		learning_factor = 2.0
+		learning_factor = 2.8
 		index = choose_index_for_weights(weights, learning_factor)
 		card = cards[index]
 

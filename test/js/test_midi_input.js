@@ -18,8 +18,8 @@ var gflatCard = {
 }
 
 var intervalCard = {
-	"question": "What is a perfect fifth of Db?",
-	"answer": "Ab major",
+	"question": "What is an ascending perfect fifth of Db?",
+	"answer": "Ab",
 	"deck_id": 2,
 	"card_id": 1,
 	"answer_validator": "multipleOptions_equals_midiEnharmonicsValid",
@@ -135,7 +135,7 @@ describe('MIDIInput', function() {
 
 	describe('bugs', function () {
 		it('should have output e# instead of f for f# scale', function () {
-			card = new Card({ "template_path": "cards/chord-progression/chord-progression.html", "card_id": 819, "template_data": { "root": "F#", "chords": [{ "template_path": "cards/chord-progression/chord-progression-inv-0.html", "symbol": "IV" }, { "template_path": "cards/chord-progression/chord-progression-inv-2.html", "symbol": "V" }, { "template_path": "cards/chord-progression/chord-progression-inv-1.html", "symbol": "I" }] }, "answer_validator": "equals", "deck_id": 8, "answer": "B D# F#→G# C# E#→A# C# F#", "scale": "F#", "accidental": "#", "question": "IV V I in F#" });
+			var card = new Card({ "template_path": "cards/chord-progression/chord-progression.html", "card_id": 819, "template_data": { "root": "F#", "chords": [{ "template_path": "cards/chord-progression/chord-progression-inv-0.html", "symbol": "IV" }, { "template_path": "cards/chord-progression/chord-progression-inv-2.html", "symbol": "V" }, { "template_path": "cards/chord-progression/chord-progression-inv-1.html", "symbol": "I" }] }, "answer_validator": "equals", "deck_id": 8, "answer": "B D# F#→G# C# E#→A# C# F#", "scale": "F#", "accidental": "#", "question": "IV V I in F#" });
             game.card = card;
 			assert.ok(midiInput.scale != undefined);
 			assert.equal(midiInput.scale.tonic.name() + midiInput.scale.tonic.accidental(), 'f#');
@@ -143,5 +143,13 @@ describe('MIDIInput', function() {
             midiInput.addNote(53); // f, should output e# though
             assert.equal(midiInput.calcOutput(), 'E#');
 		});
+
+        it('should show Fb instead of E', function() {
+            var card = new Card({"card_id":65,"deck_id":1,"question":"M3 of A♭","answer":"Fb","answer_validator":"multipleOptions_equals_midiEnharmonicsValid","accidental":null,"scale":"Ab major","template_path":"cards/interval.html","template_data":{"interval":"M3","direction":"↓","note":"A♭"}});
+
+            game.card = card;
+            midiInput.addNote(52); // "e", should be Fb
+            assert.equal(midiInput.calcOutput(), 'Fb');
+        });
 	});
 });

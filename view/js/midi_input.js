@@ -145,6 +145,7 @@ var MIDIInput = function () { return {
 		});
 		notes = this.makeNotesRespectCardAccidental(notes);
 		notes = this.makeNotesRespectCardScale(notes);
+		notes = this.makeNotesRespectCardAnswer(notes);
 
 		var noteNames = notes.map(function(note) {
 			return note.name().toUpperCase() + note.accidental().replace('x', '##');
@@ -178,6 +179,22 @@ var MIDIInput = function () { return {
 		notes = notes.map(function(note) {
 			if (note.chroma() in self.chromaMap) {
 				return self.chromaMap[note.chroma()];
+			} else {
+				return note;
+			}
+		});
+
+		return notes;
+	},
+
+	// at the moment this only works with single part answers
+	makeNotesRespectCardAnswer: function(notes) {
+		if (game.card.answers != undefined) return notes;
+
+		var answerNote = teoria.note(game.card.answer);
+		notes = notes.map(function(note) {
+			if (note.chroma() == answerNote.chroma()) {
+				return answerNote;
 			} else {
 				return note;
 			}

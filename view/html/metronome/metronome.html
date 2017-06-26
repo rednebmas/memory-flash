@@ -16,9 +16,23 @@
 <div id="metronome-dots-container"></div>
 
 <script type="text/javascript">
-	var metronomeState = "off";
 	$('#startMetronomeBtn').click(function () {
 		var state = play();
+		if (state == "Stop") {
+			Cookies.set('metronomeOn', true);
+		} else {
+			Cookies.set('metronomeOn', false);
+		}
 		$('#startMetronomeBtn').text(state);
+	});
+
+	$(document).ready(function () {
+		if (Cookies.get('metronomeOn') == 'true') {
+			// I guess it takes a second for the audioContext to be setup
+			setTimeout(function () {
+				var state = play();
+				$('#startMetronomeBtn').text(state);
+			}, 500);
+		}
 	})
 </script>

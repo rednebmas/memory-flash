@@ -70,7 +70,7 @@ class Session:
 			cards_to_add_ids = []
 			cards_to_add_time_to_corrects = []
 			while (sum(cards_to_add_time_to_corrects) < 60.0 or len(cards_to_add_ids) < 8) or len(cards_to_add_ids) == num_seen_cards:
-				pick_index = choose_index_for_weights(seen_cards_weights, 2.5)
+				pick_index = choose_index_for_weights(seen_cards_weights, 2.8)
 				cards_to_add_ids.append(seen_cards[pick_index]['card_id'])
 				cards_to_add_time_to_corrects.append(seen_cards[pick_index]['time_to_correct'])
 				del seen_cards[pick_index]
