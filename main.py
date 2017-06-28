@@ -27,6 +27,8 @@ app.static('/sounds', './view/sounds')
 app.static('/favicon.ico', './view/img/favicon.png')
 app.static('/metronome', './view/html/metronome')
 
+paths_that_dont_need_auth = ['/decks', '/user/login']
+
 ######################
 # Session Middleware #
 ######################
@@ -35,14 +37,15 @@ app.static('/metronome', './view/html/metronome')
 async def add_session_to_request(request):
 	# before each request initialize a session
 	# using the client's request
-	print('loading session')
 	await session_interface.open(request)
+	# make sure user is authenticated to view most pages, otherwise, redirect to login
+	if 'user_id' not in request['session'] and request.path not in paths_that_dont_need_auth:
+    		return sanic.response.redirect('/user/login')
 
 @app.middleware('response')
 async def save_session(request, response):
 	# after each request save the session,
 	# pass the response to set client cookies
-	print('saving session: ' + str(request['session']))
 	await session_interface.save(request, response)
 
 ##########
@@ -63,12 +66,13 @@ async def decks_cards(request, deck_id):
 
 @app.route("/decks/<deck_id:int>/study")
 async def decks_study(request, deck_id):
-	deck, session = StudyViewModel.deck_and_session(deck_id)
+	deck, session = StudyViewModel.deck_and_session(request['session']['user_id'], deck_id)
 	return jinja_response('study.html', deck=deck, session_id=session.session_id)
 
 @app.route("/session/<session_id:int>/next_card")
 async def session_next_card(request, session_id):
 	card, session = StudyViewModel.next_card(
+		request['session']['user_id'],
 		session_id, 
 		request.args.get('deck_id'),
 		previous_card_id=request.args.get('previous_card_id', None)

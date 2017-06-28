@@ -7,16 +7,16 @@ from model.math_sam import choose_index_for_weights
 
 class Session:
 	@staticmethod
-	def from_deck_id(deck_id):
+	def from_deck_id(user_id, deck_id):
 		rows = db.select(
 			table="Session", 
-			where="deck_id = ? AND stage <> 'finished'", 
-			substitutions=(deck_id,), 
+			where="user_id = ? AND deck_id = ? AND stage <> 'finished'", 
+			substitutions=(user_id, deck_id), 
 			limit="1", 
 			order_by="begin_date DESC"
 		)
 		if len(rows) == 0:
-			return Session.new_for_deck_id(deck_id)
+			return Session.new_for_deck_id(user_id, deck_id)
 		else:
 			return Session.from_db(rows[0])
 
@@ -29,18 +29,19 @@ class Session:
 			return None
 
 	@staticmethod
-	def new_for_deck_id(deck_id):
-		db.execute('INSERT INTO Session (deck_id, begin_date) VALUES (?, ?)', (deck_id, DB.datetime_now()))
-		row = db.select1(table="Session", where="deck_id = ?", order_by="session_id DESC", substitutions=(deck_id,))
+	def new_for_deck_id(user_id, deck_id):
+		db.execute('INSERT INTO Session (user_id, deck_id, begin_date) VALUES (?, ?, ?)', (user_id, deck_id, DB.datetime_now()))
+		row = db.select1(table="Session", where="user_id = ? AND deck_id = ?", order_by="session_id DESC", substitutions=(user_id, deck_id))
 		return Session.from_db(row)
 
 	@staticmethod
 	def from_db(row):
-		return Session(row['session_id'], row['deck_id'], row['begin_date'], row['stage'], row['median'] if 'median' in row.keys() else None)
+		return Session(row['session_id'], row['deck_id'], row['user_id'], row['begin_date'], row['stage'], row['median'] if 'median' in row.keys() else None)
 
-	def __init__(self, session_id, deck_id, begin_date, stage, median=None):
+	def __init__(self, session_id, deck_id, user_id, begin_date, stage, median=None):
 		self.session_id = session_id
 		self.deck_id = deck_id
+		self.user_id = user_id
 		self.begin_date = begin_date
 		self.stage = stage
 		self.median = median
@@ -84,10 +85,10 @@ class Session:
 		for card_id in card_ids:
 			print('adding card with id to session: ' + str(card_id))
 			db.execute("""
-				INSERT INTO SessionCard (session_id, card_id)
-				VALUES (?, ?)
+				INSERT INTO SessionCard (session_id, card_id, user_id)
+				VALUES (?, ?, ?)
 				""",
-				substitutions=(self.session_id, card_id)
+				substitutions=(self.session_id, card_id, user_id)
 			)
 
 	def update_median(self):
@@ -105,11 +106,11 @@ class Session:
 			FROM SessionCard
 			JOIN Card on Card.card_id = SessionCard.card_id
 			LEFT JOIN AnswerHistory on SessionCard.card_id = AnswerHistory.card_id
-			WHERE SessionCard.session_id = ?
+			WHERE SessionCard.session_id = ? AND SessionCard.user_id = ?
 			GROUP BY SessionCard.card_id, SessionCard.session_id
 		"""
 
-		db.execute(statement, (self.session_id,))
+		db.execute(statement, (self.session_id, self.user_id))
 		rows = db.cursor.fetchall()
 
 		self.cards = []
@@ -118,6 +119,7 @@ class Session:
 			answer_history = AnswerHistory(
 				session_id = self.session_id, 
 				card_id = card.card_id, 
+				user_id = self.user_id,
 				time_to_correct = row['time_to_correct'], 
 				first_attempt_correct = row['first_attempt_correct'], 
 				answered_at = row['answered_at']

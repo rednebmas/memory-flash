@@ -6,13 +6,14 @@ textInput = new TextInput();
 
 // this pattern allows getters and setters (http://stackoverflow.com/a/17606845/337934) and a constructor
 // also see the last example from http://stackoverflow.com/a/21648197/337934
-var Game = function(session_id, deck_id) { return { 
+var Game = function(session_id, deck_id, user_id) { return { 
 	/** 
 	Properties 
 	**/
 
 	session_id: session_id,
 	deck_id: deck_id,
+	user_id: user_id,
 	// waiting, loading next question, partial - correct, partial - incorrect, incorrect, correct but first attempt incorrect
 	_state: 'waiting', 
 	_card: undefined,
@@ -79,7 +80,8 @@ var Game = function(session_id, deck_id) { return {
 		var url = '/session/' + this.session_id + '/next_card';
 		var data = { 
 			'deck_id' : this.deck_id, 
-			'previous_card_id' : this.card ? this.card.card_id : 0
+			'previous_card_id' : this.card ? this.card.card_id : 0,
+			'user_id' : this.user_id
 		};
 
 		var self = this;
@@ -156,6 +158,7 @@ var Game = function(session_id, deck_id) { return {
 		if (this.card == undefined) return;
 
 		var body = {
+			'user_id': this.user_id,
 			'session_id': this.session_id,
 			'card_id': this.card.card_id,
 			'time_to_correct': this.card.time_to_correct,

@@ -6,14 +6,16 @@ class AnswerHistory:
 		return AnswerHistory(
 			json['session_id'], 
 			json['card_id'], 
+			json['user_id'],
 			json['time_to_correct'], 
 			json['first_attempt_correct'], 
 			json['answered_at'] if 'answered_at' in json else DB.datetime_now()
 		) 
 
-	def __init__(self, session_id, card_id, time_to_correct, first_attempt_correct, answered_at):
+	def __init__(self, session_id, card_id, user_id, time_to_correct, first_attempt_correct, answered_at):
 		self.session_id = session_id
 		self.card_id = card_id
+		self.user_id = user_id
 		self.time_to_correct = time_to_correct
 		self.first_attempt_correct = first_attempt_correct
 		self.answered_at = answered_at
@@ -23,10 +25,11 @@ class AnswerHistory:
 
 	def insert(self):
 		db.execute("""
-			INSERT INTO AnswerHistory (session_id, card_id, time_to_correct, first_attempt_correct, answered_at, answered_at_day)
-			VALUES (?, ?, ?, ?, ?, ?)
+			INSERT INTO AnswerHistory (session_id, card_id, user_id, time_to_correct, first_attempt_correct, answered_at, answered_at_day)
+			VALUES (?, ?, ?, ?, ?, ?, ?)
 		 	""", (self.session_id, 
 		 	   self.card_id, 
+			   self.user_id,
 		 	   self.time_to_correct if self.time_to_correct < 45.0 else 45.0, 
 		 	   self.first_attempt_correct,
 		 	   self.answered_at,
@@ -39,16 +42,17 @@ class AnswerHistory:
 		count = db.select1(
 			table="SessionCard",
 			columns="COUNT(*)",
-			where="session_id = ? AND card_id = ?",
-			substitutions=(self.session_id, self.card_id)
+			where="session_id = ? AND card_id = ? and user_id = ?",
+			substitutions=(self.session_id, self.card_id, self.user_id)
 		)[0]
 		if count == 0:
 			db.execute("""
-				INSERT INTO SessionCard (session_id, card_id)
-				VALUES (?, ?)
+				INSERT INTO SessionCard (session_id, card_id, user_id)
+				VALUES (?, ?, ?)
 				""",
 				substitutions=(self.session_id, 
-					self.card_id)
+					self.card_id,
+					self.user_id)
 			)
 
 	@staticmethod
@@ -57,10 +61,10 @@ class AnswerHistory:
 		SELECT AH.card_id, AH.time_to_correct, AH.first_attempt_correct, MIN(AH.answered_at)
 		FROM AnswerHistory AH
 		JOIN Card C ON C.card_id = AH.card_id
-		WHERE AH.session_id <> ? AND C.deck_id = ?
+		WHERE AH.session_id <> ? AND C.deck_id = ? AND AH.user_id = ?
 		GROUP BY AH.answered_at_day, AH.card_id
 		"""
-		db.execute(statement, (session.session_id, session.deck_id))
+		db.execute(statement, (session.session_id, session.deck_id, session.user_id))
 		rows = db.cursor.fetchall()
 		return rows
 
