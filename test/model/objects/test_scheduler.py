@@ -14,8 +14,9 @@ class TestScheduler(unittest.TestCase):
 		db.unittest_reset()
 
 	def test_behavior_test_part_2_and_seen_cards(self):
+		user_id = 1
 		self.test_behavior_test_part_1_new_cards()
-		session = Session.new_for_deck_id(3)
+		session = Session.new_for_deck_id(user_id, 3)
 
 		deck = Deck.from_deck_id(session.deck_id)
 		self.assertNotEqual(session.session_id, 1)
@@ -38,7 +39,7 @@ class TestScheduler(unittest.TestCase):
 			card, session_stage = Scheduler.next(session)
 
 			new_cards.append(card)
-			AnswerHistory(session.session_id, card.card_id, (float(i) + 1.0) * 10, True, two_seconds_ago).insert()
+			AnswerHistory(session.session_id, card.card_id, user_id, (float(i) + 1.0) * 10, True, two_seconds_ago).insert()
 			session.load_cards()
 
 		self.assertEqual(Scheduler.session_stage(session), 'reviewing')
@@ -69,7 +70,7 @@ class TestScheduler(unittest.TestCase):
 			card, session_stage = Scheduler.next(session, previous_card)
 			if session_stage is not 'finished': 
 				self.assertNotEqual(card, previous_card)
-				AnswerHistory(session.session_id, card.card_id, median / 2.0, True, DB.datetime_now()).insert()
+				AnswerHistory(session.session_id, card.card_id, user_id, median / 2.0, True, DB.datetime_now()).insert()
 			else:
 				break
 
@@ -77,7 +78,8 @@ class TestScheduler(unittest.TestCase):
 		self.assertEqual(Scheduler.session_stage(session), 'finished')
 
 	def test_behavior_test_part_1_new_cards(self):
-		deck, session = StudyViewModel.deck_and_session(3)
+		user_id = 1
+		deck, session = StudyViewModel.deck_and_session(user_id, 3)
 		session.load_cards()
 		self.assertEqual(len(session.cards), 0)
 
@@ -94,7 +96,7 @@ class TestScheduler(unittest.TestCase):
 			card, session_stage = Scheduler.next(session)
 
 			new_cards.append(card)
-			AnswerHistory(session.session_id, card.card_id, (float(i) + 1.0) * 10, True, two_seconds_ago).insert()
+			AnswerHistory(session.session_id, card.card_id, user_id, (float(i) + 1.0) * 10, True, two_seconds_ago).insert()
 			session.load_cards()
 
 		self.assertEqual(Scheduler.session_stage(session), 'reviewing')
@@ -112,7 +114,7 @@ class TestScheduler(unittest.TestCase):
 		for new_card in new_cards:
 			session.load_cards()
 			self.assertEqual(Scheduler.session_stage(session), 'reviewing')
-			AnswerHistory(session.session_id, new_card.card_id, median / 2.0, True, DB.datetime_now()).insert()
+			AnswerHistory(session.session_id, new_card.card_id, user_id, median / 2.0, True, DB.datetime_now()).insert()
 
 		session.load_cards()
 		self.assertEqual(Scheduler.session_stage(session), 'finished')
