@@ -1,0 +1,5 @@
+# pip install -r requirements.txt
+sanic
+sanic_session
+bcrypt
+aoiklivereload
