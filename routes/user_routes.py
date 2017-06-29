@@ -23,8 +23,6 @@ def add_routes(app):
 			user = User.authenticate(form.get('login'), form.get('password'))
 			request['session']['user_name'] = user.user_name
 			request['session']['user_id'] = user.user_id
-			print(user.user_name)
-			print(request['session']['user_name'])
 			return redirect('/decks')
 		except Exception as e:
 			return html(jinja_render('user/login.html', error_msg=e.message), status=401)

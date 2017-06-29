@@ -27,7 +27,7 @@ app.static('/sounds', './view/sounds')
 app.static('/favicon.ico', './view/img/favicon.png')
 app.static('/metronome', './view/html/metronome')
 
-paths_that_dont_need_auth = ['/decks', '/user/login']
+paths_that_dont_need_auth = ['/decks', '/user/login', '/user']
 
 ######################
 # Session Middleware #
@@ -40,7 +40,8 @@ async def add_session_to_request(request):
 	await session_interface.open(request)
 	# make sure user is authenticated to view most pages, otherwise, redirect to login
 	if 'user_id' not in request['session'] and request.path not in paths_that_dont_need_auth:
-    		return sanic.response.redirect('/user/login')
+		print('<' + request.path + '> Attempted to access route which requires you to be logged in to an account.')
+		return sanic.response.redirect('/user/login')
 
 @app.middleware('response')
 async def save_session(request, response):

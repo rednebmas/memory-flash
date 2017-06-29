@@ -46,7 +46,6 @@ class DB:
 		return rows
 
 	def select1(self, table, where, substitutions=(), columns="*", order_by="", debug=False):
-		# ABSTRACT THIS TO SELECT
 		rows = self.select(
 			table=table, 
 			where=where,

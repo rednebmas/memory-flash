@@ -10,3 +10,4 @@ tags
 *.sublime-workspace
 *.swp
 *.log
+*.vscode

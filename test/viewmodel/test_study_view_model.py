@@ -9,7 +9,6 @@ class TestStudyViewModel(unittest.TestCase):
 		card, session = StudyViewModel.next_card(user_id, 1, 1)
 		self.assertTrue(isinstance(card, Card), card)
 
-
 def main():
 	unittest.main()
 
