@@ -88,7 +88,7 @@ class Session:
 				INSERT INTO SessionCard (session_id, card_id, user_id)
 				VALUES (?, ?, ?)
 				""",
-				substitutions=(self.session_id, card_id, user_id)
+				substitutions=(self.session_id, card_id, self.user_id)
 			)
 
 	def update_median(self):
