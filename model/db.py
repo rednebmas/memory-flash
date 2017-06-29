@@ -82,6 +82,11 @@ class DB:
 		self.cursor = self.conn.cursor()
 		MigrationManager.create_db(self)
 		MigrationManager.run_pending_migrations(self)
+		self.unittest_create_dummy_user()
+
+	def unittest_create_dummy_user(self):
+		import model.objects.user
+		model.objects.user.User.create('FAKE_test_USER', 'faketu@me.com', 'pass')
 
 	@staticmethod
 	def put_substitutions_in_statement(statement, substitutions):
@@ -108,3 +113,6 @@ else:
 
 MigrationManager.run_pending_migrations(db)
 
+# creates dummy user that is used by default in tests
+if 'unittest' in sys.argv[0]:
+	db.unittest_create_dummy_user()
