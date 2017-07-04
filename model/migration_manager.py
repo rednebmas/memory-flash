@@ -12,7 +12,7 @@ from model.card_generators.progression_generator import ProgressionGenerator
 class MigrationManager:
 	@staticmethod
 	def create_db(db):
-		with open('model/schema.sql') as f:
+		with open('model/migrations/initial_schema.sql') as f:
 			db.execute_statments(f.read().split(';'))
 
 	@staticmethod

@@ -8,9 +8,14 @@ import unittest
 
 class ALiveSession:
 	"""
-	Instead of app.test_client.get, use session.test_client.get
+	Instead of app.test_client.get, use 
+
+		with ALiveSession as session:
+			session.test_client.get
+
 	and, add the following parameter to the request
-	cookies={ 'session': session.session_id }
+
+		cookies={ 'session': session.session_id }
 	"""
 	def __enter__(self):
 		global app
