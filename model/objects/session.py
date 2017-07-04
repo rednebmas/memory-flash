@@ -7,7 +7,7 @@ from model.math_sam import choose_index_for_weights
 
 class Session:
 	@staticmethod
-	def from_deck_id(user_id, deck_id):
+	def from_deck_id(deck_id, user_id):
 		rows = db.select(
 			table="Session", 
 			where="user_id = ? AND deck_id = ? AND stage <> 'finished'", 
@@ -16,7 +16,7 @@ class Session:
 			order_by="begin_date DESC"
 		)
 		if len(rows) == 0:
-			return Session.new_for_deck_id(user_id, deck_id)
+			return Session.new_for_deck_id(deck_id, user_id)
 		else:
 			return Session.from_db(rows[0])
 
@@ -29,7 +29,7 @@ class Session:
 			return None
 
 	@staticmethod
-	def new_for_deck_id(user_id, deck_id):
+	def new_for_deck_id(deck_id, user_id):
 		db.execute('INSERT INTO Session (user_id, deck_id, begin_date) VALUES (?, ?, ?)', (user_id, deck_id, DB.datetime_now()))
 		row = db.select1(table="Session", where="user_id = ? AND deck_id = ?", order_by="session_id DESC", substitutions=(user_id, deck_id))
 		return Session.from_db(row)
