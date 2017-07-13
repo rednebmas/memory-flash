@@ -13,7 +13,8 @@ class TestAnswerHistory(unittest.TestCase):
 
 	def test_first_review_from_last_day_reviewed_not_in_session(self):
 		user_id = 1
-		session = Session.from_deck_id(1, user_id)
+		input_modality_id = 1
+		session = Session.find_or_create(1, user_id, 1)
 
 		from datetime import datetime, timedelta
 		two_seconds_ago = datetime.now() - timedelta(seconds=2)

@@ -4,13 +4,16 @@ from model.objects.card import Card
 from model.objects.session import Session
 from model.objects.answer_history import AnswerHistory
 from model.db import db, DB
-from viewmodel.study_view_model import StudyViewModel
 
 class TestDeck(unittest.TestCase):
 	def test_unseen_cards(self):
 		user_id = 1
-		deck, session = StudyViewModel.deck_and_session(user_id, 3)
+		deck_id = 3
+		input_modality_id = 1
+
+		session = Session.find_or_create(deck_id, user_id, input_modality_id)
 		session.load_cards()
+
 		cards = Deck.unseen_cards(session)
 		card = cards[0]
 		self.assertTrue(card is not None)

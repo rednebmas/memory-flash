@@ -9,7 +9,6 @@ from model.objects.answer_history import AnswerHistory
 from model.objects.session import Session
 from viewmodel.deck_view_model import DeckViewModel
 from viewmodel.card_view_model import CardViewModel
-from viewmodel.study_view_model import StudyViewModel
 from routes.core import jinja_render, jinja_response
 import os
 
@@ -56,8 +55,6 @@ async def save_session(request, response):
 @app.route("/decks")
 async def decks(request):
 	decks = list(DeckViewModel.all_decks())
-	print(request['session'])
-	# print(request['session']['user_id'])
 	return jinja_response('decks.html', decks=decks)
 
 @app.route("/decks/<deck_id:int>/cards")
@@ -67,17 +64,25 @@ async def decks_cards(request, deck_id):
 
 @app.route("/decks/<deck_id:int>/study")
 async def decks_study(request, deck_id):
-	deck, session = StudyViewModel.deck_and_session(request['session']['user_id'], deck_id)
-	return jinja_response('study.html', deck=deck, session_id=session.session_id)
+	deck = Deck.from_db(db.select1(table="Deck", where="deck_id = ?", substitutions=(deck_id,)))
+	input_modality_id = request.args.get('input_modality_id', None)
+	if input_modality_id is None:
+		return sanic.response.redirect('/')
+
+	# SOMEDAY: ensure that we have a valid input_modality_id for this deck
+	session = Session.find_or_create(deck_id, user_id, input_modality_id)
+	return jinja_response('study.html', deck=deck, mf_session=session)
 
 @app.route("/session/<session_id:int>/next_card")
 async def session_next_card(request, session_id):
-	card, session = StudyViewModel.next_card(
-		request['session']['user_id'],
-		session_id, 
-		request.args.get('deck_id'),
-		previous_card_id=request.args.get('previous_card_id', None)
-	)
+	previous_card_id = request.args.get('previous_card_id', None)
+	if isinstance(previous_card_id, str): 
+		# can remove if this isn't called after a while
+		raise Exception('previous_card_id was not the correct type')
+
+	session = Session.from_db_id(session_id)
+	card = Session.next_card(previous_card_id)
+
 	if card is None:
 		return json({ 'msg': 'session complete' })
 

@@ -7,16 +7,16 @@ from model.math_sam import choose_index_for_weights
 
 class Session:
 	@staticmethod
-	def from_deck_id(deck_id, user_id):
+	def find_or_create(deck_id, user_id, input_modality_id):
 		rows = db.select(
 			table="Session", 
-			where="user_id = ? AND deck_id = ? AND stage <> 'finished'", 
-			substitutions=(user_id, deck_id), 
+			where="user_id = ? AND deck_id = ? AND input_modality_id = ? AND stage <> 'finished'", 
+			substitutions=(user_id, deck_id, input_modality_id), 
 			limit="1", 
 			order_by="begin_date DESC"
 		)
 		if len(rows) == 0:
-			return Session.new_for_deck_id(deck_id, user_id)
+			return Session.new_for_deck_id(deck_id, user_id, input_modality_id)
 		else:
 			return Session.from_db(rows[0])
 
@@ -29,21 +29,22 @@ class Session:
 			return None
 
 	@staticmethod
-	def new_for_deck_id(deck_id, user_id):
-		db.execute('INSERT INTO Session (user_id, deck_id, begin_date) VALUES (?, ?, ?)', (user_id, deck_id, DB.datetime_now()))
-		row = db.select1(table="Session", where="user_id = ? AND deck_id = ?", order_by="session_id DESC", substitutions=(user_id, deck_id))
+	def new_for_deck_id(deck_id, user_id, input_modality_id):
+		db.execute('INSERT INTO Session (user_id, deck_id, input_modality_id, begin_date) VALUES (?, ?, ?, ?)', (user_id, deck_id, input_modality_id, DB.datetime_now()))
+		row = db.select1(table="Session", where="user_id = ? AND deck_id = ? AND input_modality_id = ?", order_by="session_id DESC", substitutions=(user_id, deck_id, input_modality_id))
 		return Session.from_db(row)
 
 	@staticmethod
 	def from_db(row):
-		return Session(row['session_id'], row['deck_id'], row['user_id'], row['begin_date'], row['stage'], row['median'] if 'median' in row.keys() else None)
+		return Session(row['session_id'], row['deck_id'], row['user_id'], row['begin_date'], row['stage'], row['input_modality_id'], row['median'] if 'median' in row.keys() else None)
 
-	def __init__(self, session_id, deck_id, user_id, begin_date, stage, median=None):
+	def __init__(self, session_id, deck_id, user_id, begin_date, stage, input_modality_id, median=None):
 		self.session_id = session_id
 		self.deck_id = deck_id
 		self.user_id = user_id
 		self.begin_date = begin_date
 		self.stage = stage
+		self.input_modality_id = input_modality_id
 		self.median = median
 		self.cards_loaded = False
 
@@ -134,3 +135,8 @@ class Session:
 		db.execute(statement, substitutions=(new_val, self.session_id,))
 		self.stage = new_val
 
+	def next_card(self, previous_card_id=None):
+		from model.objects.scheduler import Scheduler
+
+		card, state = Scheduler.next(self, previous_card_id)
+		return card
