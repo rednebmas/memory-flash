@@ -5,6 +5,7 @@ from sanic.response import json, html, text
 from sanic_session import InMemorySessionInterface
 from model.db import db
 from model.objects.card import Card
+from model.objects.deck import Deck
 from model.objects.answer_history import AnswerHistory
 from model.objects.session import Session
 from viewmodel.deck_view_model import DeckViewModel
@@ -70,6 +71,7 @@ async def decks_study(request, deck_id):
 		return sanic.response.redirect('/')
 
 	# SOMEDAY: ensure that we have a valid input_modality_id for this deck
+	user_id = request['session']['user_id']
 	session = Session.find_or_create(deck_id, user_id, input_modality_id)
 	return jinja_response('study.html', deck=deck, mf_session=session)
 
@@ -81,7 +83,7 @@ async def session_next_card(request, session_id):
 		raise Exception('previous_card_id was not the correct type')
 
 	session = Session.from_db_id(session_id)
-	card = Session.next_card(previous_card_id)
+	card = session.next_card(previous_card_id)
 
 	if card is None:
 		return json({ 'msg': 'session complete' })

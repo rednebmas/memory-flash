@@ -64,9 +64,18 @@ class TestEndpoints(unittest.TestCase):
 	def test_session_next_card(self):
 		global app
 
+		deck_id = 1
 		with ALiveSession() as session:
+			# must query the study page in order make sure a session exists
 			request, response = session.test_client.get(
-				'/session/1/next_card?deck_id=1',
+				'/decks/{0}/study'.format(deck_id),
+				params={'input_modality_id': 1},
+				cookies={ 'session': session.session_id }
+			)
+
+			# now ask for the next card
+			request, response = session.test_client.get(
+				'/session/1/next_card?deck_id={0}'.format(deck_id),
 				cookies={ 'session': session.session_id }
 			)
 			self.assertTrue(response.status == 200, response.body)
