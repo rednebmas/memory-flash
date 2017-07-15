@@ -3,3 +3,4 @@ sanic
 sanic_session
 bcrypt
 aoiklivereload
+Jinja2
