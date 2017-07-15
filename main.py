@@ -27,7 +27,7 @@ app.static('/sounds', './view/sounds')
 app.static('/favicon.ico', './view/img/favicon.png')
 app.static('/metronome', './view/html/metronome')
 
-paths_that_dont_need_auth = ['/decks', '/user/login', '/user']
+paths_that_dont_need_auth = ['/decks', '/user/login', '/user', '/']
 
 ######################
 # Session Middleware #
@@ -57,6 +57,10 @@ async def save_session(request, response):
 async def decks(request):
 	decks = list(DeckViewModel.all_decks())
 	return jinja_response('decks.html', decks=decks)
+
+@app.route("/")
+async def index(request):
+    return sanic.response.redirect('/decks')
 
 @app.route("/decks/<deck_id:int>/cards")
 async def decks_cards(request, deck_id):
@@ -107,10 +111,6 @@ async def answer_card(request, card_id):
 		AnswerHistory.from_json(request.json).insert()
 		return json({ "success": True })
 	return json({ "success": False })
-
-@app.route("/")
-async def index(request):
-    return json({'hello':'memory-flash-2'})
 
 import routes.user_routes
 routes.user_routes.add_routes(app)

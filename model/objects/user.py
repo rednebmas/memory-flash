@@ -54,6 +54,9 @@ class User:
 
 	@staticmethod
 	def authenticate(login, password):
+		if password is None:
+			raise ValidationError('Password required.')
+
 		""" Authenticate with username or password """
 		def check_credentials(login_col):
 			user = db.select1("User", where=login_col + " = ?", substitutions=(login,))

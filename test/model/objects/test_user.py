@@ -47,6 +47,12 @@ class TestUser(unittest.TestCase):
             user = User.authenticate('sam.i.am1', not_the_password)
         self.assertRaises(ValidationError, auth)
 
+    def test_authenticate_failure_no_password(self):
+        User.create('sam.i.am1', 'fake@email.com', the_password)
+        def auth():
+            user = User.authenticate('sam.i.am1', None)
+        self.assertRaises(ValidationError, auth)
+
 def main():
 	unittest.main()
 
