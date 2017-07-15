@@ -18,7 +18,7 @@ class TestScheduler(unittest.TestCase):
 	def test_behavior_test_part_2_and_seen_cards(self):
 		user_id = 1
 		self.test_behavior_test_part_1_new_cards()
-		session = Session.new_for_deck_id(deck_id, user_id, input_modality_id)
+		session = Session.new(deck_id, user_id, input_modality_id)
 
 		deck = Deck.from_deck_id(session.deck_id)
 		self.assertNotEqual(session.session_id, 1)

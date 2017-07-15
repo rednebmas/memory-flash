@@ -11,3 +11,4 @@ tags
 *.swp
 *.log
 *.vscode
+*.backup

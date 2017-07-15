@@ -16,7 +16,7 @@ class Session:
 			order_by="begin_date DESC"
 		)
 		if len(rows) == 0:
-			return Session.new_for_deck_id(deck_id, user_id, input_modality_id)
+			return Session.new(deck_id, user_id, input_modality_id)
 		else:
 			return Session.from_db(rows[0])
 
@@ -29,7 +29,7 @@ class Session:
 			return None
 
 	@staticmethod
-	def new_for_deck_id(deck_id, user_id, input_modality_id):
+	def new(deck_id, user_id, input_modality_id):
 		db.execute('INSERT INTO Session (user_id, deck_id, input_modality_id, begin_date) VALUES (?, ?, ?, ?)', (user_id, deck_id, input_modality_id, DB.datetime_now()))
 		row = db.select1(table="Session", where="user_id = ? AND deck_id = ? AND input_modality_id = ?", order_by="session_id DESC", substitutions=(user_id, deck_id, input_modality_id))
 		return Session.from_db(row)
