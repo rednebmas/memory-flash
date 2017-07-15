@@ -18,7 +18,9 @@ class DB:
 		self.conn.close()
 
 	def execute(self, statement, substitutions=(), debug=False):
-		if debug: print(DB.put_substitutions_in_statement(statement, substitutions))
+		if debug: 
+			from textwrap import dedent # removes tab indentation from multi-line queries
+			print(dedent(DB.put_substitutions_in_statement(statement, substitutions)))
 		self.cursor.execute(statement, substitutions)
 		self.conn.commit()
 
@@ -42,7 +44,7 @@ class DB:
 		self.cursor.execute(statement, substitutions)
 		rows = self.cursor.fetchall()
 
-		if debug: print(rows)
+		if debug: DB.debug_pretty_print_rows(rows)
 		return rows
 
 	def select1(self, table, where, substitutions=(), columns="*", order_by="", debug=False):
@@ -86,6 +88,14 @@ class DB:
 	def unittest_create_dummy_user(self):
 		import model.objects.user
 		model.objects.user.User.create('FAKE_test_USER', 'faketu@me.com', 'pass')
+	
+	@staticmethod
+	def debug_pretty_print_rows(rows):
+		import pprint
+		pp = pprint.PrettyPrinter(indent=4)
+		print(len(rows), "rows")
+		for row in rows:
+			pp.pprint({key: row[key] for key in row.keys()})
 
 	@staticmethod
 	def put_substitutions_in_statement(statement, substitutions):

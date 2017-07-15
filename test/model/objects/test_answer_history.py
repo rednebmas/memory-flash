@@ -15,17 +15,19 @@ class TestAnswerHistory(unittest.TestCase):
 		user_id = 1
 		input_modality_id = 1
 		deck_id = 1
-		session = Session.find_or_create(deck_id, user_id, input_modality_id)
+		first_session = Session.find_or_create(deck_id, user_id, input_modality_id)
+		second_session = Session.new(deck_id, user_id, input_modality_id)
 
 		from datetime import datetime, timedelta
 		two_seconds_ago = datetime.now() - timedelta(seconds=2)
 		two_seconds_ago = two_seconds_ago.strftime('%Y-%m-%d %H:%M:%S')
 
-		card_id = db.select1(table="Card", where="deck_id = ?", substitutions=(session.deck_id,))['card_id']
+		card_id = db.select1(table="Card", where="deck_id = ?", substitutions=(first_session.deck_id,))['card_id']
 
-		AnswerHistory(session.session_id + 10, card_id, user_id, 1.12, True, two_seconds_ago).insert()
-		AnswerHistory(session.session_id + 10, card_id, user_id, 2.12, True, DB.datetime_now()).insert()
-		answer_histories = AnswerHistory.first_review_from_last_day_reviewed_not_in_session(session)
+		AnswerHistory(first_session.session_id, card_id, user_id, 2.12, True, DB.datetime_now()).insert()
+		AnswerHistory(first_session.session_id, card_id, user_id, 1.12, True, two_seconds_ago).insert()
+		AnswerHistory(first_session.session_id, card_id, user_id, 3.7, True, DB.datetime_now()).insert()
+		answer_histories = AnswerHistory.first_review_from_last_day_reviewed_not_in_session(second_session)
 		self.assertEqual(len(answer_histories), 1)
 		self.assertEqual(answer_histories[0]['time_to_correct'], 1.12)
 	
