@@ -14,7 +14,8 @@ class TestAnswerHistory(unittest.TestCase):
 	def test_first_review_from_last_day_reviewed_not_in_session(self):
 		user_id = 1
 		input_modality_id = 1
-		session = Session.find_or_create(1, user_id, 1)
+		deck_id = 1
+		session = Session.find_or_create(deck_id, user_id, input_modality_id)
 
 		from datetime import datetime, timedelta
 		two_seconds_ago = datetime.now() - timedelta(seconds=2)
@@ -28,10 +29,6 @@ class TestAnswerHistory(unittest.TestCase):
 		self.assertEqual(len(answer_histories), 1)
 		self.assertEqual(answer_histories[0]['time_to_correct'], 1.12)
 	
-	def test_fail(self):
-		# try searching for "answerhistory"
-		self.assertTrue("all queries relating to answer history must now join session and filter by input modality" == "a")
-
 def main():
 	unittest.main()
 

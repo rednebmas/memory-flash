@@ -105,8 +105,8 @@ class Session:
 				   AnswerHistory.first_attempt_correct, 
 				   MAX(AnswerHistory.answered_at) as answered_at
 			FROM SessionCard
-			JOIN Card on Card.card_id = SessionCard.card_id
-			LEFT JOIN AnswerHistory on SessionCard.card_id = AnswerHistory.card_id
+			JOIN Card ON Card.card_id = SessionCard.card_id
+			LEFT JOIN AnswerHistory ON SessionCard.card_id = AnswerHistory.card_id
 			WHERE SessionCard.session_id = ? AND SessionCard.user_id = ?
 			GROUP BY SessionCard.card_id, SessionCard.session_id
 		"""

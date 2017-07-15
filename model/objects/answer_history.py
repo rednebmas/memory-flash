@@ -61,10 +61,19 @@ class AnswerHistory:
 		SELECT AH.card_id, AH.time_to_correct, AH.first_attempt_correct, MIN(AH.answered_at)
 		FROM AnswerHistory AH
 		JOIN Card C ON C.card_id = AH.card_id
-		WHERE AH.session_id <> ? AND C.deck_id = ? AND AH.user_id = ?
+		JOIN Session S ON S.session_id = AH.session_id
+		WHERE AH.session_id <> ? AND C.deck_id = ? AND AH.user_id = ? AND S.input_modality_id = ?
 		GROUP BY AH.answered_at_day, AH.card_id
 		"""
-		db.execute(statement, (session.session_id, session.deck_id, session.user_id))
+		db.execute(
+			statement, 
+			substitutions=(
+				session.session_id, 
+				session.deck_id, 
+				session.user_id, 
+				session.input_modality_id
+			)
+		)
 		rows = db.cursor.fetchall()
 		return rows
 

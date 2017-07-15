@@ -25,7 +25,9 @@ class Deck:
 		SELECT C.*, AH.answer_history_id
 		FROM Card C
 		LEFT JOIN AnswerHistory AH ON C.card_id = AH.card_id
+		LEFT JOIN Session S ON AH.session_id = S.session_id
 		WHERE C.deck_id = ?
+			  AND (S.input_modality_id = ? OR S.input_modality_id IS NULL)
 			  AND AH.answer_history_id IS NULL
 			  -- This enforces the user_id isn't someone elses, it will never be the session's
 			  -- user_id
@@ -33,7 +35,7 @@ class Deck:
 		GROUP BY C.card_id
 		ORDER BY C.card_id
 		"""
-		db.execute(sql, (session.deck_id, session.user_id))
+		db.execute(sql, (session.deck_id, session.input_modality_id, session.user_id))
 		rows = db.cursor.fetchall()
 		return list(map(lambda r: Card.from_db(r), rows))
 
