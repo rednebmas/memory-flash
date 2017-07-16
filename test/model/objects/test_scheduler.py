@@ -20,7 +20,7 @@ class TestScheduler(unittest.TestCase):
 		self.test_behavior_test_part_1_new_cards()
 		session = Session.new(deck_id, user_id, input_modality_id)
 
-		deck = Deck.from_deck_id(session.deck_id)
+		deck = Deck.from_id(session.deck_id)
 		self.assertNotEqual(session.session_id, 1)
 		self.assertEqual(session.stage, 'aquire')
 		session.load_cards()

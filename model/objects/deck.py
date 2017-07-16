@@ -1,9 +1,10 @@
 from model.db import db
 from model.objects.card import Card
+from model.objects.input_modality import InputModality
 
 class Deck:
 	@staticmethod
-	def from_deck_id(deck_id):
+	def from_id(deck_id):
 		return Deck.from_db(db.select1(table="Deck", where="deck_id = {}".format(deck_id)))
 
 	@staticmethod
@@ -16,8 +17,20 @@ class Deck:
 		self.descr = descr
 
 	def load_cards(self):
-		rows = db.select(table="Card", where="deck_id = {}".format(self.deck_id))
+		rows = db.select(table="Card", where="deck_id = ?", substitutions=(self.deck_id,))
 		self.cards = list(map(lambda c: Card.from_db(c), rows))
+
+	def input_modalities(self):
+		sql = """
+		SELECT IM.input_modality_id, IM.input_modality_name
+		FROM InputModality IM
+		JOIN DeckInputModality DIM ON DIM.input_modality_id = IM.input_modality_id
+		WHERE DIM.deck_id = ?
+		ORDER BY IM.input_modality_id
+		"""
+		db.execute(sql, (self.deck_id,))
+		rows = db.cursor.fetchall()
+		return list(map(lambda r: InputModality.from_db(r), rows))
 
 	@staticmethod
 	def unseen_cards(session):
@@ -38,6 +51,3 @@ class Deck:
 		db.execute(sql, (session.deck_id, session.input_modality_id, session.user_id))
 		rows = db.cursor.fetchall()
 		return list(map(lambda r: Card.from_db(r), rows))
-
-
-		

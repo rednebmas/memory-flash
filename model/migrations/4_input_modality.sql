@@ -6,9 +6,7 @@ CREATE TABLE InputModality (
 	input_modality_name VARCHAR(512) NOT NULL
 );
 
-INSERT INTO InputModality (input_modality_name) VALUES ('MIDI Left Hand'), ('MIDI Right Hand'), ('MIDI Both Hands'), ('Text');
-
-INSERT INTO InputModality (input_modality_name) VALUES ('MIDI Left Hand'), ('MIDI Right Hand'), ('MIDI Both Hands'), ('Text');
+INSERT INTO InputModality (input_modality_name) VALUES ('Text'), ('MIDI Left Hand'), ('MIDI Right Hand'), ('MIDI Both Hands');
 
 --
 -- DeckInputModality
@@ -21,24 +19,29 @@ CREATE TABLE DeckInputModality (
 
 CREATE INDEX DeckInputModality_deck_id_input_modality_id_index ON DeckInputModality (deck_id, input_modality_id);
 
-INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 1), (2, 1), (4, 1);
-INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 2), (2, 2), (4, 2);
-INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 3), (2, 3), (4, 3);
-INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 4), (2, 4), (4, 4);
-INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 5), (2, 5), (4, 5);
-INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 6), (2, 6), (4, 6);
-INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 7), (2, 7), (4, 7);
-INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 8), (2, 8), (4, 8);
-
 -- ii V I: Root, Thirds, and Sevenths
-INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (3, 9), (4, 9);
+-- Text and both hands
+INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 9), (4, 9);
 
 -- Scales
+-- Text, left hand, right hand, both hands
 INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 10), (2, 10), (3, 10), (4, 10);
 INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 11), (2, 11), (3, 11), (4, 11);
 INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 12), (2, 12), (3, 12), (4, 12);
 INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 13), (2, 13), (3, 13), (4, 13);
 INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 14), (2, 14), (3, 14), (4, 14);
+
+INSERT INTO InputModality (input_modality_name) VALUES ('Text'), ('MIDI Left Hand'), ('MIDI Right Hand'), ('MIDI Both Hands');
+-- Everything else
+-- Text, left hand, right hand
+INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 1), (2, 1), (3, 1);
+INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 2), (2, 2), (3, 2);
+INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 3), (2, 3), (3, 3);
+INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 4), (2, 4), (3, 4);
+INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 5), (2, 5), (3, 5);
+INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 6), (2, 6), (3, 6);
+INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 7), (2, 7), (3, 7);
+INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 8), (2, 8), (3, 8);
 
 --
 -- Session

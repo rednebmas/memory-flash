@@ -69,7 +69,11 @@ async def decks_cards(request, deck_id):
 
 @app.route("/decks/<deck_id:int>/study")
 async def decks_study(request, deck_id):
-	deck = Deck.from_db(db.select1(table="Deck", where="deck_id = ?", substitutions=(deck_id,)))
+	if request.args.get('input_modality_id', None) is None:
+		input_modalities = Deck.from_id(deck_id).input_modalities()
+		return jinja_response('choose_input_modality.html', deck_id=deck_id, input_modalities=input_modalities)
+
+	deck = Deck.from_id(deck_id)
 	input_modality_id = request.args.get('input_modality_id', None)
 	if input_modality_id is None:
 		return sanic.response.redirect('/')
@@ -82,9 +86,7 @@ async def decks_study(request, deck_id):
 @app.route("/session/<session_id:int>/next_card")
 async def session_next_card(request, session_id):
 	previous_card_id = request.args.get('previous_card_id', None)
-	if isinstance(previous_card_id, str): 
-		# can remove if this isn't called after a while
-		raise Exception('previous_card_id was not the correct type')
+	if isinstance(previous_card_id, str): previous_card_id = int(previous_card_id)
 
 	session = Session.from_db_id(session_id)
 	card = session.next_card(previous_card_id)

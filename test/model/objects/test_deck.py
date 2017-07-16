@@ -3,6 +3,7 @@ from model.objects.deck import Deck
 from model.objects.card import Card
 from model.objects.session import Session
 from model.objects.answer_history import AnswerHistory
+from model.objects.input_modality import InputModality
 from model.db import db, DB
 
 class TestDeck(unittest.TestCase):
@@ -26,6 +27,11 @@ class TestDeck(unittest.TestCase):
 
 		cards = Deck.unseen_cards(session)
 		self.assertEqual(card.template_data, cards[0].template_data)
+	
+	def test_input_modalities(self):
+		input_modalities = Deck.from_id(1).input_modalities()
+		self.assertEqual(len(input_modalities), 3)
+		self.assertTrue(isinstance(input_modalities[0], InputModality))
 
 def main():
 	unittest.main()
