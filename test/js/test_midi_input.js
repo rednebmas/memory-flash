@@ -17,6 +17,18 @@ var gflatCard = {
 	"answer_validator": "multipleOptions_equals_midiEnharmonicsValid",
 }
 
+var cMajorCard = {
+	"card_id": 415,
+	"deck_id": 2,
+	"question": "C",
+	"answer": "C E G",
+	"answer_validator": "equals",
+	"accidental": "#",
+	"scale": "C major",
+	"template_path": "cards/chord.html",
+	"template_data": { "chord_pretty_name": "C/E" }
+};
+
 var intervalCard = {
 	"question": "What is an ascending perfect fifth of Db?",
 	"answer": "Ab",
@@ -145,11 +157,16 @@ describe('MIDIInput', function() {
 		});
 
         it('should show Fb instead of E', function() {
-            var card = new Card({"card_id":65,"deck_id":1,"question":"M3 of A♭","answer":"Fb","answer_validator":"multipleOptions_equals_midiEnharmonicsValid","accidental":null,"scale":"Ab major","template_path":"cards/interval.html","template_data":{"interval":"M3","direction":"↓","note":"A♭"}});
+            var card = new Card({"card_id":65,"deck_id":1,"question":"↓ M3 of A♭","answer":"Fb","answer_validator":"multipleOptions_equals_midiEnharmonicsValid","accidental":null,"scale":"Ab major","template_path":"cards/interval.html","template_data":{"interval":"M3","direction":"↓","note":"A♭"}});
 
             game.card = card;
             midiInput.addNote(52); // "e", should be Fb
             assert.equal(midiInput.calcOutput(), 'Fb');
-        });
+		});
+		
+		it('should not error on chord cards', function() {
+			game.card = new Card(cMajorCard);
+			midiInput.addNote(52); // "e"
+		});
 	});
 });

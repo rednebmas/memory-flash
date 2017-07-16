@@ -199,9 +199,10 @@ var Game = function(session_id, deck_id, user_id) { return {
 		$('#submit-answer').attr('class', 'btn btn-success');
 	},
 
-	clearInput: function(arguments) {
-		if (midiInput.onNotes.size == 0) {
-			$('#answer-input').val(''); 
+	clearInput: function() {
+		$('#answer-input').val(''); 
+		if (midiInput.onNotes.size != 0) {
+			midiInput.clearOnNotes();
 		}
 	},
 

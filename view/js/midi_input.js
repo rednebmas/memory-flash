@@ -137,6 +137,10 @@ var MIDIInput = function () { return {
 		this.addOutputToGameInput();
 	},
 
+	clearOnNotes: function() {
+		this.onNotes = new Set();
+	},
+
 	calcOutput: function() {
 		var notes = Array.from(this.onNotes);
 		notes.sort(function (a, b) { return a - b; }); // javascript converts all array elements to strings by default! yay! \s
@@ -191,10 +195,13 @@ var MIDIInput = function () { return {
 	makeNotesRespectCardAnswer: function(notes) {
 		if (game.card.answers != undefined) return notes;
 
-		var answerNote = teoria.note(game.card.answer);
+		var answerNotes = game.card.answer.split(' ');
+		var answerNotesTeoria = answerNotes.map(teoria.note);
+		var answerNotesChroma = answerNotesTeoria.map(function (note) { return note.chroma(); });
 		notes = notes.map(function(note) {
-			if (note.chroma() == answerNote.chroma()) {
-				return answerNote;
+			var index = answerNotesChroma.indexOf(note.chroma());
+			if (index >= 0) {
+				return answerNotesTeoria[index];
 			} else {
 				return note;
 			}
