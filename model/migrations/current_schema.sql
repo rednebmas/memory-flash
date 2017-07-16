@@ -25,8 +25,9 @@ CREATE TABLE Session (
 	begin_date DATETIME NOT NULL, 
 	end_date DATETIME,
 	median DOUBLE,
-	stage varchar(25) DEFAULT 'aquire'
-, user_id INTEGER, input_modality_id INTEGER);
+	stage varchar(25) DEFAULT 'aquire', 
+	user_id INTEGER, input_modality_id INTEGER
+);
 CREATE INDEX Session_session_id_index ON Session (session_id);
 CREATE INDEX Session_deck_id_index ON Session (deck_id);
 

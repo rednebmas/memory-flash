@@ -7,6 +7,10 @@ from model.objects.input_modality import InputModality
 from model.db import db, DB
 
 class TestDeck(unittest.TestCase):
+
+	def setUp(self):
+		db.unittest_reset()
+
 	def test_unseen_cards(self):
 		user_id = 1
 		deck_id = 3
@@ -27,6 +31,29 @@ class TestDeck(unittest.TestCase):
 
 		cards = Deck.unseen_cards(session)
 		self.assertEqual(card.template_data, cards[0].template_data)
+
+	def test_unseen_cards_same_deck_different_input_modality(self):
+		user_id = 1
+		deck_id = 3
+		input_modality_id1 = 1
+
+		session = Session.find_or_create(deck_id, user_id, input_modality_id1)
+		session.load_cards()
+		cards = Deck.unseen_cards(session)
+		original_len_unseen_input_modality1 = len(cards)
+
+		# mark one card as seen
+		AnswerHistory(session.session_id, cards[0].card_id, user_id, 10.0, True, DB.datetime_now()).insert()
+
+		# second session
+		input_modality_id2 = 2
+		session = Session.find_or_create(deck_id, user_id, input_modality_id2)
+		session.load_cards()
+		cards = Deck.unseen_cards(session)
+		len_unseen_input_modality2 = len(cards)
+
+		self.assertEqual(original_len_unseen_input_modality1, len_unseen_input_modality2)
+
 	
 	def test_input_modalities(self):
 		input_modalities = Deck.from_id(1).input_modalities()

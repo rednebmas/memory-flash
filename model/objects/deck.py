@@ -35,19 +35,28 @@ class Deck:
 	@staticmethod
 	def unseen_cards(session):
 		sql = """
-		SELECT C.*, AH.answer_history_id
+		SELECT C.*
 		FROM Card C
-		LEFT JOIN AnswerHistory AH ON C.card_id = AH.card_id
-		LEFT JOIN Session S ON AH.session_id = S.session_id
+		LEFT JOIN 
+			( 
+				SELECT AH.card_id, AH.answer_history_id
+				FROM AnswerHistory AH
+				JOIN Session S on S.session_id = AH.session_id
+				WHERE S.deck_id = ? AND S.input_modality_id  = ? AND S.user_id = ?
+			) as XYZ ON C.card_id = XYZ.card_id
 		WHERE C.deck_id = ?
-			  AND (S.input_modality_id = ? OR S.input_modality_id IS NULL)
-			  AND AH.answer_history_id IS NULL
-			  -- This enforces the user_id isn't someone elses, it will never be the session's
-			  -- user_id
-			  AND (AH.user_id = ? OR AH.user_id IS NULL) 
+			AND XYZ.answer_history_id IS NULL
 		GROUP BY C.card_id
-		ORDER BY C.card_id
+		ORDER BY C.card_id;
 		"""
-		db.execute(sql, (session.deck_id, session.input_modality_id, session.user_id))
+		db.execute(
+			sql, 
+			(
+				session.deck_id, 
+				session.input_modality_id, 
+				session.user_id,
+				session.deck_id
+			)
+		)
 		rows = db.cursor.fetchall()
 		return list(map(lambda r: Card.from_db(r), rows))

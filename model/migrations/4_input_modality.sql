@@ -18,6 +18,7 @@ CREATE TABLE DeckInputModality (
 );
 
 CREATE INDEX DeckInputModality_deck_id_input_modality_id_index ON DeckInputModality (deck_id, input_modality_id);
+CREATE INDEX DeckInputModality_deck_id_index ON DeckInputModality (deck_id);
 
 -- ii V I: Root, Thirds, and Sevenths
 -- Text and both hands
@@ -47,8 +48,8 @@ INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, 8), (2, 8)
 -- Session
 --
 ALTER TABLE Session ADD COLUMN input_modality_id INTEGER;
-UPDATE Session SET input_modality_id = 1 WHERE deck_id <> 9;
-UPDATE Session SET input_modality_id = 3 WHERE deck_id = 9;
+UPDATE Session SET input_modality_id = 2 WHERE deck_id <> 9;
+UPDATE Session SET input_modality_id = 4 WHERE deck_id = 9;
 CREATE INDEX Session_input_modality_id_index ON Session (input_modality_id);
 
 --
