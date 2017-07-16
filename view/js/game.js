@@ -200,9 +200,12 @@ var Game = function(session_id, deck_id, user_id) { return {
 	},
 
 	clearInput: function() {
-		$('#answer-input').val(''); 
-		if (midiInput.onNotes.size != 0) {
-			midiInput.clearOnNotes();
+		if (midiInput) {
+			if (midiInput.onNotes.size == 0) {
+				$('#answer-input').val(''); 
+			}
+		} else {
+			$('#answer-input').val(''); 
 		}
 	},
 
@@ -212,6 +215,9 @@ var Game = function(session_id, deck_id, user_id) { return {
 		}
 		
 		if (this.state == "partial - correct") {
+			if (midiInput.onNotes.size != 0) {
+				midiInput.clearOnNotes();
+			}
 			this.clearInput();
 		}
 

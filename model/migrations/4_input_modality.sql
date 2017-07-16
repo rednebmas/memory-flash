@@ -50,3 +50,8 @@ ALTER TABLE Session ADD COLUMN input_modality_id INTEGER;
 UPDATE Session SET input_modality_id = 1 WHERE deck_id <> 9;
 UPDATE Session SET input_modality_id = 3 WHERE deck_id = 9;
 CREATE INDEX Session_input_modality_id_index ON Session (input_modality_id);
+
+--
+-- Bug
+-- 
+DELETE FROM Card WHERE deck_id = 1 AND (answer LIKE '_##' OR answer LIKE '_bb');
