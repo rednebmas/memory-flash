@@ -4,14 +4,9 @@
 
 ### Python
 
-*dependencies*
+*install*
 
-	pip3 install sanic
-	pip3 install jinja2
-	pip3 install sanic_session
-	pip3 install bcrypt
-	pip3 install AoikLiveReload
-	sudo -H pip3 install git+git://github.com/edudobay/python-mingus.git@python3
+	pip3 install -r requirements.txt
 	
 *run*
 
@@ -19,7 +14,7 @@
 	
 *test*
 	
-	python3 -m unittest discover
+	python3 -m unittest 
 
 ### Javascript
 

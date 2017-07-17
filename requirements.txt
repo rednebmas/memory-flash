@@ -4,3 +4,4 @@ sanic_session
 bcrypt
 aoiklivereload
 Jinja2
+git+git://github.com/edudobay/python-mingus.git@python3
