@@ -2,7 +2,11 @@
 {% block title %}Study{% endblock %}
 {% block content %}
 
+{% block head %}
+<script src="https://use.fontawesome.com/c94eedc752.js"></script>
 <link rel="stylesheet" type="text/css" href="/style/study.css">
+{% endblock %}
+
 
 <div class="card">
     <div class="question">Hey hey</div>
@@ -77,11 +81,18 @@
     }
 
     $(document).ready(function () {
-        startTimer();
+        // startTimer();
     })  
 </script>
 
 <div id="timer"></div>
+<div id="input-modality">
+	<a class="label label-default"
+	   href="/decks/{{deck.deck_id}}/study">
+		{% include 'input_modality_icon.html' %}
+		{{ input_modality.name }}
+	</a>
+</div>
 
 <script src="/js/lib/webmidi.min.js"></script>
 <script src="/js/bundle.js"></script>

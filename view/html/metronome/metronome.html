@@ -16,23 +16,29 @@
 <div id="metronome-dots-container"></div>
 
 <script type="text/javascript">
+	function metronomeOnCookieName() {
+		// we use the href because that way it's specific to the deck and input modality,
+		// and therefore, current session
+		return 'metronomeOn' + window.location.href;
+	}
+
 	$('#startMetronomeBtn').click(function () {
 		var state = play();
 		if (state == "Stop") {
-			Cookies.set('metronomeOn', true);
+			Cookies.set(metronomeOnCookieName(), true);
 		} else {
-			Cookies.set('metronomeOn', false);
+			Cookies.set(metronomeOnCookieName(), false);
 		}
 		$('#startMetronomeBtn').text(state);
 	});
 
 	$(document).ready(function () {
-		if (Cookies.get('metronomeOn') == 'true') {
+		if (Cookies.get(metronomeOnCookieName()) == 'true') {
 			// I guess it takes a second for the audioContext to be setup
 			setTimeout(function () {
 				var state = play();
 				$('#startMetronomeBtn').text(state);
 			}, 500);
 		}
-	})
+	});
 </script>
