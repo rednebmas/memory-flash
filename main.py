@@ -8,6 +8,7 @@ from model.objects.card import Card
 from model.objects.deck import Deck
 from model.objects.answer_history import AnswerHistory
 from model.objects.session import Session
+from model.objects.input_modality import InputModality
 from viewmodel.deck_view_model import DeckViewModel
 from viewmodel.card_view_model import CardViewModel
 from routes.core import jinja_render, jinja_response
@@ -27,7 +28,7 @@ app.static('/sounds', './view/sounds')
 app.static('/favicon.ico', './view/img/favicon.png')
 app.static('/metronome', './view/html/metronome')
 
-paths_that_dont_need_auth = ['/decks', '/user/login', '/user', '/']
+paths_that_dont_need_auth = ['/decks', '/user/login', '/user', '/', '/user/create_account']
 
 ######################
 # Session Middleware #
@@ -69,19 +70,18 @@ async def decks_cards(request, deck_id):
 
 @app.route("/decks/<deck_id:int>/study")
 async def decks_study(request, deck_id):
-	if request.args.get('input_modality_id', None) is None:
+	input_modality_id = request.args.get('input_modality_id', None)
+	if input_modality_id is None:
 		input_modalities = Deck.from_id(deck_id).input_modalities()
 		return jinja_response('choose_input_modality.html', deck_id=deck_id, input_modalities=input_modalities)
 
+	input_modality = InputModality.from_id(input_modality_id)
 	deck = Deck.from_id(deck_id)
-	input_modality_id = request.args.get('input_modality_id', None)
-	if input_modality_id is None:
-		return sanic.response.redirect('/')
 
 	# SOMEDAY: ensure that we have a valid input_modality_id for this deck
 	user_id = request['session']['user_id']
 	session = Session.find_or_create(deck_id, user_id, input_modality_id)
-	return jinja_response('study.html', deck=deck, mf_session=session)
+	return jinja_response('study.html', deck=deck, mf_session=session, input_modality=input_modality)
 
 @app.route("/session/<session_id:int>/next_card")
 async def session_next_card(request, session_id):

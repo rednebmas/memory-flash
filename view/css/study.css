@@ -80,3 +80,14 @@ body {
 	color: gray;
 	font-size: 200%;
 }
+
+#input-modality {
+	position: fixed;
+	left: 10px;
+	bottom: 10px;
+	font-size: 22px;
+}
+
+i.fa {
+	margin-right: 4px;
+}

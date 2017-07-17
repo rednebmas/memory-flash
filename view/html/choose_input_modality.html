@@ -7,9 +7,7 @@
 
 {% block content %}
 <style>
-	#left-hand-icon {
-		transform: rotateY(180deg);
-	}
+
 	.container {
 		text-align: center;
 	}
@@ -26,16 +24,7 @@
 	<div class="btn-group btn-group-lg" role="group" aria-label="Input-Modality">
 		{% for input_modality in input_modalities %}
 			<a href="/decks/{{deck_id}}/study?input_modality_id={{input_modality.input_modality_id}}"   class="btn btn-default">
-				{% if input_modality.name == 'MIDI Left Hand' %}
-					<i id="left-hand-icon" class="fa fa-hand-paper-o"></i>
-				{% elif input_modality.name == 'MIDI Right Hand' %}
-					<i class="fa fa-hand-paper-o"></i>
-				{% elif input_modality.name == 'Text' %}
-					<i class="fa fa-keyboard-o"></i>
-				{% elif input_modality.name == 'MIDI Both Hands' %}
-					<i class="fa fa-handshake-o"></i>
-				{% endif %}
-
+				{% include 'input_modality_icon.html' %}
 				{{ input_modality.name }}
 			</a>
 		{% endfor %}

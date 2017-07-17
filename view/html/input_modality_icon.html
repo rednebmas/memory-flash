@@ -1,0 +1,9 @@
+{% if input_modality.name == 'MIDI Left Hand' %}
+	<i id="left-hand-icon" style="transform: rotateY(180deg);" class="fa fa-hand-paper-o"></i>
+{% elif input_modality.name == 'MIDI Right Hand' %}
+	<i class="fa fa-hand-paper-o"></i>
+{% elif input_modality.name == 'Text' %}
+	<i class="fa fa-keyboard-o"></i>
+{% elif input_modality.name == 'MIDI Both Hands' %}
+	<i class="fa fa-handshake-o"></i>
+{% endif %}

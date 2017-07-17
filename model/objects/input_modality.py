@@ -8,7 +8,7 @@ class InputModality:
 			where="input_modality_id = ?", 
 			substitutions=(input_modality_id,)
 		)
-		return InputModality.from_db()
+		return InputModality.from_db(row)
 
 	@staticmethod
 	def from_db(row):
