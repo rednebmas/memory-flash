@@ -30,7 +30,7 @@ var MIDIInput = function () { return {
     **/
 
 	init: function() {
-		this.startListeningForMIDIEvents();
+		this.startWebMidi();
 		return this;
 	},
 
@@ -62,14 +62,15 @@ var MIDIInput = function () { return {
 		}, this);
 	},
 
-	startListeningForMIDIEvents: function() {
+	startWebMidi: function() {
 		// http://tangiblejs.com/posts/web-midi-music-and-show-control-in-the-browser
 		var self = this;
 		WebMidi.enable(function (err) {
 			if (err) console.log("WebMidi could not be enabled");
 
-			var input = WebMidi.inputs[0];
-			if (input) {
+			var startListeningForEvents = function(input) {
+				$('#midi-connected').css('visibility', 'visible');
+
 				// Listening for a 'note on' message (on all channels) 
 				input.addListener("noteon", "all", function (e) {
 					self.addNote(e.note.number)
@@ -80,7 +81,20 @@ var MIDIInput = function () { return {
 					self.removeNote(e.note.number);
 				});
 			}
+
+			WebMidi.addListener('connected', function (e) {
+				startListeningForEvents(WebMidi.input[0]);
+			});
+
+			WebMidi.addListener('disconnected', function (e) {
+				$('#midi-connected').css('visibility', 'hidden');
+			})
+
+			if (WebMidi.inputs.length > 0) {
+				startListeningForEvents(WebMidi.inputs[0])
+			}
 		});
+
 	},
 
 	addNote: function(midiNoteNumber) {

@@ -32,7 +32,7 @@ var Game = function(session_id, deck_id, user_id) { return {
 				this.updateViewForStateWaiting();
 				break;
 			case 'incorrect':
-				this.updateViewForStateFirstAttemptIncorrect();
+				this.showIncorrectLabel();
 				break;
 			case 'correct but first attempt incorrect':
 				this.updateViewForStateCorrectButFirstAttemptIncorrect();
@@ -183,10 +183,9 @@ var Game = function(session_id, deck_id, user_id) { return {
 		this.clearInput();
 	}, 
 
-	updateViewForStateFirstAttemptIncorrect: function() {
+	showIncorrectLabel: function() {
 		$('#incorrect-label').html("Incorrect, the correct answer was: <strong>" + this.card.getAnswer() + "</strong>");
 		$('#incorrect-label').css('display', 'inline');
-		$('.question').html(this.card.question); // for multi-part cards that change the CSS
 		this.clearInput();
 	},
 
@@ -238,7 +237,7 @@ var Game = function(session_id, deck_id, user_id) { return {
 			part.removeClass('multi-part-unanswered');
 			if (validation_state == "incorrect") {
 				part.addClass('multi-part-incorrect');
-				$('#incorrect-label').css('display', 'inline');
+				this.showIncorrectLabel();
 			} else {
 				part.removeClass('multi-part-incorrect');
 				part.addClass('multi-part-correct');

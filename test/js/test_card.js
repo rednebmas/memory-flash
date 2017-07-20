@@ -129,6 +129,10 @@ describe('Card', function() {
 			});
 		});
 
+		it('should give the correct answer on getAnswer', function() {
+			assert.equal('C E G', card.getAnswer());
+		});
+
 		describe('validation state', function() {
 			it ('should change to "partial - incorrect" then to "incorrect" when done answering', function() {
 				assert.equal(card.validation_state, 'unanswered');
