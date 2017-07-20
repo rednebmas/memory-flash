@@ -16,7 +16,7 @@ var Card = function(json) { return {
 	time_to_correct: undefined,
 	raw: json,
 	/** multipart **/
-	current_answer_part_index: undefined,
+	current_answer_part_index: 0,
 	validation_states: undefined,
 
 	/**
@@ -30,7 +30,8 @@ var Card = function(json) { return {
 		}
 		if (json['answer'].includes('→')) { // if multipart answer
 			this.answers = json['answer'].split('→');
-			this.resetValidationStates();
+			this.validation_states = Array(this.answers.length);
+			this.validation_states.fill("unanswered");
 		}
 		return this;
 	},
@@ -64,6 +65,7 @@ var Card = function(json) { return {
 
 	validateMultiPartAnswer: function(userAnswer) {
 		var answerPart = this.answers[this.current_answer_part_index];
+		console.log(this.validation_state);
 		if (this.answer_validator.validate(userAnswer, answerPart)) 
 		{
 			if (this.validation_state == 'unanswered') 
@@ -71,20 +73,29 @@ var Card = function(json) { return {
 				this.validation_state = 'partial - correct';
 			} 
 
-			if (this.validation_states[this.current_answer_part_index] == 'unanswered') 
+			var currentPartValidationState = this.validation_states[this.current_answer_part_index];
+			if (currentPartValidationState == 'unanswered') 
 			{
 				this.validation_states[this.current_answer_part_index] = 'correct';
 			} 
-			else if (this.validation_states[this.current_answer_part_index] == 'incorrect') 
+			else if (currentPartValidationState == 'incorrect') 
 			{
 				this.validation_states[this.current_answer_part_index] = 'correct but first attempt incorrect';
+			}
+			else if (currentPartValidationState == 'correct but first attempt incorrect') 
+			{
+				this.validation_states[this.current_answer_part_index] = 'correct';
 			}
 
 			this.current_answer_part_index += 1;
 			if (this.current_answer_part_index == this.answers.length) // was last answer
 			{ 
 				this.validation_state = this.allAnswersCorrect() ? "correct" : "incorrect";
-				this.captureTimeToCorrect();
+				if (this.validation_state == 'correct') {
+					this.captureTimeToCorrect();
+				} else {
+					this.current_answer_part_index = 0;
+				}
 			}
 		} else {
 			this.validation_state = 'partial - incorrect';
@@ -97,20 +108,6 @@ var Card = function(json) { return {
 		return this.validation_states.reduce(function (accumulator, currentValue) {
 			return accumulator & (currentValue == "correct");
 		}, true);
-	},
-
-	resetState: function() {
-		this.validation_state = 'unanswered';
-		this.resetValidationStates();
-	},
-
-	resetValidationStates: function() {
-		if (this.answers == undefined) {
-			return;
-		}
-		this.validation_states = Array(this.answers.length);
-		this.validation_states.fill("unanswered");
-		this.current_answer_part_index = 0;
 	},
 
 	getAnswer: function () {

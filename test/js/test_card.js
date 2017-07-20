@@ -56,12 +56,9 @@ describe('Card', function() {
 		it('should have an initial answer validation state', function () {
 			assert.equal(card.validation_state, 'unanswered');
 		});
-	});
 
-	describe('methods', function() {
-		it('should reset the state on resetState()', function() {
+		it('should initialize the validation states correctly', function() {
 			card = new Card(multiPartAnswerCardJSON);
-			card.resetState();
 			assert.equal(card.validation_state, 'unanswered');
 			assert.equal(card.current_answer_part_index, 0);
 			assert.equal(card.validation_states[0], 'unanswered');

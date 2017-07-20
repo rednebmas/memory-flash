@@ -138,7 +138,7 @@ describe('Game', function() {
 			game.checkAnswer('C E G');
 			game.checkAnswer('C F A');
 			game.checkAnswer('B D G');
-			assert.equal(game.state, 'correct but first attempt incorrect');
+			assert.equal('correct but first attempt incorrect', game.state);
 		});
 
 		it('should allow you move on after repeating the answer after getting it incorrect multiple times', function() {

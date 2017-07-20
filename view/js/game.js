@@ -41,8 +41,10 @@ var Game = function(session_id, deck_id, user_id) { return {
 				// this.updateViewForStateLoadingNextQuestion();
 				break;
 			case 'partial - correct':
-			case 'partial - incorrect':
 				this.updateViewForStatePartial();
+				break;
+			case 'partial - incorrect':
+				this.updateViewStateForPartialIncorrect();
 				break;
 		}
 	},
@@ -141,7 +143,6 @@ var Game = function(session_id, deck_id, user_id) { return {
 		} 
 		else if (this.state == 'incorrect') 
 		{
-			this.updateViewForStatePartial();
 			if (this.card.validation_state == 'correct') 
 			{
 				this.state = 'correct but first attempt incorrect';
@@ -187,7 +188,6 @@ var Game = function(session_id, deck_id, user_id) { return {
 		$('#incorrect-label').css('display', 'inline');
 		$('.question').html(this.card.question); // for multi-part cards that change the CSS
 		this.clearInput();
-		this.card.resetState();
 	},
 
 	updateViewForStateCorrectButFirstAttemptIncorrect: function() {
@@ -201,12 +201,26 @@ var Game = function(session_id, deck_id, user_id) { return {
 
 	clearInput: function() {
 		if (midiInput) {
-			if (midiInput.onNotes.size == 0) {
-				$('#answer-input').val(''); 
+			if (midiInput.onNotes.size != 0) {
+				if (this.state == 'waiting' || this.state == 'partial - correct') {
+					setTimeout(function() {
+						$('#answer-input').val(''); 
+					}, 100);
+				}
+				midiInput.clearOnNotes();
 			}
 		} else {
 			$('#answer-input').val(''); 
 		}
+	},
+
+	updateViewStateForPartialIncorrect: function () {
+		if (midiInput.onNotes.size != 0) {
+			midiInput.clearOnNotes();
+		}
+		this.clearInput();
+
+		this.updateViewForStatePartial();
 	},
 
 	updateViewForStatePartial: function () {
@@ -214,13 +228,6 @@ var Game = function(session_id, deck_id, user_id) { return {
 			return;
 		}
 		
-		if (this.state == "partial - correct") {
-			if (midiInput.onNotes.size != 0) {
-				midiInput.clearOnNotes();
-			}
-			this.clearInput();
-		}
-
 		for (var i = 0; i < this.card.answers.length; i++) {
 			var validation_state = this.card.validation_states[i];
 			if (validation_state == "unanswered") {
