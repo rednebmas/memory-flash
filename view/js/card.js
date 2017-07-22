@@ -1,5 +1,15 @@
 var AnswerValidator = require('./answer_validator.js');
 
+// https://stackoverflow.com/a/5790850/337934
+Function.prototype.getHashCode = (function(id) {
+    return function() {
+        if (!this.hashCode) {
+            this.hashCode = '<hash|#' + (id++) + '>';
+        }
+        return this.hashCode;
+    }
+}(0));
+
 var Card = function(json) { return {
 	/**
 	Properties
@@ -18,6 +28,7 @@ var Card = function(json) { return {
 	/** multipart **/
 	current_answer_part_index: 0,
 	validation_states: undefined,
+	listeners: {},
 
 	/**
 	Methods
@@ -65,7 +76,6 @@ var Card = function(json) { return {
 
 	validateMultiPartAnswer: function(userAnswer) {
 		var answerPart = this.answers[this.current_answer_part_index];
-		console.log(this.validation_state);
 		if (this.answer_validator.validate(userAnswer, answerPart)) 
 		{
 			if (this.validation_state == 'unanswered') 
@@ -86,8 +96,10 @@ var Card = function(json) { return {
 			{
 				this.validation_states[this.current_answer_part_index] = 'correct';
 			}
+			console.log('card.current_part_validation_state = ' + currentPartValidationState);
 
 			this.current_answer_part_index += 1;
+			this.callListener('movedToNextAnswerPart');
 			if (this.current_answer_part_index == this.answers.length) // was last answer
 			{ 
 				this.validation_state = this.allAnswersCorrect() ? "correct" : "incorrect";
@@ -100,6 +112,7 @@ var Card = function(json) { return {
 		} else {
 			this.validation_state = 'partial - incorrect';
 			this.validation_states[this.current_answer_part_index] = 'incorrect';
+			console.log('card.current_part_validation_state = incorrect');
 		}
 		console.log('card.validation_state = ' + this.validation_state);
 	},
@@ -115,6 +128,30 @@ var Card = function(json) { return {
 			return this.answer;
 		} else {
 			return this.answers[this.current_answer_part_index];
+		}
+	},
+
+	addEventListener: function(name, func) {
+		var callbacks;
+		if (name in this.listeners) {
+			callbacks = this.listeners[name];
+		} else {
+			callbacks = {}
+		}
+
+		callbacks[func.getHashCode()] = func;
+
+		// movedToNextAnswerPart
+		this.listeners[name] = callbacks;
+	},
+
+	callListener: function(name) {
+		if ((name in this.listeners) == false) {
+			return;
+		}
+
+		for (var key in this.listeners[name]) {
+			this.listeners[name][key]();
 		}
 	}
 }.init(); }

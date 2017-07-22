@@ -83,7 +83,7 @@ var MIDIInput = function () { return {
 			}
 
 			WebMidi.addListener('connected', function (e) {
-				startListeningForEvents(WebMidi.input[0]);
+				startListeningForEvents(WebMidi.inputs[0]);
 			});
 
 			WebMidi.addListener('disconnected', function (e) {
@@ -226,6 +226,10 @@ var MIDIInput = function () { return {
 
 	addOutputToGameInput: function() {
 		$('#answer-input').val(this.output);
+	},
+
+	exists: function() {
+		return WebMidi.inputs.length > 0;
 	}
 
 }.init(); };

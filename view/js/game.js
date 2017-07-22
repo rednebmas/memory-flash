@@ -62,7 +62,7 @@ var Game = function(session_id, deck_id, user_id) { return {
     **/
 
     init: function () {
-    	this.bindSubmitAnswer();
+		this.bindSubmitAnswer();
     	return this;
     },
 
@@ -109,6 +109,12 @@ var Game = function(session_id, deck_id, user_id) { return {
 		}
 
 		this.card = new Card(data);
+		var self = this;
+		this.card.addEventListener('movedToNextAnswerPart', function(event) {
+			$('#incorrect-label').fadeOut();
+			$('#correct-label').fadeOut();
+			self.clearInput();
+		});
 		console.log(this.card);
 		this.state = 'waiting';
 	},
@@ -186,7 +192,6 @@ var Game = function(session_id, deck_id, user_id) { return {
 	showIncorrectLabel: function() {
 		$('#incorrect-label').html("Incorrect, the correct answer was: <strong>" + this.card.getAnswer() + "</strong>");
 		$('#incorrect-label').css('display', 'inline');
-		this.clearInput();
 	},
 
 	updateViewForStateCorrectButFirstAttemptIncorrect: function() {
@@ -199,7 +204,7 @@ var Game = function(session_id, deck_id, user_id) { return {
 	},
 
 	clearInput: function() {
-		if (midiInput) {
+		if (midiInput.exists()) {
 			if (midiInput.onNotes.size != 0) {
 				if (this.state == 'waiting' || this.state == 'partial - correct') {
 					setTimeout(function() {
@@ -217,7 +222,6 @@ var Game = function(session_id, deck_id, user_id) { return {
 		if (midiInput.onNotes.size != 0) {
 			midiInput.clearOnNotes();
 		}
-		this.clearInput();
 
 		this.updateViewForStatePartial();
 	},
