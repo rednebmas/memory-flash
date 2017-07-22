@@ -42,7 +42,7 @@ async def add_session_to_request(request):
 	# make sure user is authenticated to view most pages, otherwise, redirect to login
 	if 'user_id' not in request['session'] and request.path not in paths_that_dont_need_auth:
 		print('<' + request.path + '> Attempted to access route which requires you to be logged in to an account.')
-		return sanic.response.redirect('/user/login')
+		return sanic.response.redirect('/user/login?orginal-path='+request.path)
 
 @app.middleware('response')
 async def save_session(request, response):
@@ -97,7 +97,10 @@ async def session_next_card(request, session_id):
 	card.question = jinja_render(card.template_path, **card.template_data)
 	res = card.as_dict()
 	if session.median is not None:
-		res['session_median'] = session.median
+		res['session'] = {}
+		res['session']['median'] = session.median
+		res['session']['total_cards'] = len(session.cards)
+		res['session']['cards_below_median'] = len(session.cards_below_median())
 
 	return json(res)
 

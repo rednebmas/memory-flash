@@ -140,3 +140,9 @@ class Session:
 
 		card, state = Scheduler.next(self, previous_card_id)
 		return card
+
+	def cards_below_median(self):
+		if self.cards_loaded is False or self.median is None:
+			return None
+
+		return list(filter(lambda c: c.answer_history.time_to_correct < self.median, self.cards))

@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 {% block title %}Study{% endblock %}
-{% block content %}
 
 {% block head %}
 <script src="https://use.fontawesome.com/c94eedc752.js"></script>
 <link rel="stylesheet" type="text/css" href="/style/study.css">
 {% endblock %}
 
+{% block content %}
+
+
 
 <div class="card">
-    <div class="question">Hey hey</div>
+    <div class="question">ERROR</div>
     <div class="input-group">
       <input id="answer-input" type="text" placeholder="Answer" class="form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
       <span class="input-group-btn">
@@ -18,8 +20,9 @@
     </div><!-- /input-group -->
     <!-- </div> -->
     <div class="card-footer">
-        <div id="incorrect-label" style="display: none;">Incorrect</div>
-        <div id="correct-label" style="display: none;">Correct</div>
+        <span id="incorrect-label">Incorrect</span>
+        <span id="correct-label">Correct</span>
+        <span id="cards-below-median-label">8/10</span>
     </div>
 </div>
 

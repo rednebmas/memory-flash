@@ -21,6 +21,7 @@
 *dependencies*
 
 	npm install 
+	sudo gem install sass
 
 *test*
 

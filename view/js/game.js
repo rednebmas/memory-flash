@@ -103,13 +103,19 @@ var Game = function(session_id, deck_id, user_id) { return {
 			window.location = '/session/' + this.session_id + '/complete'
 		}
 
-		if ('session_median' in data) {
-			var tempo = 60.0 / (data['session_median'] / 4.0) + 5;
+		if ('session' in data) {
+			var tempo = 60.0 / (data['session']['median'] / 4.0) + 5;
 			metronome.setTempo(tempo);
 			$('#tempoVal').text('' + tempo.toFixed(0));
+
+			var cardsBelowMedianLabel = data.session.cards_below_median + '/' + data.session.total_cards;
+			$('#cards-below-median-label').text(cardsBelowMedianLabel);
+
 			$('#metronome-controls').css('display', 'block');
+			$('#cards-below-median-label').css('display', 'inline');
 		} else {
 			$('#metronome-controls').css('display', 'none');
+			$('#cards-below-median-label').css('display', 'none');
 		}
 
 		this.card = new Card(data);

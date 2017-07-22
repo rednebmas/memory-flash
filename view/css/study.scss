@@ -53,13 +53,11 @@ p {
 }
 
 .card #incorrect-label {
-    font-size: 18px;
     color: #DD0000;
     display: none;
 }
 
 .card #correct-label {
-    font-size: 18px;
     font-weight: 500;
     color: #81DD00;
     display: none;
@@ -110,4 +108,12 @@ i.fa {
     padding: 10px 15px;
     background-color: #F7F7F7;
     height: 46px;
+	font-size: 18px;
+	
+	#cards-below-median-label {
+		text-align: right;
+		color: darkgrey;
+		float: right;
+		display: none;
+	}
 }
