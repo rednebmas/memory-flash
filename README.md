@@ -28,7 +28,7 @@
 
 *dev in browser*
 
-	npm run watch-js
+	npm run hot-compile
 
 
 ## links

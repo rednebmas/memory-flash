@@ -12,3 +12,6 @@ tags
 *.log
 *.vscode
 *.backup
+*.css
+*.css.map
+.sass-cache
