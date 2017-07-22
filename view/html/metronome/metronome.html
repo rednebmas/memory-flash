@@ -5,7 +5,7 @@
 	<button id="startMetronomeBtn" type="button" class="btn btn-success">Start</button>
 	<span class="spacer-8px"></span>
 	<span id="tempoVal">ERROR</span><span> BPM with&nbsp;</span>
-	<select onchange="noteResolution = this.selectedIndex;">
+	<select onchange="metronome.setNoteResolution(this.selectedIndex);">
 		<option>16th note</option>
 		<option>8th note</option>
 		<option selected>Quarter note</option>
@@ -16,6 +16,7 @@
 <div id="metronome-dots-container"></div>
 
 <script type="text/javascript">
+	metronome = new Metronome();
 	function metronomeOnCookieName() {
 		// we use the href because that way it's specific to the deck and input modality,
 		// and therefore, current session
@@ -23,22 +24,25 @@
 	}
 
 	$('#startMetronomeBtn').click(function () {
-		var state = play();
-		if (state == "Stop") {
-			Cookies.set(metronomeOnCookieName(), true);
-		} else {
+		var text;
+		if (metronome.isPlaying()) {
+			metronome.stop();
 			Cookies.set(metronomeOnCookieName(), false);
+			text = 'Play';
+		} else {
+			metronome.start();
+			Cookies.set(metronomeOnCookieName(), true);
+			text = 'Stop';
 		}
-		$('#startMetronomeBtn').text(state);
+		$('#startMetronomeBtn').text(text);
 	});
 
 	$(document).ready(function () {
 		if (Cookies.get(metronomeOnCookieName()) == 'true') {
 			// I guess it takes a second for the audioContext to be setup
 			setTimeout(function () {
-				var state = play();
-				$('#startMetronomeBtn').text(state);
-			}, 500);
+				$('#startMetronomeBtn').trigger('click');
+			}, 250);
 		}
 	});
 </script>

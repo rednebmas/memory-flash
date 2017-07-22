@@ -97,11 +97,15 @@ var Game = function(session_id, deck_id, user_id) { return {
 
 	handleCardData: function(data) {
 		if ('msg' in data && data['msg'] == 'session complete') {
+			if (metronome.isPlaying()) {
+				$('#startMetronomeBtn').trigger('click');
+			}
 			window.location = '/session/' + this.session_id + '/complete'
 		}
 
 		if ('session_median' in data) {
-			tempo = 60.0 / (data['session_median'] / 4.0) + 5;
+			var tempo = 60.0 / (data['session_median'] / 4.0) + 5;
+			metronome.setTempo(tempo);
 			$('#tempoVal').text('' + tempo.toFixed(0));
 			$('#metronome-controls').css('display', 'block');
 		} else {
