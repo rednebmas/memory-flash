@@ -92,8 +92,11 @@ describe('Game', function() {
 	describe('methods', function () {
 		it('handleCardData should add a card to the game', function () {
 			assert.ok(game.card == undefined);
+			var exists = midiInput.exists;
+			midiInput.exists = function() { return false; };
 			game.handleCardData(cardJSON);
 			assert.ok(game.card != undefined);
+			midiInput.exists = exists;
 		});
 	});
 
