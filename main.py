@@ -27,6 +27,7 @@ app.static('/js', './view/js')
 app.static('/sounds', './view/sounds')
 app.static('/favicon.ico', './view/img/favicon.png')
 app.static('/metronome', './view/html/metronome')
+app.static('/robots.txt', './view/public/robots.txt')
 
 paths_that_dont_need_auth = ['/decks', '/user/login', '/user', '/', '/user/create_account']
 
