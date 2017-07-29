@@ -10,7 +10,7 @@ var AnswerValidator = function(validator_string) { return {
 	**/
 
 	init: function() {
-		this.validator = eval('this.' + validator_string);
+		this.validator = this[validator_string];
 		return this;
 	},
 

@@ -31,20 +31,18 @@ var Game = function(session_id, deck_id, user_id) { return {
 			case 'waiting':
 				this.updateViewForStateWaiting();
 				break;
-			case 'incorrect':
-				this.showIncorrectLabel();
-				break;
 			case 'correct but first attempt incorrect':
 				this.updateViewForStateCorrectButFirstAttemptIncorrect();
 				break;
 			case 'loading next question':
-				// this.updateViewForStateLoadingNextQuestion();
 				break;
 			case 'partial - correct':
-				this.updateViewForStatePartial();
 				break;
 			case 'partial - incorrect':
 				this.updateViewStateForPartialIncorrect();
+				break;
+			case 'correct':
+				this.loadNextQuestion();
 				break;
 		}
 	},
@@ -138,37 +136,103 @@ var Game = function(session_id, deck_id, user_id) { return {
 
 		this.card.validateAnswer(answer);
 
-		if (this.state == 'waiting' || this.state == 'partial - correct' || this.state == 'partial - incorrect') 
+		// multipart check answer
+		if (this.card.answers != undefined) {
+			this.checkAnswerMultiPart(answer);
+			return;
+		}
+
+		if (this.state == 'waiting')
 		{
 			if (this.card.validation_state == 'correct') 
 			{
-				this.loadNextQuestion();
-			} 
-			else if (this.card.validation_state == 'incorrect') 
+				this.state = 'correct';
+			}
+			else if (this.card.validation_state == 'incorrect')
 			{
 				this.state = 'incorrect';
-			} 
-			else if (this.card.validation_state == 'partial - correct') 
-			{
-				this.state = 'partial - correct';
-			} 
-			else if (this.card.validation_state == 'partial - incorrect') 
-			{
-				this.state = 'partial - incorrect';
 			}
-		} 
+		}
 		else if (this.state == 'incorrect') 
 		{
 			if (this.card.validation_state == 'correct') 
 			{
 				this.state = 'correct but first attempt incorrect';
 			}
-			else if (this.card.validation_state == 'incorrect') 
+			else if (this.card.validation_state == 'incorrect')
 			{
 				this.state = 'incorrect';
 			}
 		} 
 		console.log('game.state = ' + this.state);
+	},
+
+	checkAnswerMultiPart: function(answer) {
+		// waiting, partial - correct, partial - incorrect
+		if (this.state == 'waiting')
+		{
+			if (this.card.validation_state == 'correct')
+			{
+				// should never happen unless we have a 1 part multi-part card
+				this.state = 'correct';
+			}
+			else if (this.card.validation_state == 'incorrect')
+			{
+				// should never happen unless we have a 1 part multi-part card
+				this.state = 'waiting';
+			}
+			else if (this.card.validation_state == 'partial - correct')
+			{
+				this.state = 'partial - correct';
+			}
+			else if (this.card.validation_state == 'partial - incorrect')
+			{
+				this.state = 'partial - incorrect';
+			}
+		}
+		else if (this.state == 'partial - correct')
+		{
+			if (this.card.validation_state == 'correct')
+			{
+				this.state = this.card.first_attempt_correct ? 'correct' : 'correct but first attempt incorrect';
+			}
+			else if (this.card.validation_state == 'incorrect')
+			{
+				this.state = 'waiting';
+			}
+			else if (this.card.validation_state == 'partial - correct')
+			{
+				this.state = 'partial - correct';
+			}
+			else if (this.card.validation_state == 'partial - incorrect')
+			{
+				this.state = 'partial - incorrect';
+			}
+		}
+		else if (this.state == 'partial - incorrect')
+		{
+			if (this.card.validation_state == 'correct')
+			{
+				this.state = 'waiting';
+				alert('SHOULD NEVER HAPPEN. Because if we are in partial incorrect, the card should go to incorrect then reset.');
+			}
+			else if (this.card.validation_state == 'incorrect')
+			{
+				this.state = 'waiting';
+			}
+			else if (this.card.validation_state == 'partial - correct')
+			{
+				this.state = 'partial - correct';
+				alert('SHOULD NEVER HAPPEN. Because if we are in partial incorrect, the card should never make to any type of correct state.');
+			}
+			else if (this.card.validation_state == 'partial - incorrect')
+			{
+				this.state = 'partial - incorrect';
+			}
+		}
+
+		console.log('game.state = ' + this.state);
+		this.updateMultiPartCorrectnessHighlighting()
 	},
 
 	submitAnswerHistory: function() {
@@ -232,29 +296,25 @@ var Game = function(session_id, deck_id, user_id) { return {
 		if (midiInput.onNotes.size != 0) {
 			midiInput.clearOnNotes();
 		}
-
-		this.updateViewForStatePartial();
 	},
 
-	updateViewForStatePartial: function () {
+	updateMultiPartCorrectnessHighlighting: function () {
 		if (this.card.answers == undefined) {
 			return;
 		}
-		
+
 		for (var i = 0; i < this.card.answers.length; i++) {
 			var validation_state = this.card.validation_states[i];
-			if (validation_state == "unanswered") {
-				break;
-			}
-
 			var part = $('.multi-part:eq(' + i + ')');
-			part.removeClass('multi-part-unanswered');
+
+			part.removeClass('multi-part-incorrect multi-part-correct multi-part-unanswered');
 			if (validation_state == "incorrect") {
 				part.addClass('multi-part-incorrect');
 				this.showIncorrectLabel();
-			} else {
-				part.removeClass('multi-part-incorrect');
+			} else if (['correct', 'correct but first attempt incorrect'].includes(validation_state)) {
 				part.addClass('multi-part-correct');
+			} else if ('unanswered' == validation_state) {
+				part.addClass('multi-part-unanswered');
 			}
 		}
 	}, 

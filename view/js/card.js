@@ -78,7 +78,7 @@ var Card = function(json) { return {
 		var answerPart = this.answers[this.current_answer_part_index];
 		if (this.answer_validator.validate(userAnswer, answerPart)) 
 		{
-			if (this.validation_state == 'unanswered') 
+			if (this.validation_state == 'unanswered' || this.validation_state == 'incorrect') 
 			{
 				this.validation_state = 'partial - correct';
 			} 
@@ -88,15 +88,15 @@ var Card = function(json) { return {
 			{
 				this.validation_states[this.current_answer_part_index] = 'correct';
 			} 
-			else if (currentPartValidationState == 'incorrect') 
-			{
-				this.validation_states[this.current_answer_part_index] = 'correct but first attempt incorrect';
-			}
 			else if (currentPartValidationState == 'correct but first attempt incorrect') 
 			{
 				this.validation_states[this.current_answer_part_index] = 'correct';
 			}
-			console.log('card.current_part_validation_state = ' + currentPartValidationState);
+			else if (currentPartValidationState == 'incorrect') 
+			{
+				this.validation_states[this.current_answer_part_index] = 'correct but first attempt incorrect';
+			}
+			console.log('card.validation_states = [ ' + this.validation_states.join(', ') + ' ]');
 
 			this.current_answer_part_index += 1;
 			this.callListener('movedToNextAnswerPart');
@@ -107,12 +107,14 @@ var Card = function(json) { return {
 					this.captureTimeToCorrect();
 				} else {
 					this.current_answer_part_index = 0;
+					this.validation_states.fill("unanswered");
 				}
 			}
 		} else {
+			this.first_attempt_correct = false;
 			this.validation_state = 'partial - incorrect';
 			this.validation_states[this.current_answer_part_index] = 'incorrect';
-			console.log('card.current_part_validation_state = incorrect');
+			console.log('card.validation_states = [ ' + this.validation_states.join(', ') + ' ]');
 		}
 		console.log('card.validation_state = ' + this.validation_state);
 	},

@@ -2,6 +2,7 @@
 var Nil = require('./test_lib/nil.js').Nil;
 global.$ = new Nil(); 
 global.WebMidi = new Nil(); 
+global.metronome = new Nil(); 
 // make performance.now() node compatible
 global.performance = {};
 global.performance.now = require('performance-now');
@@ -9,6 +10,7 @@ global.performance.now = require('performance-now');
 var assert = require('assert');
 var Game = require('../../view/js/game.js');
 var Card = require('../../view/js/card.js');
+global.midiInput.exists = function() { return false; };
 
 var cardJSON = {
 	"answer" : "D",
@@ -92,11 +94,8 @@ describe('Game', function() {
 	describe('methods', function () {
 		it('handleCardData should add a card to the game', function () {
 			assert.ok(game.card == undefined);
-			var exists = midiInput.exists;
-			midiInput.exists = function() { return false; };
 			game.handleCardData(cardJSON);
 			assert.ok(game.card != undefined);
-			midiInput.exists = exists;
 		});
 	});
 
@@ -123,24 +122,41 @@ describe('Game', function() {
 			assert.equal(game.state, 'loading next question');
 		});
 
-		it('should change state to "incorrect" after incorrectly answering' + 
+		it('should change state to "waiting" after incorrectly answering ' + 
 		   'one of the questions and completing the card', function() {
 			game.checkAnswer('C E G');
 			game.checkAnswer('C L A');
 			game.checkAnswer('C F A');
 			game.checkAnswer('B D G');
-			assert.equal(game.state, 'incorrect');
+			assert.equal(game.state, 'waiting');
 		});
 
 		it('should allow you move on after repeating the answer after getting it incorrect', function() {
+			console.log('C E G');
 			game.checkAnswer('C E G');
+
+			console.log('C L A');
 			game.checkAnswer('C L A');
+
+			console.log('C F A');
 			game.checkAnswer('C F A');
+
+			assert.equal(game.state, 'partial - incorrect');
+
+			console.log('B D G');
 			game.checkAnswer('B D G');
-			assert.equal(game.state, 'incorrect');
+
+			assert.equal(game.state, 'waiting');
+			
+			console.log('C E G');
 			game.checkAnswer('C E G');
+
+			console.log('C F A');
 			game.checkAnswer('C F A');
+
+			console.log('B D G');
 			game.checkAnswer('B D G');
+
 			assert.equal('correct but first attempt incorrect', game.state);
 		});
 
@@ -148,13 +164,15 @@ describe('Game', function() {
 			game.checkAnswer('C E G');
 			game.checkAnswer('C L A');
 			game.checkAnswer('C F A');
+			assert.equal(game.state, 'partial - incorrect');
 			game.checkAnswer('B D G');
-			assert.equal(game.state, 'incorrect');
+			assert.equal(game.state, 'waiting');
 			game.checkAnswer('C E G');
 			game.checkAnswer('C L A');
 			game.checkAnswer('C F A');
+			assert.equal(game.state, 'partial - incorrect');
 			game.checkAnswer('B D G');
-			assert.equal(game.state, 'incorrect');
+			assert.equal(game.state, 'waiting');
 			game.checkAnswer('C E G');
 			game.checkAnswer('C F A');
 			game.checkAnswer('B D G');
