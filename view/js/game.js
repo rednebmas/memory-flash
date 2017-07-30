@@ -41,6 +41,9 @@ var Game = function(session_id, deck_id, user_id) { return {
 			case 'partial - incorrect':
 				this.updateViewStateForPartialIncorrect();
 				break;
+			case 'incorrect':
+				this.showIncorrectLabel();
+				break;
 			case 'correct':
 				this.loadNextQuestion();
 				break;
