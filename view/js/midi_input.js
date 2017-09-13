@@ -66,7 +66,10 @@ var MIDIInput = function () { return {
 		// http://tangiblejs.com/posts/web-midi-music-and-show-control-in-the-browser
 		var self = this;
 		WebMidi.enable(function (err) {
-			if (err) console.log("WebMidi could not be enabled");
+			if (err) {
+				console.log("WebMidi could not be enabled");
+				return;
+			}
 
 			var startListeningForEvents = function(input) {
 				$('#midi-connected').css('visibility', 'visible');
