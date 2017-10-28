@@ -109,7 +109,7 @@ class TestEndpoints(unittest.TestCase):
 		num_users = len(db.select(table="User"))
 		request, response = app.test_client.post(
 			'/user', 
-			data="user_name=sam&email=test%40me.com&password=test", 
+			data="user_name=sam_b&email=test%40me.com&password=test", 
 			headers={ 'Content-Type': "application/x-www-form-urlencoded" }
 		)
 		self.assertTrue(response.status == 200, response.body)
@@ -125,7 +125,7 @@ class TestEndpoints(unittest.TestCase):
 		num_users = len(db.select(table="User"))
 		request, response = app.test_client.post(
 			'/user', 
-			data="user_name=sam&email=test%40me.com&password=test", 
+			data="user_name=sam_b&email=test%40me.com&password=test", 
 			headers={ 'Content-Type': "application/x-www-form-urlencoded" },
 		)
 		self.assertEqual(len(db.select(table="User")), num_users + 1)
@@ -134,7 +134,7 @@ class TestEndpoints(unittest.TestCase):
 		# username
 		request, response = app.test_client.post(
 			'/user/login', 
-			data="login=sam&password=test", 
+			data="login=sam_b&password=test", 
 			headers={ 'Content-Type': "application/x-www-form-urlencoded" }
 		)
 		self.assertTrue(response.status == 200, response.status)
