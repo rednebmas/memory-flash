@@ -1,5 +1,10 @@
 <script src="/js/lib/vexflow-debug.js"></script>
 
+<style>
+	#staff {
+		text-align: center;
+	}
+</style>
 <div id="staff"></div>
 
 <script type="text/javascript">
@@ -10,7 +15,7 @@ var div = document.getElementById("staff")
 var renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
 
 // Configure the rendering context.
-renderer.resize(500, 300);
+renderer.resize(200, 300);
 var context = renderer.getContext();
 context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed");
 
@@ -37,7 +42,8 @@ lineRight.setContext(context).draw();
 
 var notes = [
 	// A quarter-note C.
-	new VF.StaveNote({clef: "treble", keys: ["{{ note.name }}/{{ note.octave }}"], duration: "w"})
+	new VF.StaveNote({clef: "treble", keys: ["{{ note }}/{{ octave }}"], duration: "w"})
+	// new VF.StaveNote({clef: "bass", keys: ["F/1"], duration: "w"})
 	{% if note.name|length > 1 %}
 		.addAccidental(0, new VF.Accidental("{{ note.name[1:] }}"))
 	{% endif %}
@@ -53,5 +59,9 @@ voice.addTickables(notes);
 var formatter = new VF.Formatter().joinVoices([voice]).format([voice], 400);
 
 // Render voice
+{% if clef == 'treble' %}
 voice.draw(context, trebleStaff);
+{% else %}
+voice.draw(context, bassStaff);
+{% endif %}
 </script>

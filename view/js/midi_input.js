@@ -94,7 +94,7 @@ var MIDIInput = function () { return {
 			})
 
 			if (WebMidi.inputs.length > 0) {
-				startListeningForEvents(WebMidi.inputs[0])
+				startListeningForEvents(WebMidi.getInputByName('MIDISPORT 2x2 Port A'))
 			}
 		});
 
@@ -168,8 +168,12 @@ var MIDIInput = function () { return {
 		notes = this.makeNotesRespectCardScale(notes);
 		notes = this.makeNotesRespectCardAnswer(notes);
 
-		var noteNames = notes.map(function(note) {
-			return note.name().toUpperCase() + note.accidental().replace('x', '##');
+		var noteNames = notes.map((note) => {
+			var name = note.name().toUpperCase() + note.accidental().replace('x', '##');
+			if (game.card.raw['answer_validator'] == 'equals_octave') {
+				name = name + note.octave();
+			}
+			return name;
 		});
 
 		return noteNames.join(' ');
@@ -218,7 +222,12 @@ var MIDIInput = function () { return {
 		notes = notes.map(function(note) {
 			var index = answerNotesChroma.indexOf(note.chroma());
 			if (index >= 0) {
-				return answerNotesTeoria[index];
+				var answerNoteTeoria = answerNotesTeoria[index];
+				if (answerNoteTeoria.name() == note.name()) {
+					return note;
+				} else {
+					return answerNoteTeoria;
+				}
 			} else {
 				return note;
 			}

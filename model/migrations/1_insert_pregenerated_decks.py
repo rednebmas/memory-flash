@@ -15,13 +15,6 @@ def insert_deck(db, deck_name, deck_desc, cards):
 	for c in cards: c['deck_id'] = deck_id
 	db.insert_key_value_pairs('Card', cards)
 
-# insert_deck(
-# 	db, 
-# 	"Notes", 
-# 	"On the staff", 
-# 	NotesGenerator.generate_cards()
-# )
-
 insert_deck(
 	db, 
 	"Intervals", 

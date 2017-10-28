@@ -24,6 +24,10 @@ var AnswerValidator = function(validator_string) { return {
 		return userAnswer.toLowerCase() == correctAnswer.toLowerCase();
 	},
 
+	equals_octave: function (userAnswer, correctAnswer) {
+		return userAnswer.toLowerCase() == correctAnswer.toLowerCase();
+	},
+
 	multipleOptions_meta: function(userAnswer, correctAnswer, validator) {
 		var answers = correctAnswer.split('|');
 		for (var i = answers.length - 1; i >= 0; i--) {
