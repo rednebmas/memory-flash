@@ -1,5 +1,6 @@
 *.pyc
 *.db
+*.bak
 *.db-journal
 *.DS_Store
 node_modules
@@ -12,6 +13,5 @@ tags
 *.log
 *.vscode
 *.backup
-*.css
 *.css.map
 .sass-cache
