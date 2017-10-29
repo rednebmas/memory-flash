@@ -14,6 +14,7 @@ var Game = function(session_id, deck_id, user_id) { return {
 	session_id: session_id,
 	deck_id: deck_id,
 	user_id: user_id,
+	input_modality_id: undefined,
 	// waiting, loading next question, partial - correct, partial - incorrect, incorrect, correct but first attempt incorrect
 	_state: 'waiting', 
 	_card: undefined,
@@ -42,6 +43,7 @@ var Game = function(session_id, deck_id, user_id) { return {
 				this.updateViewStateForPartialIncorrect();
 				break;
 			case 'incorrect':
+				this.updateViewStateForIncorrect()
 				this.showIncorrectLabel();
 				break;
 			case 'correct':
@@ -64,6 +66,8 @@ var Game = function(session_id, deck_id, user_id) { return {
 
     init: function () {
 		this.bindSubmitAnswer();
+		var urlQueryStringParams = new URLSearchParams(window.location.search);
+		this.input_modality_id = urlQueryStringParams.get('input_modality_id');
     	return this;
     },
 
@@ -293,6 +297,10 @@ var Game = function(session_id, deck_id, user_id) { return {
 		} else {
 			$('#answer-input').val(''); 
 		}
+	},
+
+	updateViewStateForIncorrect: function() {
+		this.clearInput();
 	},
 
 	updateViewStateForPartialIncorrect: function () {

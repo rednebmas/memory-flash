@@ -43,7 +43,7 @@ async def add_session_to_request(request):
 	# make sure user is authenticated to view most pages, otherwise, redirect to login
 	if 'user_id' not in request['session'] and request.path not in paths_that_dont_need_auth:
 		print('<' + request.path + '> Attempted to access route which requires you to be logged in to an account.')
-		return sanic.response.redirect('/user/login?orginal-path='+request.path)
+		return sanic.response.redirect('/user/login?original_path='+request.path)
 
 @app.middleware('response')
 async def save_session(request, response):

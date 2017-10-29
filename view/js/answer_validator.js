@@ -25,6 +25,10 @@ var AnswerValidator = function(validator_string) { return {
 	},
 
 	equals_octave: function (userAnswer, correctAnswer) {
+		if (userAnswer.toLowerCase() != correctAnswer.toLowerCase() && game.input_modality_id == "1") {
+			correctAnswer = correctAnswer.replace(/\d/g, "");
+		}
+
 		return userAnswer.toLowerCase() == correctAnswer.toLowerCase();
 	},
 

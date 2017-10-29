@@ -42,8 +42,8 @@ lineRight.setContext(context).draw();
 
 var notes = [
 	// A quarter-note C.
-	new VF.StaveNote({clef: "treble", keys: ["{{ note }}/{{ octave }}"], duration: "w"})
-	// new VF.StaveNote({clef: "bass", keys: ["F/1"], duration: "w"})
+	new VF.StaveNote({clef: "{{ clef }}", keys: ["{{ note }}/{{ octave }}"], duration: "w"})
+	// new VF.StaveNote({clef: "bass", keys: ["B/1"], duration: "w"})
 	{% if note.name|length > 1 %}
 		.addAccidental(0, new VF.Accidental("{{ note.name[1:] }}"))
 	{% endif %}

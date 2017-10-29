@@ -25,12 +25,13 @@ class NotesGenerator:
 	@staticmethod
 	def bass_cards():
 		cards = []
-		current_note = Note('F-3')
-		end_note = Note('F-1')
+		current_note = Note('F-1')
+		end_note = Note('G-4')
 		while int(current_note) < int(end_note):
 			if '#' in current_note.name or 'b' in current_note.name:
 				current_note = current_note.from_int(int(current_note) + 1)
 				continue
+			print(current_note.name + str(current_note.octave))
 
 			cards.append(NotesGenerator.card_for_note(current_note, "bass"))
 			current_note = current_note.from_int(int(current_note) + 1)

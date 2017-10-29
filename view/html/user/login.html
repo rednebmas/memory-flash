@@ -20,7 +20,7 @@ div#create-account {
 
 	<h1>Login</h1>
 
-	<form style="max-width: 350px; margin: auto" action="/user/login" method="post">
+	<form style="max-width: 350px; margin: auto" action="/user/login?original_path={{ original_path }}" method="post">
 		<div class="form-group error-text">
 			<span>{{ error_msg }}</span>
 		</div>

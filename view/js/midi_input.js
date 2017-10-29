@@ -11,7 +11,8 @@ var MIDIInput = function () { return {
 	onNotes: new Set(),
 	chromaMap: undefined,
 	_scale: undefined,
-	output: undefined,
+	output: undefined, // not a midi output
+	input: undefined,
 
 	/** 
 	Getters and Setters 
@@ -71,7 +72,16 @@ var MIDIInput = function () { return {
 				return;
 			}
 
-			var startListeningForEvents = function(input) {
+			var startListeningForEvents = (input) => {
+				if (!input) {
+					return;
+				}
+
+				if (this.input) {
+					this.input.removeListener();
+				}
+
+				this.input = input;
 				$('#midi-connected').css('visibility', 'visible');
 
 				// Listening for a 'note on' message (on all channels) 
@@ -86,7 +96,7 @@ var MIDIInput = function () { return {
 			}
 
 			WebMidi.addListener('connected', function (e) {
-				startListeningForEvents(WebMidi.inputs[0]);
+				startListeningForEvents(WebMidi.getInputByName('MIDISPORT 2x2 Port A'));
 			});
 
 			WebMidi.addListener('disconnected', function (e) {
@@ -241,7 +251,7 @@ var MIDIInput = function () { return {
 	},
 
 	exists: function() {
-		return WebMidi.inputs.length > 0;
+		return this.input != undefined && this.input != null;
 	}
 
 }.init(); };

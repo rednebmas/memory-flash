@@ -12,7 +12,7 @@ def add_routes(app):
 	# login to account page
 	@app.route("/user/login", methods=['GET'])
 	async def login(request):
-		return jinja_response('user/login.html')
+		return jinja_response('user/login.html', original_path=request.args.get('original_path', ''))
 
 	# login post api method
 	@app.route("/user/login", methods=['POST'])
@@ -23,7 +23,7 @@ def add_routes(app):
 			user = User.authenticate(form.get('login'), form.get('password'))
 			request['session']['user_name'] = user.user_name
 			request['session']['user_id'] = user.user_id
-			return redirect('/decks')
+			return redirect(request.args.get('original_path', '/decks'))
 		except Exception as e:
 			return html(jinja_render('user/login.html', error_msg=e.message), status=401)
 
