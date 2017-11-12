@@ -36,7 +36,6 @@ class Scheduler:
 
 		weights = [card.answer_history.time_to_correct for card in cards]
 
-		# temp stuff
 		if len(weights) > 8:
 			weights_sorted = sorted(weights)
 			weights = [w ** 2.3 if w > weights_sorted[-6] else w / 2 for w in weights]
