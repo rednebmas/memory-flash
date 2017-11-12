@@ -37,6 +37,7 @@ paths_that_dont_need_auth = ['/decks', '/user/login', '/user', '/', '/user/creat
 
 @app.middleware('request')
 async def add_session_to_request(request):
+	print('###### request.args = ' + str(request.args))
 	# before each request initialize a session
 	# using the client's request
 	await session_interface.open(request)
@@ -92,11 +93,10 @@ async def decks_study(request, deck_id):
 
 @app.route("/session/<session_id:int>/next_card")
 async def session_next_card(request, session_id):
-	previous_card_id = request.args.get('previous_card_id', None)
-	if isinstance(previous_card_id, str): previous_card_id = int(previous_card_id)
+	previous_card_ids = request.args.get('previous_card_id', [])
 
 	session = Session.from_db_id(session_id)
-	card = session.next_card(previous_card_id)
+	card = session.next_card(previous_card_ids)
 
 	if card is None:
 		return json({ 'msg': 'session complete' })

@@ -9,7 +9,7 @@ from model.math_sam import choose_index_for_weights
 
 class Scheduler:
 	@staticmethod
-	def next(session, previous_card_id=None):
+	def next(session, previous_card_ids):
 		if session.cards_loaded == False: session.load_cards()
 
 		card = None
@@ -18,7 +18,7 @@ class Scheduler:
 			cards = Deck.unseen_cards(session)
 			card = cards[randint(0, min(len(cards) - 1, 11))]
 		elif session_stage == "reviewing":
-			card = Scheduler.weighted_random_card(session.cards, previous_card_id)
+			card = Scheduler.weighted_random_card(session.cards, previous_card_ids)
 			print('picked card ttc: ' + str(card.answer_history.time_to_correct) + ", id: " + str(card.card_id))
 		elif session_stage == "finished":
 			print('****************** started a new session *******************')
@@ -26,13 +26,13 @@ class Scheduler:
 		return card, session_stage
 
 	@staticmethod
-	def weighted_random_card(cards, previous_card_id):
+	def weighted_random_card(cards, previous_card_ids):
 		""" Cards is an array of cards where each card has an answer_history """
 
 		cards = list(cards)
-		previous_card_index = [i for i, c in enumerate(cards) if c.card_id == previous_card_id]
-		if len(previous_card_index) > 0:
-			cards.pop(previous_card_index[0])
+		previous_cards_index = [i for i, c in enumerate(cards) if c.card_id in previous_card_ids]
+		for previous_card_index in previous_card_ids:
+			cards.pop(previous_card_index)
 
 		weights = [card.answer_history.time_to_correct for card in cards]
 

@@ -1,6 +1,7 @@
 var Card = require('./card.js');
 var MIDIInput = require('./midi_input.js');
 var TextInput = require('./text_input.js');
+var FixedQueue = require('./lib/fixed-queue.js');
 midiInput = new MIDIInput();
 textInput = new TextInput();
 
@@ -15,6 +16,7 @@ var Game = function(session_id, deck_id, user_id) { return {
 	deck_id: deck_id,
 	user_id: user_id,
 	input_modality_id: undefined,
+	previous_card_ids: new FixedQueue(2),
 	// waiting, loading next question, partial - correct, partial - incorrect, incorrect, correct but first attempt incorrect
 	_state: 'waiting', 
 	_card: undefined,
@@ -84,19 +86,24 @@ var Game = function(session_id, deck_id, user_id) { return {
 		this.submitAnswerHistory();
 		this.state = 'loading next question';
 
+		if (this.card) {
+			this.previous_card_ids.push(this.card.card_id);
+		}
+
 		var url = '/session/' + this.session_id + '/next_card';
 		var data = { 
 			'deck_id' : this.deck_id, 
 			'previous_card_id' : this.card ? this.card.card_id : null,
-			'user_id' : this.user_id
+			'user_id' : this.user_id,
+			'previous_card_ids' : this.previous_card_ids
 		};
 
-		var self = this;
-		$.get(url, data, function(data) {
-			self.handleCardData(data);
+		$.get(url, data, (data) => {
+			this.handleCardData(data);
 		})
-		.fail(function(xhr, status, error) {
+		.fail((xhr, status, error) => {
 			console.log('Error retrieving next card: ' + xhr);
+			window.location.href = window.location.origin;
 		});
 	},
 
@@ -260,6 +267,7 @@ var Game = function(session_id, deck_id, user_id) { return {
 		}, 'json')
 		.fail(function(xhr, status, error) {
 			console.log('Error submitting answer history: ' + error);
+			window.location.href = window.location.origin;
 		});
 	},
 
