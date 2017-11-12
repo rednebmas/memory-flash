@@ -68,10 +68,10 @@ class Session:
 				del seen_cards[pick_index]
 				del seen_cards_weights[pick_index]
 			self.add_cards_to_session_deck(card_ids_to_add)
-		elif len(unseen_cards) == 0: # no unseen cards left in deck
+		elif len(unseen_cards) == 0 and len(seen_cards) != 0: # no unseen cards left in deck
 			cards_to_add_ids = []
 			cards_to_add_time_to_corrects = []
-			while (sum(cards_to_add_time_to_corrects) < 60.0 or len(cards_to_add_ids) < 8) or len(cards_to_add_ids) == num_seen_cards:
+			while ((sum(cards_to_add_time_to_corrects) < 60.0 or len(cards_to_add_ids) < 8) or len(cards_to_add_ids) == num_seen_cards) and len(seen_cards_weights) > 0:
 				pick_index = choose_index_for_weights(seen_cards_weights, 2.8)
 				cards_to_add_ids.append(seen_cards[pick_index]['card_id'])
 				cards_to_add_time_to_corrects.append(seen_cards[pick_index]['time_to_correct'])
@@ -79,6 +79,9 @@ class Session:
 				del seen_cards_weights[pick_index]
 			print('stopped adding seen cards with sum: ' + str(sum(cards_to_add_time_to_corrects)))
 			self.add_cards_to_session_deck(cards_to_add_ids)
+		elif len(unseen_cards) == 0 and len(seen_cards) == 0:
+			# was able to review all cards in deck in one session aquire stage
+			self.add_cards_to_session_deck([card.card_id for card in self.cards])
 
 		self.load_cards()
 

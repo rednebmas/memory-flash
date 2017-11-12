@@ -28,7 +28,19 @@ class Scheduler:
 	@staticmethod
 	def weighted_random_card(cards, previous_card_id):
 		""" Cards is an array of cards where each card has an answer_history """
+
+		cards = list(cards)
+		previous_card_index = [i for i, c in enumerate(cards) if c.card_id == previous_card_id]
+		if len(previous_card_index) > 0:
+			cards.pop(previous_card_index[0])
+
 		weights = [card.answer_history.time_to_correct for card in cards]
+
+		# temp stuff
+		if len(weights) > 8:
+			weights_sorted = sorted(weights)
+			weights = [w ** 2.3 if w > weights_sorted[-6] else w / 2 for w in weights]
+
 		learning_factor = 2.8
 		index = choose_index_for_weights(weights, learning_factor)
 		card = cards[index]
@@ -36,7 +48,7 @@ class Scheduler:
 		if previous_card_id is not None and card.card_id == previous_card_id:
 			return Scheduler.weighted_random_card(cards, previous_card_id)
 		else:
-			return  card
+			return card
 
 	@staticmethod
 	def session_stage(session):

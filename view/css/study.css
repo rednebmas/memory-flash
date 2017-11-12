@@ -20,7 +20,7 @@ textarea {
   font-size: 18px;
   /*padding: 20px 10px;*/ }
 
-#submit-answer, #answer-input {
+#submit-answer, #answer-input, #skip-question-btn {
   height: 45px;
   /*padding: 20px 10px;*/ }
 
