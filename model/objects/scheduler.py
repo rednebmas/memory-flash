@@ -9,7 +9,7 @@ from model.math_sam import choose_index_for_weights
 
 class Scheduler:
 	@staticmethod
-	def next(session, previous_card_ids):
+	def next(session, previous_card_ids=list()):
 		if session.cards_loaded == False: session.load_cards()
 
 		card = None
@@ -29,6 +29,7 @@ class Scheduler:
 	def weighted_random_card(cards, previous_card_ids):
 		""" Cards is an array of cards where each card has an answer_history """
 
+		# remove previous cards
 		cards = list(cards)
 		previous_cards_index = [i for i, c in enumerate(cards) if c.card_id in previous_card_ids]
 		for previous_card_index in previous_card_ids:
@@ -44,10 +45,7 @@ class Scheduler:
 		index = choose_index_for_weights(weights, learning_factor)
 		card = cards[index]
 
-		if previous_card_id is not None and card.card_id == previous_card_id:
-			return Scheduler.weighted_random_card(cards, previous_card_id)
-		else:
-			return card
+		return card
 
 	@staticmethod
 	def session_stage(session):

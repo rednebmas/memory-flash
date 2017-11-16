@@ -103,7 +103,8 @@ var Game = function(session_id, deck_id, user_id) { return {
 		})
 		.fail((xhr, status, error) => {
 			console.log('Error retrieving next card: ' + xhr);
-			window.location.href = window.location.origin;
+			// window.location.href = window.location.origin;
+			alert('Error loading next question: ' + error);
 		});
 	},
 
@@ -267,7 +268,8 @@ var Game = function(session_id, deck_id, user_id) { return {
 		}, 'json')
 		.fail(function(xhr, status, error) {
 			console.log('Error submitting answer history: ' + error);
-			window.location.href = window.location.origin;
+			alert('Error loading next question: ' + error);
+			// window.location.href = window.location.origin;
 		});
 	},
 

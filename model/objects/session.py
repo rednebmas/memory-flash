@@ -56,6 +56,11 @@ class Session:
 		seen_cards_weights = [r['time_to_correct'] for r in seen_cards]
 		num_seen_cards = len(seen_cards)
 
+		print()
+		print('self.cards: ' + str(len(self.cards)))
+		print('unseen_cards: ' + str(len(unseen_cards)))
+		print('seen_cards: ' + str(len(seen_cards)))
+
 		# unseen cards still left in deck and this isn't the first session of the deck, because there will be no seen cards at that point
 		if len(unseen_cards) != 0 and len(seen_cards): 
 			num_seen_cards_to_add_to_deck = int(len(self.cards) * (1/3))
@@ -73,6 +78,11 @@ class Session:
 			cards_to_add_time_to_corrects = []
 			while ((sum(cards_to_add_time_to_corrects) < 60.0 or len(cards_to_add_ids) < 8) or len(cards_to_add_ids) == num_seen_cards) and len(seen_cards_weights) > 0:
 				pick_index = choose_index_for_weights(seen_cards_weights, 2.8)
+				print('pick_index: ' + str(pick_index))
+				print('seen card weights' + str(seen_cards_weights))
+				print(cards_to_add_time_to_corrects)
+				print(cards_to_add_ids)
+				print()
 				cards_to_add_ids.append(seen_cards[pick_index]['card_id'])
 				cards_to_add_time_to_corrects.append(seen_cards[pick_index]['time_to_correct'])
 				del seen_cards[pick_index]
@@ -82,6 +92,7 @@ class Session:
 		elif len(unseen_cards) == 0 and len(seen_cards) == 0:
 			# was able to review all cards in deck in one session aquire stage
 			self.add_cards_to_session_deck([card.card_id for card in self.cards])
+			print('here')
 
 		self.load_cards()
 

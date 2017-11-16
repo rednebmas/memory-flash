@@ -65,49 +65,53 @@ var MIDIInput = function () { return {
 
 	startWebMidi: function() {
 		// http://tangiblejs.com/posts/web-midi-music-and-show-control-in-the-browser
-		var self = this;
-		WebMidi.enable(function (err) {
+		WebMidi.enable((err) => {
 			if (err) {
 				console.log("WebMidi could not be enabled");
 				return;
 			}
 
-			var startListeningForEvents = (input) => {
-				if (!input) {
-					return;
-				}
-
-				if (this.input) {
-					this.input.removeListener();
-				}
-
-				this.input = input;
-				$('#midi-connected').css('visibility', 'visible');
-
-				// Listening for a 'note on' message (on all channels) 
-				input.addListener("noteon", "all", function (e) {
-					self.addNote(e.note.number)
-				});
-
-				// Listening to other messages works the same way 
-				input.addListener("noteoff", "all", function (e) {
-					self.removeNote(e.note.number);
-				});
-			}
-
-			WebMidi.addListener('connected', function (e) {
-				startListeningForEvents(WebMidi.getInputByName('MIDISPORT 2x2 Port A'));
+			WebMidi.addListener('connected', (e) => {
+				// this.startListeningForEvents(WebMidi.getInputByName('MIDISPORT 2x2 Port A'));
+				this.populateInputList();
+				this.listenToEventsFromInput(WebMidi.inputs[0]);
 			});
 
-			WebMidi.addListener('disconnected', function (e) {
-				$('#midi-connected').css('visibility', 'hidden');
+			WebMidi.addListener('disconnected', (e) => {
+				$('#midi-connected').css('display', 'none');
+				this.populateInputList();
 			})
 
 			if (WebMidi.inputs.length > 0) {
-				startListeningForEvents(WebMidi.getInputByName('MIDISPORT 2x2 Port A'))
+				this.populateInputList();
+				this.listenToEventsFromInput(WebMidi.inputs[0]);
 			}
 		});
 
+	},
+
+	listenToEventsFromInput: function (input) {
+		if (!input) {
+			this.input = undefined;
+			return;
+		}
+
+		if (this.input) {
+			this.input.removeListener();
+		}
+
+		this.input = input;
+		$('#midi-connected').css('display', 'block');
+
+		// Listening for a 'note on' message (on all channels) 
+		input.addListener("noteon", "all", (e) => {
+			this.addNote(e.note.number)
+		});
+
+		// Listening to other messages works the same way 
+		input.addListener("noteoff", "all", (e) => {
+			this.removeNote(e.note.number);
+		});
 	},
 
 	addNote: function(midiNoteNumber) {
@@ -252,6 +256,24 @@ var MIDIInput = function () { return {
 
 	exists: function() {
 		return this.input != undefined && this.input != null;
+	},
+
+	populateInputList: function() {
+		var self = this;
+		$('#midi-input-dropdown').empty();
+		$.each(WebMidi.inputs, (i, input) => {
+			$('<li/>').append(
+				$('<a/>', {
+					html: input.name,
+					class: 'dropdown-item',
+					'midi-id': input.id,
+					href: '#',
+					click: (event) => {
+						this.listenToEventsFromInput(WebMidi.getInputByName(event.target.innerText));
+					}
+				})
+			).appendTo('#midi-input-dropdown');
+		});
 	}
 
 }.init(); };
