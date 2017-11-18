@@ -9,7 +9,7 @@ from model.math_sam import choose_index_for_weights
 
 class Scheduler:
 	@staticmethod
-	def next(session, previous_card_ids=list()):
+	def next(session, previous_card_ids):
 		if session.cards_loaded == False: session.load_cards()
 
 		card = None
@@ -31,9 +31,10 @@ class Scheduler:
 
 		# remove previous cards
 		cards = list(cards)
-		previous_cards_index = [i for i, c in enumerate(cards) if c.card_id in previous_card_ids]
-		for previous_card_index in previous_card_ids:
-			cards.pop(previous_card_index)
+		if len(previous_card_ids) > 0:
+			previous_cards_indices = [i for i, c in enumerate(cards) if c.card_id in previous_card_ids]
+			for i in sorted(previous_cards_indices, reverse=True):
+				del cards[i]
 
 		weights = [card.answer_history.time_to_correct for card in cards]
 

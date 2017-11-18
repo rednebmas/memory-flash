@@ -93,7 +93,6 @@ var Game = function(session_id, deck_id, user_id) { return {
 		var url = '/session/' + this.session_id + '/next_card';
 		var data = { 
 			'deck_id' : this.deck_id, 
-			'previous_card_id' : this.card ? this.card.card_id : null,
 			'user_id' : this.user_id,
 			'previous_card_ids' : this.previous_card_ids
 		};

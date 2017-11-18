@@ -93,8 +93,8 @@ async def decks_study(request, deck_id):
 
 @app.route("/session/<session_id:int>/next_card")
 async def session_next_card(request, session_id):
-	previous_card_ids = request.args.get('previous_card_id', [])
-	previous_card_ids = map(lambda c: int(c), previous_card_ids)
+	previous_card_ids = request.args.getlist('previous_card_ids[]', [])
+	previous_card_ids = list( map(lambda c: int(c), previous_card_ids) )
 
 	session = Session.from_db_id(session_id)
 	card = session.next_card(previous_card_ids)
