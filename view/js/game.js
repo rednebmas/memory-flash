@@ -17,8 +17,8 @@ var Game = function(session_id, deck_id, user_id) { return {
 	user_id: user_id,
 	input_modality_id: undefined,
 	previous_card_ids: new FixedQueue(2),
-	// waiting, loading next question, partial - correct, partial - incorrect, incorrect, correct but first attempt incorrect
-	_state: 'waiting', 
+	// title card, waiting, loading next question, partial - correct, partial - incorrect, incorrect, correct but first attempt incorrect
+	_state: 'title card', 
 	_card: undefined,
 
 	/** 
@@ -31,6 +31,9 @@ var Game = function(session_id, deck_id, user_id) { return {
 	set state(state) {
 		this._state = state;
 		switch (state) {
+			case 'title card':
+				this.updateViewForStateTitleCard();
+				break;
 			case 'waiting':
 				this.updateViewForStateWaiting();
 				break;
@@ -59,7 +62,7 @@ var Game = function(session_id, deck_id, user_id) { return {
 	},
 	set card(card) {
 		this._card = card;
-		$('.question').html(card.question);
+		$('#question').html(card.question);
 	},
 
     /**
@@ -68,6 +71,7 @@ var Game = function(session_id, deck_id, user_id) { return {
 
     init: function () {
 		this.bindSubmitAnswer();
+		this.setupTitleCard();
 		var urlQueryStringParams = new URLSearchParams(window.location.search);
 		this.input_modality_id = urlQueryStringParams.get('input_modality_id');
     	return this;
@@ -82,9 +86,20 @@ var Game = function(session_id, deck_id, user_id) { return {
 		});
 	},
 
+	setupTitleCard: function(arguments) {
+		this.updateViewForStateTitleCard();
+		$(document).keypress((e) => {
+			if (e.which == 99 || e.which == 67) { // c or C
+				this.state = 'waiting';
+			}
+		});
+	},
+
 	loadNextQuestion: function() {
 		this.submitAnswerHistory();
-		this.state = 'loading next question';
+		if (this.state != 'title card') {
+			this.state = 'loading next question';
+		}
 
 		if (this.card) {
 			this.previous_card_ids.push(this.card.card_id);
@@ -138,7 +153,10 @@ var Game = function(session_id, deck_id, user_id) { return {
 			self.clearInput();
 		});
 		console.log(this.card);
-		this.state = 'waiting';
+
+		if (this.state != 'title card') {
+			this.state = 'waiting';
+		}
 	},
 
 	checkAnswer: function(answer) {
@@ -272,8 +290,14 @@ var Game = function(session_id, deck_id, user_id) { return {
 		});
 	},
 
+	updateViewForStateTitleCard: function () {
+		$('#question').css('visibility', 'hidden');
+	},
+
 	updateViewForStateWaiting: function () {
 		this.card.captureStartTime();
+		$('#title-card').css('visibility', 'hidden');
+		$('#question').css('visibility', 'visible');
 		$('#submit-answer').attr('class', 'btn btn-primary');
 		$('#correct-label').fadeOut();
 		this.clearInput();

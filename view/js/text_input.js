@@ -4,7 +4,12 @@ var TextInput = function() { return {
     init: function() {
         var self = this;
 		$('#answer-input').keypress(function(e) {
-            var returnVal = true;
+			var returnVal = true;
+			
+			if (game.state == 'title card' && (e.which == 99 || e.which == 67)) { // c or C
+				game.state = 'waiting';
+				return false;
+			}
 
             switch (e.which) {
                 case 115:
@@ -52,7 +57,6 @@ var TextInput = function() { return {
 
             this.previousInput = e.which;
             return returnVal;
-
 		});
     }
 }.init() };

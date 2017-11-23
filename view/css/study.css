@@ -104,4 +104,19 @@ i.fa {
     float: right;
     display: none; }
 
+#title-card {
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  background-color: rgba(48, 48, 48, 0.9);
+  z-index: 100;
+  display: flex; }
+  #title-card #press-any-key-to-continue {
+    color: white;
+    font-size: 3em;
+    align-self: center;
+    margin: auto; }
+
 /*# sourceMappingURL=study.css.map */
