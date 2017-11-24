@@ -94,7 +94,9 @@ var Game = function(session_id, deck_id, user_id) { return {
 		$(document).keypress((e) => {
 			if (e.which == 99 || e.which == 67) { // c or C
 				this.state = 'waiting';
+				return false;
 			}
+			return true;
 		});
 	},
 
@@ -133,6 +135,7 @@ var Game = function(session_id, deck_id, user_id) { return {
 			window.location = '/session/' + this.session_id + '/complete'
 		}
 
+		this.card = new Card(data);
 		if ('session' in data) {
 			var tempo = 60.0 / (data['session']['median'] / 4.0) + 5;
 			metronome.setTempo(tempo);
@@ -143,12 +146,14 @@ var Game = function(session_id, deck_id, user_id) { return {
 
 			$('#metronome-controls').css('display', 'block');
 			$('#cards-below-median-label').css('display', 'inline');
+			$('#progress-bar-container').css('display', 'block');
+			$('#progress-bar').css('width', data.session.cards_below_median / data.session.total_cards * 100 + '%');
+			$('#card-was-correct-check').css('visibility', this.card.wasCorrect() ? 'visible' : 'hidden');
 		} else {
 			$('#metronome-controls').css('display', 'none');
 			$('#cards-below-median-label').css('display', 'none');
 		}
 
-		this.card = new Card(data);
 		var self = this;
 		this.card.addEventListener('movedToNextAnswerPart', function(event) {
 			$('#incorrect-label').fadeOut();
@@ -299,10 +304,6 @@ var Game = function(session_id, deck_id, user_id) { return {
 		});
 	},
 
-	secondsElapsedKey: function(arguments) {
-		return 
-	},
-
 	updateViewSecondsElapsed: function() {
 		var secondsElapsed = Cookies.get(this.secondsElapsedKey);
 		secondsElapsed = secondsElapsed ? parseFloat(secondsElapsed) : 0.0;
@@ -322,6 +323,7 @@ var Game = function(session_id, deck_id, user_id) { return {
 		$('#question').css('visibility', 'visible');
 		$('#submit-answer').attr('class', 'btn btn-primary');
 		$('#correct-label').fadeOut();
+		$('#answer-input').focus();
 		this.clearInput();
 	}, 
 
@@ -354,11 +356,21 @@ var Game = function(session_id, deck_id, user_id) { return {
 		}
 	},
 
+	updateProgressBarForIncorrect: function() {
+		console.log('was correct: ' + this.card.wasCorrect());
+		if (this.card.wasCorrect()) {
+			var session = this.card.raw.session;
+			$('#progress-bar').css('width', (session.cards_below_median - 1) / session.total_cards * 100 + '%');
+		}
+	},
+
 	updateViewStateForIncorrect: function() {
+		this.updateProgressBarForIncorrect();
 		this.clearInput();
 	},
 
 	updateViewStateForPartialIncorrect: function () {
+		this.updateProgressBarForIncorrect();
 		if (midiInput.onNotes.size != 0) {
 			midiInput.clearOnNotes();
 		}

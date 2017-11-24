@@ -155,6 +155,16 @@ var Card = function(json) { return {
 		for (var key in this.listeners[name]) {
 			this.listeners[name][key]();
 		}
+	},
+
+	wasCorrect: function() {
+		var session = this.raw.session;
+		if (!session) {
+			return false;
+		}
+
+		var prev_time_to_correct = this.raw.prev_time_to_correct;
+		return prev_time_to_correct <= session.median && this.raw.prev_first_attempt_correct;
 	}
 }.init(); }
 

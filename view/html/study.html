@@ -10,6 +10,7 @@
 {% block content %}
 
 <div class="card">
+	<i id="card-was-correct-check" class="fa fa-check-square" aria-hidden="true"></i>
     <div id="question">Loading...</div>
     <div class="input-group">
       <input id="answer-input" type="text" placeholder="Answer" class="form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
@@ -18,25 +19,17 @@
       </span>
     </div><!-- /input-group -->
     <!-- </div> -->
-    <div class="card-footer">
+    <div class="card-footer" id="card-status">
         <span id="incorrect-label">Incorrect</span>
         <span id="correct-label"><strong>Correct</strong>, press any key to move to the next question</span>
         <span id="cards-below-median-label">8/10</span>
 	</div>
 	
 	
-	<div class="card-footer" style="
-	    height: 15px;
-	    padding: 0;
-	">
+	<div class="card-footer" id="progress-bar-container">
 	
-		<div class="progress" style="
-	    margin: 0;
-		padding: 0;
-		border-radius: 0;
-		height: 15px;
-	">
-			<div class="progress-bar progress-bar-striped" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+		<div class="progress">
+			<div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 		</div>
 	</div>
 

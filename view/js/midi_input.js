@@ -68,7 +68,7 @@ var MIDIInput = function () { return {
 		WebMidi.enable((err) => {
 			if (err) {
 				console.log("WebMidi could not be enabled");
-				console.log(err);
+				alert('Error: ' + err);
 				return;
 			}
 

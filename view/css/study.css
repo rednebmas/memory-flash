@@ -28,7 +28,6 @@ p {
   font-size: 22px; }
 
 .card {
-  /*width: 320px;*/
   width: 92%;
   max-width: 640px;
   background-color: #FCFCFC;
@@ -38,7 +37,13 @@ p {
   border-radius: 2px;
   border-color: lightgray;
   border-width: 1px;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); }
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  position: relative; }
+  .card #card-was-correct-check {
+    position: absolute;
+    right: 10px;
+    color: green;
+    visibility: hidden; }
 
 .card input {
   width: 80%;
@@ -94,13 +99,27 @@ i.fa {
   margin-top: 15px;
   padding: 10px 15px;
   background-color: #F7F7F7;
-  height: 46px;
   font-size: 18px; }
   .card-footer #cards-below-median-label {
     text-align: right;
     color: darkgrey;
     float: right;
     display: none; }
+
+#card-status {
+  height: 46px; }
+
+#progress-bar-container {
+  height: 15px;
+  padding: 0;
+  display: none; }
+  #progress-bar-container .progress {
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    height: 15px; }
+    #progress-bar-container .progress #progress-bar {
+      width: 50%; }
 
 #title-card {
   position: fixed;

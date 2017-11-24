@@ -23,9 +23,10 @@ class Card:
 		self.scale = scale
 		self.template_path = template_path
 		self.template_data = template_data
+		self.answer_history = None
 
 	def as_dict(self):
-		return {
+		result = {
 			"card_id" : self.card_id,
 			"deck_id" : self.deck_id,
 			"question" : self.question if self.question is not None else "card does not have question",
@@ -36,6 +37,12 @@ class Card:
 			"template_path" : self.template_path,
 			"template_data" : self.template_data,
 		}
+
+		if self.answer_history is not None and self.answer_history.time_to_correct is not None:
+			result['prev_time_to_correct'] = self.answer_history.time_to_correct
+			result['prev_first_attempt_correct'] = self.answer_history.first_attempt_correct
+		
+		return result
 
 	def set_answer_history(self, answer_history):
 		self.answer_history = answer_history
