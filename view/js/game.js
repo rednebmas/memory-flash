@@ -17,6 +17,7 @@ var Game = function(session_id, deck_id, user_id) { return {
 	user_id: user_id,
 	input_modality_id: undefined,
 	previous_card_ids: new FixedQueue(2),
+	secondsElapsedKey: undefined,
 	// title card, waiting, loading next question, partial - correct, partial - incorrect, incorrect, correct but first attempt incorrect
 	_state: 'title card', 
 	_card: undefined,
@@ -70,10 +71,12 @@ var Game = function(session_id, deck_id, user_id) { return {
     **/
 
     init: function () {
+		var urlQueryStringParams = new URLSearchParams(window.location.search);
+		this.secondsElapsedKey = 'secondsElapsed ' + (new Date).toLocaleDateString();
+		this.input_modality_id = urlQueryStringParams.get('input_modality_id');
 		this.bindSubmitAnswer();
 		this.setupTitleCard();
-		var urlQueryStringParams = new URLSearchParams(window.location.search);
-		this.input_modality_id = urlQueryStringParams.get('input_modality_id');
+		this.updateViewSecondsElapsed();
     	return this;
     },
 
@@ -96,7 +99,7 @@ var Game = function(session_id, deck_id, user_id) { return {
 	},
 
 	loadNextQuestion: function() {
-		this.submitAnswerHistory();
+		this.trackAnswerHistory();
 		if (this.state != 'title card') {
 			this.state = 'loading next question';
 		}
@@ -267,8 +270,14 @@ var Game = function(session_id, deck_id, user_id) { return {
 		this.updateMultiPartCorrectnessHighlighting()
 	},
 
-	submitAnswerHistory: function() {
+	trackAnswerHistory: function() {
 		if (this.card == undefined) return;
+
+		var secondsElapsed = Cookies.get(this.secondsElapsedKey);
+		secondsElapsed = secondsElapsed ? parseFloat(secondsElapsed) : 0.0;
+		secondsElapsed += this.card.time_to_correct;
+		Cookies.set(this.secondsElapsedKey, secondsElapsed);
+		this.updateViewSecondsElapsed();
 
 		var body = {
 			'user_id': this.user_id,
@@ -288,6 +297,19 @@ var Game = function(session_id, deck_id, user_id) { return {
 			alert('Error loading next question: ' + error);
 			// window.location.href = window.location.origin;
 		});
+	},
+
+	secondsElapsedKey: function(arguments) {
+		return 
+	},
+
+	updateViewSecondsElapsed: function() {
+		var secondsElapsed = Cookies.get(this.secondsElapsedKey);
+		secondsElapsed = secondsElapsed ? parseFloat(secondsElapsed) : 0.0;
+
+		var date = new Date(null);
+		date.setSeconds(secondsElapsed);
+		$('#timer').text(date.toISOString().substr(14, 5));
 	},
 
 	updateViewForStateTitleCard: function () {

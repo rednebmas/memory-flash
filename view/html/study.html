@@ -22,10 +22,26 @@
         <span id="incorrect-label">Incorrect</span>
         <span id="correct-label"><strong>Correct</strong>, press any key to move to the next question</span>
         <span id="cards-below-median-label">8/10</span>
-    </div>
+	</div>
+	
+	
+	<div class="card-footer" style="
+	    height: 15px;
+	    padding: 0;
+	">
+	
+		<div class="progress" style="
+	    margin: 0;
+		padding: 0;
+		border-radius: 0;
+		height: 15px;
+	">
+			<div class="progress-bar progress-bar-striped" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+		</div>
+	</div>
+
 </div>
 
-<div id="timer"></div>
 <a id="input-modality" class="label label-default"
    href="/decks/{{deck.deck_id}}/study">
 	{% include 'input_modality_icon.html' %}
@@ -39,16 +55,18 @@
 <div id="bottom-right">
 
 	<div id="midi-connected">
-		<i class="fa fa-plug fa-2x" aria-hidden="true"></i>
+		<!-- <i class="fa fa-plug fa-2x" aria-hidden="true"></i> -->
 	</div>
 
-	<div class="dropup">
+	<div id="timer"></div>
+
+	<div class="dropup" id="midi-input-dropdown">
 		<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true"
 		 aria-expanded="false">
 			MIDI Input
 			<span class="caret"></span>
 		</button>
-		<ul id="midi-input-dropdown" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
+		<ul id="midi-input-dropdown-list" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
 		</ul>
 	</div>
 			  

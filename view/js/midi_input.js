@@ -75,7 +75,7 @@ var MIDIInput = function () { return {
 			WebMidi.addListener('connected', (e) => {
 				// this.startListeningForEvents(WebMidi.getInputByName('MIDISPORT 2x2 Port A'));
 				this.populateInputList();
-				this.listenToEventsFromInput(WebMidi.inputs[0]);
+				// this.listenToEventsFromInput(WebMidi.inputs[0]);
 			});
 
 			WebMidi.addListener('disconnected', (e) => {
@@ -85,7 +85,6 @@ var MIDIInput = function () { return {
 
 			if (WebMidi.inputs.length > 0) {
 				this.populateInputList();
-				this.listenToEventsFromInput(WebMidi.inputs[0]);
 			}
 		});
 
@@ -116,6 +115,11 @@ var MIDIInput = function () { return {
 	},
 
 	addNote: function(midiNoteNumber) {
+		if (game.state == 'title card' && teoria.note.fromMIDI(midiNoteNumber).name() == 'c') {
+			game.state = 'waiting';
+			return;
+		}
+
 		this.onNotes.add(midiNoteNumber);
 		this.output = this.calcOutput();
 		this.addOutputToGameInput();
@@ -261,7 +265,7 @@ var MIDIInput = function () { return {
 
 	populateInputList: function() {
 		var self = this;
-		$('#midi-input-dropdown').empty();
+		$('#midi-input-dropdown-list').empty();
 		$.each(WebMidi.inputs, (i, input) => {
 			$('<li/>').append(
 				$('<a/>', {
@@ -273,7 +277,7 @@ var MIDIInput = function () { return {
 						this.listenToEventsFromInput(WebMidi.getInputByName(event.target.innerText));
 					}
 				})
-			).appendTo('#midi-input-dropdown');
+			).appendTo('#midi-input-dropdown-list');
 		});
 	}
 

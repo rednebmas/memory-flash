@@ -72,9 +72,6 @@ body {
 }
 
 #timer {
-	position: fixed;
-	right: 5px;
-	bottom: 5px;
 	color: gray;
 	font-size: 200%;
 }
@@ -93,6 +90,8 @@ body {
 	bottom: 10px;
 	display: inline-flex;
 	align-items: center;
+	z-index: 100;
+
 	
 	div {
 		margin: 0px 5px;
