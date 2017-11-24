@@ -10,7 +10,7 @@
 {% block content %}
 
 <div class="card">
-	<i id="card-was-correct-check" class="fa fa-check-square" aria-hidden="true"></i>
+	<i id="card-was-correct-check" class="fa fa-check-square" title="This check means you have answered this question fast enough previously. It is being shown to you again to keep you on your toes 😉."></i>
     <div id="question">Loading...</div>
     <div class="input-group">
       <input id="answer-input" type="text" placeholder="Answer" class="form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
@@ -54,9 +54,11 @@
 	<div id="timer"></div>
 
 	<div class="dropup" id="midi-input-dropdown">
-		<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true"
+		<button class="btn btn-default dropdown-toggle" type="button" id="" data-toggle="dropdown" aria-haspopup="true"
 		 aria-expanded="false">
-			MIDI Input
+			<span id="midi-input-dropdown-text">
+				<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Choose a MIDI input &nbsp;
+			</span>
 			<span class="caret"></span>
 		</button>
 		<ul id="midi-input-dropdown-list" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">

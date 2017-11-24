@@ -85,6 +85,8 @@ body {
   display: inline-flex;
   align-items: center;
   z-index: 100; }
+  #bottom-right #midi-input-dropdown {
+    display: none; }
   #bottom-right div {
     margin: 0px 5px; }
 

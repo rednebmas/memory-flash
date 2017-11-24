@@ -15,12 +15,12 @@ var Game = function(session_id, deck_id, user_id) { return {
 	session_id: session_id,
 	deck_id: deck_id,
 	user_id: user_id,
-	input_modality_id: undefined,
 	previous_card_ids: new FixedQueue(2),
 	secondsElapsedKey: undefined,
 	// title card, waiting, loading next question, partial - correct, partial - incorrect, incorrect, correct but first attempt incorrect
 	_state: 'title card', 
 	_card: undefined,
+	_input_modality_id: undefined,
 
 	/** 
 	Getters and Setters 
@@ -66,14 +66,29 @@ var Game = function(session_id, deck_id, user_id) { return {
 		$('#question').html(card.question);
 	},
 
+	get input_modality_id() {
+		if (!this._input_modality_id) {
+			var urlQueryStringParams = new URLSearchParams(window.location.search);
+			this.input_modality_id = urlQueryStringParams.get('input_modality_id');
+		}
+		return this._input_modality_id;
+	},
+	set input_modality_id(value) {
+		this._input_modality_id = value;
+		if (this._input_modality_id == "1") {
+			$('#midi-input-dropdown').css('display', 'none');
+		} else {
+			$('#midi-input-dropdown').css('display', 'block');
+		}
+	},
+
     /**
 	Methods
     **/
 
     init: function () {
-		var urlQueryStringParams = new URLSearchParams(window.location.search);
 		this.secondsElapsedKey = 'secondsElapsed ' + (new Date).toLocaleDateString();
-		this.input_modality_id = urlQueryStringParams.get('input_modality_id');
+		this.input_modality_id;
 		this.bindSubmitAnswer();
 		this.setupTitleCard();
 		this.updateViewSecondsElapsed();

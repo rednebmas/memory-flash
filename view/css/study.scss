@@ -99,6 +99,9 @@ body {
 	align-items: center;
 	z-index: 100;
 
+	#midi-input-dropdown { 
+		display: none;
+	}
 	
 	div {
 		margin: 0px 5px;

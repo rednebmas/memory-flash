@@ -73,9 +73,8 @@ var MIDIInput = function () { return {
 			}
 
 			WebMidi.addListener('connected', (e) => {
-				// this.startListeningForEvents(WebMidi.getInputByName('MIDISPORT 2x2 Port A'));
 				this.populateInputList();
-				// this.listenToEventsFromInput(WebMidi.inputs[0]);
+				this.listenToSavedMidiInputIfAvailable();
 			});
 
 			WebMidi.addListener('disconnected', (e) => {
@@ -85,6 +84,7 @@ var MIDIInput = function () { return {
 
 			if (WebMidi.inputs.length > 0) {
 				this.populateInputList();
+				this.listenToSavedMidiInputIfAvailable();
 			}
 		});
 
@@ -101,7 +101,8 @@ var MIDIInput = function () { return {
 		}
 
 		this.input = input;
-		$('#midi-connected').css('display', 'block');
+		$('#midi-input-dropdown-text').text(this.input.name)
+		Cookies.set('midi-input-id', input.id);
 
 		// Listening for a 'note on' message (on all channels) 
 		input.addListener("noteon", "all", (e) => {
@@ -112,6 +113,17 @@ var MIDIInput = function () { return {
 		input.addListener("noteoff", "all", (e) => {
 			this.removeNote(e.note.number);
 		});
+	},
+
+
+	listenToSavedMidiInputIfAvailable: function() {
+		var midiInputID = Cookies.get('midi-input-id');
+		if (!midiInputID) return;
+
+		var input = WebMidi.getInputById(midiInputID);
+		if (input) {
+			this.listenToEventsFromInput(input);
+		}
 	},
 
 	addNote: function(midiNoteNumber) {
