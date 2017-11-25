@@ -42,7 +42,7 @@ async def add_session_to_request(request):
 	# using the client's request
 	await session_interface.open(request)
 	# make sure user is authenticated to view most pages, otherwise, redirect to login
-	if 'user_id' not in request['session'] and request.path not in paths_that_dont_need_auth:
+	if 'user_id' not in request['session'] and hasattr(request, 'path') and request.path not in paths_that_dont_need_auth:
 		print('<' + request.path + '> Attempted to access route which requires you to be logged in to an account.')
 
 		query_string = '?' 
