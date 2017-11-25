@@ -1,6 +1,15 @@
 from model.card_generators.notes_generator import NotesGenerator
 from model.objects.user import User
 
+def insert_deck(db, deck_name, deck_desc, cards):
+	db.execute(
+		""" INSERT INTO Deck (name, descr) VALUES (?, ?)""",
+		(deck_name, deck_desc)
+	)
+	deck_id = db.select1(table="Deck", where="name = ?", substitutions=(deck_name,))['deck_id']
+	for c in cards: c['deck_id'] = deck_id
+	db.insert_key_value_pairs('Card', cards)
+
 if User.from_email('rednebmas@gmail.com') is None:
 	User.create('sam', 'rednebmas@gmail.com', 'sam')
 
