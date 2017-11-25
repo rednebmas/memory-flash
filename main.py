@@ -133,7 +133,7 @@ routes.user_routes.add_routes(app)
 cert = '/etc/letsencrypt/live/mflash.sambender.com/cert.pem'
 privkey = '/etc/letsencrypt/live/mflash.sambender.com/privkey.pem'
 
-if len(sys.argv) >= 2 and sys.argv[1] == 'release':
+if 'release' in sys.argv:
 	import ssl
 	context = ssl.create_default_context(purpose=ssl.Purpose.CLIENT_AUTH)
 	context.load_cert_chain(cert, keyfile=privkey)
