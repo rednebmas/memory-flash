@@ -13,6 +13,7 @@ from viewmodel.deck_view_model import DeckViewModel
 from viewmodel.card_view_model import CardViewModel
 from routes.core import jinja_render, jinja_response
 import os
+import sys
 
 app = Sanic(__name__)
 session_interface = InMemorySessionInterface()
@@ -132,9 +133,13 @@ routes.user_routes.add_routes(app)
 cert = '/etc/letsencrypt/live/mflash.sambender.com/cert.pem'
 privkey = '/etc/letsencrypt/live/mflash.sambender.com/privkey.pem'
 
-import ssl
-context = ssl.create_default_context(purpose=ssl.Purpose.CLIENT_AUTH)
-context.load_cert_chain(cert, keyfile=privkey)
+if len(sys.argv) >= 2 and sys.argv[1] == 'release':
+	import ssl
+	context = ssl.create_default_context(purpose=ssl.Purpose.CLIENT_AUTH)
+	context.load_cert_chain(cert, keyfile=privkey)
 
-if __name__ == '__main__':
-	app.run(host="0.0.0.0", port=443, debug=False, ssl=context)
+	if __name__ == '__main__':
+		app.run(host="0.0.0.0", port=443, debug=False, ssl=context)
+else:
+	if __name__ == '__main__':
+		app.run(host="0.0.0.0", port=8000, debug=True)

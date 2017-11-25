@@ -7,7 +7,7 @@ fi
 
 sudo git checkout -- .
 sudo git pull
-sudo sed -i "s/8000/80/g" main.py
+pip3 install -r requirements.txt
 sudo npm update
 sudo npm run compile
-sudo python3 main.py
+sudo python3 main.py release
