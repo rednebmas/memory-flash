@@ -129,5 +129,12 @@ async def answer_card(request, card_id):
 import routes.user_routes
 routes.user_routes.add_routes(app)
 
+cert = '/etc/letsencrypt/live/mflash.sambender.com/cert.pem'
+privkey = '/etc/letsencrypt/live/mflash.sambender.com/privkey.pem'
+
+import ssl
+context = ssl.create_default_context(purpose=ssl.Purpose.CLIENT_AUTH)
+context.load_cert_chain(cert, keyfile=privkey)
+
 if __name__ == '__main__':
-	app.run(host="0.0.0.0", port=8000, debug=True)
+	app.run(host="0.0.0.0", port=443, debug=False, ssl=context)
