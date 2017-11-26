@@ -68,7 +68,9 @@ var MIDIInput = function () { return {
 		WebMidi.enable((err) => {
 			if (err) {
 				console.log("WebMidi could not be enabled");
-				alert('Error: ' + err);
+				if (game.input_modality_id != "1") {
+					alert('Error: ' + err);
+				}
 				return;
 			}
 

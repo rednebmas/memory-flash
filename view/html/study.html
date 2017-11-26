@@ -42,7 +42,7 @@
 </a>
 
 <div id="title-card">
-	<div id="press-any-key-to-continue">Press "C" to Begin</div>
+	<div id="press-any-key-to-continue">Press "C" to begin</div>
 </div>
 
 <div id="bottom-right">
@@ -73,6 +73,7 @@
     var game = new Game({{ mf_session.session_id }}, {{ deck.deck_id }}, {{ session['user_id'] }});
     game.loadNextQuestion();
 </script>
+<script src="/js/study_mobile_support.js"></script>
 
 
 {% include 'metronome/metronome.html' %}
