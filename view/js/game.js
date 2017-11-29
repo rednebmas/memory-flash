@@ -164,6 +164,11 @@ var Game = function(session_id, deck_id, user_id) { return {
 			$('#progress-bar-container').css('display', 'block');
 			$('#progress-bar').css('width', data.session.cards_below_median / data.session.total_cards * 100 + '%');
 			$('#card-was-correct-check').css('visibility', this.card.wasCorrect() ? 'visible' : 'hidden');
+			setTimeout(() => {
+				if (this.card.card_id == data.card_id && this.state == 'waiting') {
+					this.updateProgressBarForIncorrect();
+				}
+			}, data.sesion.median);
 		} else {
 			$('#metronome-controls').css('display', 'none');
 			$('#cards-below-median-label').css('display', 'none');
