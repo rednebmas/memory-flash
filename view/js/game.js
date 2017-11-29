@@ -168,7 +168,7 @@ var Game = function(session_id, deck_id, user_id) { return {
 				if (this.card.card_id == data.card_id && this.state == 'waiting') {
 					this.updateProgressBarForIncorrect();
 				}
-			}, data.sesion.median);
+			}, data.session.median);
 		} else {
 			$('#metronome-controls').css('display', 'none');
 			$('#cards-below-median-label').css('display', 'none');
