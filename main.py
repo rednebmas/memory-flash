@@ -139,13 +139,26 @@ if 'release' in sys.argv:
 	context.load_cert_chain(cert, keyfile=privkey)
 
 	if __name__ == '__main__':
-		app.run(host="0.0.0.0", port=443, debug=False, ssl=context)
-
 		redirect_to_http_to_https_app = Sanic("redirect_to_https")
 		@redirect_to_http_to_https_app.middleware('request')
 		async def redirect_to_https(request):
 			return sanic.response.redirect('https://' + request.headers['host'])
-		redirect_to_http_to_https_app.run(host="0.0.0.0", port=80)
+
+		app_server = app.create_server(host="0.0.0.0", port=443, debug=False, ssl=context)
+		redirect_server = redirect_to_http_to_https_app.create_server(host="0.0.0.0", port=80, debug=False)
+
+		from signal import signal, SIGINT
+		import asyncio
+		import uvloop
+		asyncio.set_event_loop(uvloop.new_event_loop())
+		loop = asyncio.get_event_loop()
+		task = asyncio.ensure_future(app_server)
+		task = asyncio.ensure_future(redirect_server)
+		signal(SIGINT, lambda s, f: loop.stop())
+		try:
+			loop.run_forever()
+		except:
+			loop.stop()
 else:
 	if __name__ == '__main__':
 		app.run(host="0.0.0.0", port=8000, debug=True)
