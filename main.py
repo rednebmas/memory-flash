@@ -140,6 +140,12 @@ if 'release' in sys.argv:
 
 	if __name__ == '__main__':
 		app.run(host="0.0.0.0", port=443, debug=False, ssl=context)
+
+		redirect_to_http_to_https_app = Sanic("redirect_to_https")
+		@redirect_to_http_to_https_app.middleware('request')
+		async def redirect_to_https(request):
+			return sanic.response.redirect('https://' + request.headers['host'])
+		redirect_to_http_to_https_app.run(host="0.0.0.0", port=80)
 else:
 	if __name__ == '__main__':
 		app.run(host="0.0.0.0", port=8000, debug=True)

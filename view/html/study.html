@@ -10,7 +10,7 @@
 {% block content %}
 
 <div class="card">
-	<i id="card-was-correct-check" class="fa fa-check-square" title="This check means you have answered this question fast enough previously. It is being shown to you again to keep you on your toes 😉."></i>
+	<i id="card-was-correct-check" class="fa fa-check-square" data-toggle="tooltip" data-placement="left" title="This check means you have answered this question fast enough previously. It is being shown to you again to keep you on your toes 😉."></i>
     <div id="question">Loading...</div>
     <div class="input-group">
       <input id="answer-input" type="text" placeholder="Answer" class="form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
@@ -69,6 +69,12 @@
 
 <script src="/js/lib/webmidi.min.js"></script>
 <script src="/js/bundle.js"></script>
+<script type="text/javascript">
+	// not sure where to move this, or what file
+	$(document).ready(function(){
+		$('[data-toggle="tooltip"]').tooltip(); 
+	});
+</script>
 <script type="text/javascript">
     var game = new Game({{ mf_session.session_id }}, {{ deck.deck_id }}, {{ session['user_id'] }});
     game.loadNextQuestion();
