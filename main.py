@@ -44,11 +44,11 @@ async def add_session_to_request(request):
 	# using the client's request
 	await session_interface.open(request)
 	# make sure user is authenticated to view most pages, otherwise, redirect to login
-	if 'user_id' not in request['session'] and hasattr(request, 'path') and request.path not in paths_that_dont_need_auth:
+	if 'user_id' not in request.ctx.session and hasattr(request, 'path') and request.path not in paths_that_dont_need_auth:
 		print('<' + request.path + '> Attempted to access route which requires you to be logged in to an account.')
 
 		query_string = '?' 
-		for key, val in request.raw_args.items():
+		for key, val in request.query_args:
 			if key == 'original_path': continue
 			query_string += key + "=" + str(val)
 		
@@ -89,9 +89,9 @@ async def decks_study(request, deck_id):
 	deck = Deck.from_id(deck_id)
 
 	# SOMEDAY: ensure that we have a valid input_modality_id for this deck
-	user_id = request['session']['user_id']
+	user_id = request.ctx.session['user_id']
 	session = Session.find_or_create(deck_id, user_id, input_modality_id)
-	return jinja_response('study.html', deck=deck, mf_session=session, input_modality=input_modality)
+	return jinja_response('study.html', deck=deck, mf_session=session, input_modality=input_modality, session=request.ctx.session)
 
 @app.route("/session/<session_id:int>/next_card")
 async def session_next_card(request, session_id):
