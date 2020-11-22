@@ -2,6 +2,10 @@
 
 ## environment setup
 
+### WebMidi on localhost/0.0.0.0
+
+https://stackoverflow.com/a/53388534/337934
+
 ### Python
 
 *install*

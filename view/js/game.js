@@ -164,11 +164,6 @@ var Game = function(session_id, deck_id, user_id) { return {
 			$('#progress-bar-container').css('display', 'block');
 			$('#progress-bar').css('width', data.session.cards_below_median / data.session.total_cards * 100 + '%');
 			$('#card-was-correct-check').css('visibility', this.card.wasCorrect() ? 'visible' : 'hidden');
-			setTimeout(() => {
-				if (this.card.card_id == data.card_id && this.state == 'waiting') {
-					this.updateProgressBarForIncorrect();
-				}
-			}, data.session.median);
 		} else {
 			$('#metronome-controls').css('display', 'none');
 			$('#cards-below-median-label').css('display', 'none');
@@ -339,6 +334,18 @@ var Game = function(session_id, deck_id, user_id) { return {
 
 	updateViewForStateWaiting: function () {
 		this.card.captureStartTime();
+
+		if (this.card.raw.session) {
+			var card = this.card;
+			setTimeout(() => {
+				console.log('in timeout');
+				if (this.card.card_id == card.card_id && this.state == 'waiting') {
+					console.log('in if');
+					this.updateProgressBarForIncorrect();
+				}
+			}, this.card.raw.session.median * 1000);
+		}
+
 		$('#title-card').css('visibility', 'hidden');
 		$('#question').css('visibility', 'visible');
 		$('#submit-answer').attr('class', 'btn btn-primary');
