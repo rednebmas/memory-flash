@@ -11,6 +11,24 @@ import mingus.core.progressions as progressions
 templates = Environment(loader=FileSystemLoader(os.getcwd() + '/view/html'))
 
 class ProgressionGenerator:
+
+	@staticmethod
+	def one_five_six_four_cards():
+		chords = []
+		notes = [Note(name) for name in Note.names_with_enharmonics()]
+		for root_note in notes:
+			if root_note.name in ['D#', 'A#', 'G#']: # theoretical keys
+				continue
+
+			one_chord = Chord(root_note.name)
+			five_chord = Chord(one_chord.scale.degree(5).name).invert(1)
+			minor_six_chord = Chord(one_chord.scale.degree(6).name + 'm').invert(1)
+			four_chord = Chord(one_chord.scale.degree(4).name).invert(2)
+
+			chords.append(ProgressionGenerator.card_from_one_five_six_four([one_chord, five_chord, minor_six_chord, four_chord, one_chord]))
+
+		return chords
+
 	@staticmethod
 	def four_five_one_cards():
 		root_inversion = []
@@ -133,6 +151,43 @@ class ProgressionGenerator:
 		}
 
 	@staticmethod
+	def card_from_one_five_six_four(chords):
+		print([' '.join([note.name for note in chord.notes]) for chord in chords])
+		template_root = 'cards/chord-progression/chord-progression'
+		return {
+			"template_path" : template_root + '.html',
+			"template_data" : json.dumps({
+				'chords' : [
+					{
+						"symbol" : chords[0].notes[0].name, 
+						"template_path" : template_root + "-inv-0.html" # poor naming choice on inversion 0
+					}, 
+					{
+						"symbol" : chords[1].notes[2].name + "/" + chords[1].notes[0].name, 
+						"template_path" : template_root + "-inv-0.html" # poor naming choice on inversion 0
+					}, 
+					{
+						"symbol" : chords[2].notes[2].name + "m/" + chords[2].notes[0].name, 
+						"template_path" : template_root + "-inv-0.html" # poor naming choice on inversion 0
+					},
+					{
+						"symbol" : chords[3].notes[1].name + "/" + chords[3].notes[0].name, 
+						"template_path" : template_root + "-inv-0.html" # poor naming choice on inversion 0
+					},
+					{
+						"symbol" : chords[0].notes[0].name, 
+						"template_path" : template_root + "-inv-0.html" # poor naming choice on inversion 0
+					}, 
+				], 
+				'root' : chords[0].root.name
+			}),
+			"answer" : '→'.join( [' '.join([note.name for note in chord.notes]) for chord in chords] ),
+			"answer_validator" : 'equals',
+			"accidental" : chords[0].scale.accidental.symbol,
+			"scale" : chords[0].root.name
+		}
+
+	@staticmethod
 	def four_five_one_from_one(one, four_inversion, five_inversion, one_inversion):
 		one_chord = Chord(one.name).invert(one_inversion)
 
@@ -143,6 +198,5 @@ class ProgressionGenerator:
 		five_chord = Chord(five.name).invert(five_inversion)
 
 		return [four_chord, five_chord, one_chord]
-
 
 

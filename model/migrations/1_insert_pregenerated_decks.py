@@ -70,6 +70,13 @@ insert_deck(
 
 insert_deck(
 	db, 
+	'I V vi IV w/ chord symbols', 
+	'The four chord song progression', 
+	ProgressionGenerator.one_five_six_four_cards()
+)
+
+insert_deck(
+	db, 
 	'IV V I', 
 	'Includes common sets of inversions', 
 	ProgressionGenerator.four_five_one_cards()
