@@ -74,3 +74,7 @@ https://stackoverflow.com/a/53388534/337934
 [Sheet Music Tutor](http://www.sheetmusictutor.com/)
 
 [Sightreading.training](http://sightreading.training/)
+
+### Website that describes fingerings for any chord
+
+https://www.pianochord.org/c-major.html#hide1

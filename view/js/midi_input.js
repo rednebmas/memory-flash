@@ -64,6 +64,10 @@ var MIDIInput = function () {
 
 		createChromaMap: function () {
 			this.chromaMap = {};
+			if (!this._scale) {
+				console.log('No scale:', this._scale);
+				return
+			};
 			this._scale.notes().forEach(function (note) {
 				this.chromaMap[note.chroma()] = note;
 			}, this);

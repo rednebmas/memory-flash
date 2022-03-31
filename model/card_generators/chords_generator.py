@@ -39,8 +39,10 @@ class ChordsGenerator:
 		uncommon = []
 		for note in notes:
 			chord_root = Chord(note + suffix)
-			chord_first_inversion = chord_root.invert(1)
-			chord_second_inversion = chord_root.invert(2)
+			chord_first_inversion = chord_root.invert(1, True)
+			chord_second_inversion = chord_root.invert(2, True)
+			if '7' in suffix:
+				chord_third_inversion = chord_root.invert(3, True)
 
 			# i don't really care about double sharps at the moment...
 			root_accidentals = [n.name[1:] for n in chord_root.notes]
@@ -55,6 +57,8 @@ class ChordsGenerator:
 				roots.append(chord_root)
 				inversions.append(chord_first_inversion)
 				inversions.append(chord_second_inversion)
+				if '7' in suffix:
+					inversions.append(chord_third_inversion)
 
 		random.shuffle(roots)
 		random.shuffle(inversions)
@@ -83,6 +87,26 @@ class ChordsGenerator:
 	@staticmethod
 	def generate_aug_chords_cards():
 		return ChordsGenerator.generate_triad('aug')
+
+	@staticmethod
+	def generate_dom7_chords_cards():
+		return ChordsGenerator.generate_triad('7')
+
+	@staticmethod
+	def generate_maj7_chords_cards():
+		return ChordsGenerator.generate_triad('maj7')
+
+	@staticmethod
+	def generate_min7_chords_cards():
+		return ChordsGenerator.generate_triad('m7')
+
+	@staticmethod
+	def generate_m7b5_chords_cards():
+		return ChordsGenerator.generate_triad('m7b5')
+
+	@staticmethod
+	def generate_dim7_chords_cards():
+		return ChordsGenerator.generate_triad('dim7')
  
 	@staticmethod
 	def card_for_chord(chord):

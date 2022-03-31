@@ -18,6 +18,7 @@ class MigrationManager:
 	@staticmethod
 	def run_pending_migrations(db):
 		migrations_performed = db.select1(table="Migration", where="migration_id = 1")['migrations_performed']
+		print("run pending:",  migrations_performed)
 
 		num_migrations_updated = False
 		for filename in sorted(glob('model/migrations/*.py')):

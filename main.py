@@ -1,3 +1,4 @@
+from model.card_generators.chords_generator import ChordsGenerator
 import sanic.config
 sanic.config.Config.LOGO = ""
 from sanic import Sanic
@@ -36,6 +37,10 @@ paths_that_dont_need_auth = ['/decks', '/user/login', '/user', '/', '/user/creat
 ######################
 # Session Middleware #
 ######################
+
+# import pprint
+# pp = pprint.PrettyPrinter(indent=4)
+# pp.pprint(ChordsGenerator.generate_dim7_chords_cards())
 
 @app.middleware('request')
 async def add_session_to_request(request):

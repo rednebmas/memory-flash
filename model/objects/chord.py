@@ -17,25 +17,36 @@ class Chord:
 		self.notes = [Note(note_name) for note_name in mingus_chords.from_shorthand(name)]
 		self.inversion = 0
 
-	def invert(self, num):
+	def invert(self, num, bass_numeral=False):
 		""" num is an integer """
 		def rotate(l, n): # http://stackoverflow.com/a/9457864/337934
 			return l[n:] + l[:n]
 		inverted = Chord(self.name)
 		inverted.notes = rotate(inverted.notes, num)
-		inverted.name = inverted.name + '/' + inverted.notes[0].name
+		if bass_numeral:
+			inverted.name = inverted.name + '/' + ['','3','5','7'][num]
+		else:
+			inverted.name = inverted.name + '/' + inverted.notes[0].name
 		inverted.inversion = num
 		return inverted
 
 	def quality_full(self):
 		if len(self.quality) == 0:
 			return "major"
+		elif self.quality == 'maj7':
+			return "major"
+		elif self.quality == 'm7':
+			return "minor"
 		elif self.quality[0] == "m":
 			return "minor"
-		elif self.quality == "dim":
+		elif self.quality == "dim" or self.quality == "dim7":
 			return "diminished"
 		elif self.quality == "aug":
 			return "augmented"
+		elif self.quality == "7":
+			return "mixolydian"
+		elif self.quality == "m7b5":
+			return "locrian"
 		else:
 			return "unknown quality"
 
