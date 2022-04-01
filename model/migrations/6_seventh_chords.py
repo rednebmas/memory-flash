@@ -64,7 +64,7 @@ insert_deck(
 	db, 
 	"dim7 Chords", 
 	"", 
-	ChordsGenerator.generate_m7b5_chords_cards()
+	ChordsGenerator.generate_dim7_chords_cards()
 )
 
 row = db.select1("Deck", "name = 'dim7 Chords'")
@@ -72,11 +72,23 @@ row_id = row['deck_id']
 db.execute("INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, ?), (2, ?), (3, ?)", (row_id, row_id, row_id))
 
 
+insert_deck(
+	db, 
+	"Minor Major 7th Chords", 
+	"Also known as the Hitchcock Chord", 
+	ChordsGenerator.generate_min_maj7_chords_cards()
+)
+
+row = db.select1("Deck", "name = 'Minor Major 7th Chords'")
+row_id = row['deck_id']
+db.execute("INSERT INTO DeckInputModality (input_modality_id, deck_id) VALUES (1, ?), (2, ?), (3, ?)", (row_id, row_id, row_id))
+
 all_chords = ChordsGenerator.generate_dom7_chords_cards()
 all_chords += ChordsGenerator.generate_min7_chords_cards()
 all_chords += ChordsGenerator.generate_maj7_chords_cards()
 all_chords += ChordsGenerator.generate_m7b5_chords_cards()
 all_chords += ChordsGenerator.generate_dim7_chords_cards()
+all_chords += ChordsGenerator.generate_min_maj7_chords_cards()
 random.shuffle(all_chords)
 
 insert_deck(

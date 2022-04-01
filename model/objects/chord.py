@@ -34,25 +34,33 @@ class Chord:
 		if len(self.quality) == 0:
 			return "major"
 		elif self.quality == 'maj7':
-			return "major"
+			return "major 7"
 		elif self.quality == 'm7':
-			return "minor"
+			return "minor 7"
 		elif self.quality[0] == "m":
 			return "minor"
-		elif self.quality == "dim" or self.quality == "dim7":
+		elif self.quality == "dim":
 			return "diminished"
+		elif self.quality == "dim7":
+			return "diminished 7"
 		elif self.quality == "aug":
 			return "augmented"
 		elif self.quality == "7":
-			return "mixolydian"
+			return "dominant 7"
 		elif self.quality == "m7b5":
-			return "locrian"
+			return "half diminshed"
 		else:
 			return "unknown quality"
 
 	@property
 	def pretty_name(self):
-		return self.name.replace('##', '𝄪').replace('#', '♯').replace('b','♭').replace('dim', '°').replace('aug', '+')
+		result = self.name.replace('##', '𝄪').replace('#', '♯').replace('b','♭').replace('dim', '°').replace('aug', '+')
+		if '7♭5' in result:
+			return result.replace('7♭5', '<sup>7♭5</sup>')
+		elif 'mM7' in result:
+			return result.replace('M7', '<sup>Δ7</sup>')
+		else:
+			return result.replace('7', '<sup>7</sup>')
 
 	@staticmethod
 	def intervals_for_quality(quality):
