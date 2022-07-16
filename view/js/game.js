@@ -299,15 +299,20 @@ var Game = function(session_id, deck_id, user_id) { return {
 		Cookies.set(this.secondsElapsedKey, secondsElapsed);
 		this.updateViewSecondsElapsed();
 
+		let adjustedTimeToCorrect = this.card.time_to_correct;
+		console.log('this.card.raw:', this.card.raw);
+		if (!this.card.first_attempt_correct && adjustedTimeToCorrect && ('session' in this.card.raw.session && this.raw.session.median)) {
+			adjustedTimeToCorrect = Math.min(this.card.raw.session.median * 1.1, this.card.time_to_correct);
+		}
 		var body = {
 			'user_id': this.user_id,
 			'session_id': this.session_id,
 			'card_id': this.card.card_id,
-			'time_to_correct': this.card.time_to_correct,
+			'time_to_correct': adjustedTimeToCorrect,
 			'first_attempt_correct': this.card.first_attempt_correct,
 		};
 
-		console.log(body);
+		console.log('post answer:', body);
 
 		$.post('/card/' + this.card.card_id + '/answer', JSON.stringify(body), function(data) { 
 			// check for success?

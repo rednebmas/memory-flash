@@ -59,8 +59,11 @@ class Chord:
 			return result.replace('7♭5', '<sup>7♭5</sup>')
 		elif 'mM7' in result:
 			return result.replace('M7', '<sup>Δ7</sup>')
+		elif 'maj7' in result:
+			return result.replace('maj7', '<sup>Δ7</sup>')
 		else:
-			return result.replace('7', '<sup>7</sup>')
+			# regex to prevent replacing slash chords
+			return re.sub(r'([^\/])7', r'\1<sup>7</sup>', result)
 
 	@staticmethod
 	def intervals_for_quality(quality):
