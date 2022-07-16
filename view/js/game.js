@@ -300,9 +300,13 @@ var Game = function(session_id, deck_id, user_id) { return {
 		this.updateViewSecondsElapsed();
 
 		let adjustedTimeToCorrect = this.card.time_to_correct;
-		console.log('this.card.raw:', this.card.raw);
-		if (!this.card.first_attempt_correct && adjustedTimeToCorrect && ('session' in this.card.raw.session && this.raw.session.median)) {
-			adjustedTimeToCorrect = Math.min(this.card.raw.session.median * 1.1, this.card.time_to_correct);
+		if ('session' in this.card.raw && this.card.raw.session.median) {
+			const median = this.card.raw.session.median;
+			if (!this.card.first_attempt_correct) {
+				// if incorrect, minimum max time is greater than median
+				adjustedTimeToCorrect = Math.min(median * 1.1, this.card.time_to_correct);
+			}
+			adjustedTimeToCorrect = Math.min(adjustedTimeToCorrect, median * 3);
 		}
 		var body = {
 			'user_id': this.user_id,
